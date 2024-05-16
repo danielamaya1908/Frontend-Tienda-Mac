@@ -1,0 +1,14 @@
+.navbar {
+    background-color: #000000 /* Fondo del navbar negro más oscuro */
+  }
+  
+  .navbar-nav .nav-link {
+    color: #000000/* Letras oscuras en el navbar */
+  }
+  
+  .navbar-nav .nav-link:hover {
+    color: #ffffff; /* Cambiar color al pasar el mouse */
+  }
+  .navbar-logo {
+    margin-right: 500px; /* Ajusta el margen derecho según tu necesidad */
+}

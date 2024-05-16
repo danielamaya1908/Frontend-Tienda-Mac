@@ -1,0 +1,7 @@
+/* Footer.module.css */
+.bg-dark-transparent {
+    background-color: rgba(0, 0, 0, 0.8); /* Ajusta el último valor (0.8) para cambiar el nivel de opacidad */
+}
+.footer-text {
+    color: rgba(255, 255, 255, 0.8);
+}

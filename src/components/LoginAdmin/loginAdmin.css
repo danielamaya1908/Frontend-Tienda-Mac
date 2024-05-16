@@ -1,0 +1,14 @@
+.login-container {
+    background-color: rgba(63, 63, 63, 0.5);
+    border: 1px solid blue;
+    color: white;
+  }
+  
+  .login-form {
+    margin-top: 20px;
+  }
+  
+  .login-form-label {
+    color: white;
+  }
+  

@@ -1,0 +1,60 @@
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .customImg {
+    margin-top: 100px;
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+    align-items: center;
+  }
+  
+  .content {
+    color: white;
+    width: 70%;
+    margin: auto;
+  }
+  
+  @media (min-width: 576px) {
+    .top-100 {
+      top: 20%;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .top-100 {
+      top: 30%;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .top-100 {
+      top: 40%;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .top-100 {
+      top: 50%;
+    }
+  }
+  
+  body {
+    background-color: #000000; /* Establece el color de fondo negro */
+    color: white; /* Cambia el color del texto a blanco para que sea legible sobre el fondo oscuro */
+}
+.color-757575ff {
+  color: #757575ff;
+}
+.workingImageSection {
+  background-color: rgba(50, 50, 50, 0.6); /* Color de fondo con opacidad */
+  padding: 20px; /* Espaciado interno */
+}
+.transparentBackground {
+  background-color: rgba(0, 0, 0, 0.5); /* Negro con 50% de opacidad */
+  padding: 20px; /* Espaciado interno */
+}

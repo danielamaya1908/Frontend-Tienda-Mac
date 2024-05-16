@@ -1,0 +1,14 @@
+/* styles.css */
+.sidebar {
+    padding: 0;
+    margin: 0;
+}
+
+.main-content {
+    margin-left: 15px; /* Ajusta este valor para controlar el espacio desde el sidebar */
+    margin-right: 15px; /* Ajusta este valor para controlar el espacio hacia el borde derecho */
+}
+
+.card-body {
+    padding: 15px; /* Espaciado interno para las tarjetas */
+}
