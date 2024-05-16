@@ -21,7 +21,7 @@ const ExcelUpload = () => {
       const formData = new FormData();
       formData.append('file', fileProducts);
       try {
-        const response = await axios.post('http://localhost:3005/postExcelProducts', formData, {
+        const response = await axios.post('${BACKEND_URL}/postExcelProducts', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -45,7 +45,7 @@ const ExcelUpload = () => {
       const formData = new FormData();
       formData.append('file', fileImages);
       try {
-        const response = await axios.post('http://localhost:3005/postExcelImages', formData, {
+        const response = await axios.post('${BACKEND_URL}/postExcelImages', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

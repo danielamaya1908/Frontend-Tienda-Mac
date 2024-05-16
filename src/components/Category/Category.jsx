@@ -21,7 +21,7 @@ const Categories = () => {
   // Fetch all categories
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:3005/getAllCategories');
+      const response = await axios.get('${BACKEND_URL}/getAllCategories');
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -41,8 +41,8 @@ const Categories = () => {
     e.preventDefault();
     const method = formData.editingCategoryId ? 'put' : 'post';
     const url = formData.editingCategoryId
-      ? `http://localhost:3005/updateCategory/${formData.editingCategoryId}`
-      : 'http://localhost:3005/createCategory';
+      ? `${BACKEND_URL}/updateCategory/${formData.editingCategoryId}`
+      : '${BACKEND_URL}/createCategory';
     
     try {
       const response = await axios[method](url, {
@@ -79,7 +79,7 @@ const Categories = () => {
   // Delete category
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3005/deleteCategory/${id}`);
+      await axios.delete(`${BACKEND_URL}/deleteCategory/${id}`);
       setCategories(categories.filter(cat => cat.id !== id));
       alert('Categoría eliminada con éxito');
     } catch (error) {

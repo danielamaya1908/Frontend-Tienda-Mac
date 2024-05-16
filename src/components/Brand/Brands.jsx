@@ -18,7 +18,7 @@ const Brands = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await axios.get('http://localhost:3005/getAllBrands');
+        const response = await axios.get('${BACKEND_URL}/getAllBrands');
         setBrands(response.data);
       } catch (error) {
         console.error('Error fetching brands:', error);
@@ -47,11 +47,11 @@ const Brands = () => {
     e.preventDefault();
     try {
       if (isUpdateMode) {
-        await axios.put(`http://localhost:3005/updateBrand/${formData.id}`, formData);
+        await axios.put(`${BACKEND_URL}/updateBrand/${formData.id}`, formData);
         setBrands(brands.map(brand => (brand.id === formData.id ? formData : brand)));
         alert('Marca actualizada con éxito');
       } else {
-        const response = await axios.post('http://localhost:3005/createBrand', formData);
+        const response = await axios.post('${BACKEND_URL}/createBrand', formData);
         setBrands([...brands, response.data]);
         alert('Marca creada con éxito');
       }
@@ -68,7 +68,7 @@ const Brands = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3005/deleteBrand/${id}`);
+      await axios.delete(`${BACKEND_URL}/deleteBrand/${id}`);
       setBrands(brands.filter(brand => brand.id !== id));
       alert('Marca eliminada con éxito');
     } catch (error) {

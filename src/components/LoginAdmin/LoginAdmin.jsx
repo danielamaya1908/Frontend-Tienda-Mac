@@ -9,7 +9,7 @@ function LoginAdmin({ onLogin }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    fetch("http://localhost:3005/validateUserAdmin", {
+    fetch("${BACKEND_URL}/validateUserAdmin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

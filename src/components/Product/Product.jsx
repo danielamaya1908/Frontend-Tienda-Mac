@@ -30,7 +30,7 @@ const Product = () => {
     const fetchProducts = async () => {
         try {
             const offset = (currentPage - 1) * itemsPerPage;
-            const response = await axios.get(`http://localhost:3005/product?_page=${currentPage}&_limit=${itemsPerPage}`);
+            const response = await axios.get(`${BACKEND_URL}/product?_page=${currentPage}&_limit=${itemsPerPage}`);
             if (response.data && Array.isArray(response.data)) {
                 setProducts(response.data);
             } else {
@@ -44,7 +44,7 @@ const Product = () => {
 
     const fetchProduct = async (productId) => {
         try {
-            const response = await axios.get(`http://localhost:3005/product/${productId}`);
+            const response = await axios.get(`${BACKEND_URL}/product/${productId}`);
             setSelectedProduct(response.data);
         } catch (error) {
             console.error('Error fetching product:', error);
@@ -61,7 +61,7 @@ const Product = () => {
 
     const handleDeleteProduct = async (productId) => {
         try {
-            await axios.delete(`http://localhost:3005/product/${productId}`);
+            await axios.delete(`${BACKEND_URL}/product/${productId}`);
             fetchProducts();
         } catch (error) {
             console.error('Error deleting product:', error);
@@ -70,7 +70,7 @@ const Product = () => {
 
     const handleAddProduct = async (formData) => {
         try {
-            const response = await axios.post('http://localhost:3005/product', formData);
+            const response = await axios.post('${BACKEND_URL}/product', formData);
             if (response.status === 201) {
                 fetchProducts();
                 setShowProductForm(false);

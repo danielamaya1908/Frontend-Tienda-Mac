@@ -17,7 +17,7 @@ const Subcategories = () => {
     useEffect(() => {
         const fetchSubcategories = async () => {
             try {
-                const response = await axios.get('http://localhost:3005/getAllSubcategories');
+                const response = await axios.get('${BACKEND_URL}/getAllSubcategories');
                 setSubcategories(response.data);
             } catch (error) {
                 console.error('Error fetching subcategories:', error);
@@ -26,7 +26,7 @@ const Subcategories = () => {
 
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:3005/getAllCategories');
+                const response = await axios.get('${BACKEND_URL}/getAllCategories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -47,7 +47,7 @@ const Subcategories = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const method = formData.editingSubcategoryId ? 'put' : 'post';
-        const url = formData.editingSubcategoryId ? `http://localhost:3005/updateSubcategories/${formData.editingSubcategoryId}` : 'http://localhost:3005/createSubcategories';
+        const url = formData.editingSubcategoryId ? `${BACKEND_URL}/updateSubcategories/${formData.editingSubcategoryId}` : '${BACKEND_URL}/createSubcategories';
 
         try {
             const response = await axios[method](url, formData);
@@ -80,7 +80,7 @@ const Subcategories = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:3005/deleteSubcategories/${id}`);
+            await axios.delete(`${BACKEND_URL}/deleteSubcategories/${id}`);
             setSubcategories(subcategories.filter(sub => sub.id !== id));
         } catch (error) {
             console.error('Error:', error);

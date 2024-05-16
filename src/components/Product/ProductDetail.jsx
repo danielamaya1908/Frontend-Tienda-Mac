@@ -7,10 +7,10 @@ const ProductDetail = ({ product }) => {
 
   useEffect(() => {
     if (product) {
-      axios.get(`http://localhost:3005/products/${product.id}/images`)
+      axios.get(`${BACKEND_URL}/products/${product.id}/images`)
         .then(response => {
           const imageFileNames = response.data;
-          const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
+          const imageUrls = imageFileNames.map(fileName => `${BACKEND_URL}/images/${fileName}`);
           setProductImages(imageUrls);
         })
         .catch(error => {
