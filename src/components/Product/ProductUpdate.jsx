@@ -24,7 +24,7 @@ const ProductUpdate = ({ productId, onClose }) => {
 
     const fetchProductData = async () => {
         try {
-            const response = await axios.get(`{process.env.BACKEND_URL}product/${productId}`);
+            const response = await axios.get(`{process.env.BACKEND_URL}/product/${productId}`);
             setProductData(response.data); // Suponiendo que la respuesta del backend es un objeto con los datos del producto
         } catch (error) {
             console.error('Error fetching product data:', error);
@@ -42,7 +42,7 @@ const ProductUpdate = ({ productId, onClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`{process.env.BACKEND_URL}product/${productId}`, productData);
+            await axios.put(`{process.env.BACKEND_URL}/product/${productId}`, productData);
             onClose();
         } catch (error) {
             console.error('Error updating product:', error);
