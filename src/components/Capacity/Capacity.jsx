@@ -18,7 +18,7 @@ const Capacity = () => {
     useEffect(() => {
         const fetchCapacities = async () => {
             try {
-                const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCapacities');
+                const response = await axios.get('{process.env.BACKEND_URL}getAllCapacities');
                 setCapacities(response.data);
             } catch (error) {
                 console.error('Error fetching capacities:', error);
@@ -27,7 +27,7 @@ const Capacity = () => {
 
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
+                const response = await axios.get('{process.env.BACKEND_URL}getAllCategories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -49,11 +49,11 @@ const Capacity = () => {
         e.preventDefault();
         try {
             if (formData.editingCapacityId) {
-                await axios.put(`https://backend-tienda-mac-production.up.railway.app/updateCapacities/${formData.editingCapacityId}`, formData);
+                await axios.put(`{process.env.BACKEND_URL}updateCapacities/${formData.editingCapacityId}`, formData);
                 setCapacities(capacities.map(cap => (cap.id === formData.editingCapacityId ? formData : cap)));
                 alert('Capacidad actualizada con éxito');
             } else {
-                const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/createCapacities', formData);
+                const response = await axios.post('{process.env.BACKEND_URL}createCapacities', formData);
                 setCapacities([...capacities, response.data]);
                 alert('Capacidad creada con éxito');
             }
@@ -79,7 +79,7 @@ const Capacity = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`https://backend-tienda-mac-production.up.railway.app/deleteCapacities/${id}`);
+            await axios.delete(`{process.env.BACKEND_URL}deleteCapacities/${id}`);
             setCapacities(capacities.filter(cap => cap.id !== id));
             alert('Capacidad eliminada con éxito');
         } catch (error) {

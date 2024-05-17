@@ -30,7 +30,7 @@ const Product = () => {
     const fetchProducts = async () => {
         try {
             const offset = (currentPage - 1) * itemsPerPage;
-            const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/product?_page=${currentPage}&_limit=${itemsPerPage}`);
+            const response = await axios.get(`{process.env.BACKEND_URL}product?_page=${currentPage}&_limit=${itemsPerPage}`);
             if (response.data && Array.isArray(response.data)) {
                 setProducts(response.data);
             } else {
@@ -44,7 +44,7 @@ const Product = () => {
 
     const fetchProduct = async (productId) => {
         try {
-            const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/product/${productId}`);
+            const response = await axios.get(`{process.env.BACKEND_URL}product/${productId}`);
             setSelectedProduct(response.data);
         } catch (error) {
             console.error('Error fetching product:', error);
@@ -61,7 +61,7 @@ const Product = () => {
 
     const handleDeleteProduct = async (productId) => {
         try {
-            await axios.delete(`https://backend-tienda-mac-production.up.railway.app/product/${productId}`);
+            await axios.delete(`{process.env.BACKEND_URL}product/${productId}`);
             fetchProducts();
         } catch (error) {
             console.error('Error deleting product:', error);
@@ -70,7 +70,7 @@ const Product = () => {
 
     const handleAddProduct = async (formData) => {
         try {
-            const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/product', formData);
+            const response = await axios.post('{process.env.BACKEND_URL}product', formData);
             if (response.status === 201) {
                 fetchProducts();
                 setShowProductForm(false);

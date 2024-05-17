@@ -18,7 +18,7 @@ const Brands = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllBrands');
+        const response = await axios.get('{process.env.BACKEND_URL}getAllBrands');
         setBrands(response.data);
       } catch (error) {
         console.error('Error fetching brands:', error);
@@ -47,11 +47,11 @@ const Brands = () => {
     e.preventDefault();
     try {
       if (isUpdateMode) {
-        await axios.put(`https://backend-tienda-mac-production.up.railway.app/updateBrand/${formData.id}`, formData);
+        await axios.put(`{process.env.BACKEND_URL}updateBrand/${formData.id}`, formData);
         setBrands(brands.map(brand => (brand.id === formData.id ? formData : brand)));
         alert('Marca actualizada con éxito');
       } else {
-        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/createBrand', formData);
+        const response = await axios.post('{process.env.BACKEND_URL}createBrand', formData);
         setBrands([...brands, response.data]);
         alert('Marca creada con éxito');
       }
@@ -68,7 +68,7 @@ const Brands = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/deleteBrand/${id}`);
+      await axios.delete(`{process.env.BACKEND_URL}deleteBrand/${id}`);
       setBrands(brands.filter(brand => brand.id !== id));
       alert('Marca eliminada con éxito');
     } catch (error) {
