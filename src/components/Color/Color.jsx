@@ -17,7 +17,7 @@ const Color = () => {
     useEffect(() => {
       const fetchColors = async () => {
         try {
-          const response = await axios.get('{process.env.BACKEND_URL}/colors');
+          const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/colors');
           setColors(response.data);
         } catch (error) {
           console.error('Error fetching colors:', error);
@@ -26,7 +26,7 @@ const Color = () => {
   
       const fetchCategories = async () => {
         try {
-          const response = await axios.get('{process.env.BACKEND_URL}/getAllCategories');
+          const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
           setCategories(response.data);
         } catch (error) {
           console.error('Error fetching categories:', error);
@@ -48,11 +48,11 @@ const Color = () => {
       e.preventDefault();
       try {
         if (formData.editingColorId) {
-          await axios.put(`{process.env.BACKEND_URL}/color/${formData.editingColorId}`, formData);
+          await axios.put(`https://backend-tienda-mac-production.up.railway.app/color/${formData.editingColorId}`, formData);
           setColors(colors.map(col => (col.id === formData.editingColorId ? formData : col)));
           alert('Color actualizado con éxito');
         } else {
-          const response = await axios.post('{process.env.BACKEND_URL}/color', formData);
+          const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/color', formData);
           setColors([...colors, response.data]);
           alert('Color creado con éxito');
         }
@@ -78,7 +78,7 @@ const Color = () => {
   
     const handleDelete = async (id) => {
       try {
-        await axios.delete(`{process.env.BACKEND_URL}/color/${id}`);
+        await axios.delete(`https://backend-tienda-mac-production.up.railway.app/color/${id}`);
         setColors(colors.filter(col => col.id !== id));
         alert('Color eliminado con éxito');
       } catch (error) {

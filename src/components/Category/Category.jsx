@@ -21,7 +21,7 @@ const Categories = () => {
   // Fetch all categories
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('{process.env.BACKEND_URL}/getAllCategories');
+      const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -41,8 +41,8 @@ const Categories = () => {
     e.preventDefault();
     const method = formData.editingCategoryId ? 'put' : 'post';
     const url = formData.editingCategoryId
-      ? `{process.env.BACKEND_URL}/updateCategory/${formData.editingCategoryId}`
-      : '{process.env.BACKEND_URL}/createCategory';
+      ? `https://backend-tienda-mac-production.up.railway.app/updateCategory/${formData.editingCategoryId}`
+      : 'https://backend-tienda-mac-production.up.railway.app/createCategory';
     
     try {
       const response = await axios[method](url, {
@@ -79,7 +79,7 @@ const Categories = () => {
   // Delete category
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`{process.env.BACKEND_URL}/deleteCategory/${id}`);
+      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/deleteCategory/${id}`);
       setCategories(categories.filter(cat => cat.id !== id));
       alert('Categoría eliminada con éxito');
     } catch (error) {

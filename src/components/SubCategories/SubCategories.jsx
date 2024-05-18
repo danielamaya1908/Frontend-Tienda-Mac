@@ -17,7 +17,7 @@ const Subcategories = () => {
     useEffect(() => {
         const fetchSubcategories = async () => {
             try {
-                const response = await axios.get('{process.env.BACKEND_URL}/getAllSubcategories');
+                const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllSubcategories');
                 setSubcategories(response.data);
             } catch (error) {
                 console.error('Error fetching subcategories:', error);
@@ -26,7 +26,7 @@ const Subcategories = () => {
 
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('{process.env.BACKEND_URL}/getAllCategories');
+                const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -47,7 +47,7 @@ const Subcategories = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const method = formData.editingSubcategoryId ? 'put' : 'post';
-        const url = formData.editingSubcategoryId ? `{process.env.BACKEND_URL}/updateSubcategories/${formData.editingSubcategoryId}` : '{process.env.BACKEND_URL}/createSubcategories';
+        const url = formData.editingSubcategoryId ? `https://backend-tienda-mac-production.up.railway.app/updateSubcategories/${formData.editingSubcategoryId}` : 'https://backend-tienda-mac-production.up.railway.app/createSubcategories';
 
         try {
             const response = await axios[method](url, formData);
@@ -80,7 +80,7 @@ const Subcategories = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`{process.env.BACKEND_URL}/deleteSubcategories/${id}`);
+            await axios.delete(`https://backend-tienda-mac-production.up.railway.app/deleteSubcategories/${id}`);
             setSubcategories(subcategories.filter(sub => sub.id !== id));
         } catch (error) {
             console.error('Error:', error);

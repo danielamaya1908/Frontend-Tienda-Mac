@@ -21,7 +21,7 @@ const ExcelUpload = () => {
       const formData = new FormData();
       formData.append('file', fileProducts);
       try {
-        const response = await axios.post('{process.env.BACKEND_URL}/postExcelProducts', formData, {
+        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/postExcelProducts', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -45,7 +45,7 @@ const ExcelUpload = () => {
       const formData = new FormData();
       formData.append('file', fileImages);
       try {
-        const response = await axios.post('{process.env.BACKEND_URL}/postExcelImages', formData, {
+        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/postExcelImages', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
