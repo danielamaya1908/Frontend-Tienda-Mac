@@ -1,71 +1,60 @@
-body {
-  background-color: #000000;
-  color: white;
-  margin: 0;
-  padding: 0;
-  padding-top: 56px; /* Ajusta este valor según la altura de tu menú de navegación */
-}
-
 .container {
-  position: relative;
-  width: 100%;
-  height: calc(100vh - 56px); /* Ajusta este valor según la altura de tu menú de navegación */
-  overflow: hidden;
-}
-
-.customImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.content {
-  color: white;
-  width: 70%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-@media (max-width: 767px) {
-  .content {
-    width: 90%;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
   }
+  
+  .customImg {
+    margin-top: 100px;
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+    align-items: center;
+  }
+  
+  .content {
+    color: white;
+    width: 70%;
+    margin: auto;
+  }
+  
+  @media (min-width: 576px) {
+    .top-100 {
+      top: 20%;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .top-100 {
+      top: 30%;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .top-100 {
+      top: 40%;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .top-100 {
+      top: 50%;
+    }
+  }
+  
+  body {
+    background-color: #000000; /* Establece el color de fondo negro */
+    color: white; /* Cambia el color del texto a blanco para que sea legible sobre el fondo oscuro */
 }
-
 .color-757575ff {
   color: #757575ff;
 }
-
 .workingImageSection {
-  background-color: rgba(50, 50, 50, 0.6);
-  padding: 20px;
+  background-color: rgba(50, 50, 50, 0.6); /* Color de fondo con opacidad */
+  padding: 20px; /* Espaciado interno */
 }
-
 .transparentBackground {
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 20px;
-}
-
-/* Estilos para el menú fijo */
-.fixed-top {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1030;
-}
-
-/* Estilos adicionales */
-.navbar {
-  padding: 0;
-}
-
-.navbar-nav {
-  margin: 0;
-}
-
-.nav-link {
-  padding: 0.5rem 1rem;
+  background-color: rgba(0, 0, 0, 0.5); /* Negro con 50% de opacidad */
+  padding: 20px; /* Espaciado interno */
 }
