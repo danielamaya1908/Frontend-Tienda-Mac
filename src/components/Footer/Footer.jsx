@@ -48,9 +48,9 @@ const Footer = () => {
                         <p><a href="#" className="text-white">Mi cuenta</a></p>
                         <h5 className="mt-4 mb-3">Síguenos en:</h5>
                         <div className="d-flex">
-                            <a href="https://web.facebook.com/tiendamacdecolombia/?locale=es_LA&_rdc=1&_rdr"><img src="src/img/icon-facebook.png" alt="Facebook" style={{width: '30px', marginRight: '10px'}} /></a>
-                            <a href="https://www.instagram.com/tiendamac.co/"><img src="src/img/icon-instagram.png" alt="Instagram" style={{width: '30px', marginRight: '10px'}} /></a>
-                            <a href="https://twitter.com/i/flow/login?redirect_after_login=%2Fi%2Fflow%2Flogin"><img src="src/img/icon-twitter.png" alt="Twitter" style={{width: '30px', marginRight: '10px'}} /></a>
+                            <a href="https://web.facebook.com/tiendamacdecolombia/?locale=es_LA&_rdc=1&_rdr"><img src="img/icon-facebook.png" alt="Facebook" style={{width: '30px', marginRight: '10px'}} /></a>
+                            <a href="https://www.instagram.com/tiendamac.co/"><img src="img/icon-instagram.png" alt="Instagram" style={{width: '30px', marginRight: '10px'}} /></a>
+                            <a href="https://twitter.com/i/flow/login?redirect_after_login=%2Fi%2Fflow%2Flogin"><img src="img/icon-twitter.png" alt="Twitter" style={{width: '30px', marginRight: '10px'}} /></a>
                             {/* <a href="https://api.whatsapp.com/send?phone=573173026445&text=%C2%A1Hola%20Tienda%20Mac!%20"><img src="src/img/icon-whatsApp.png" alt="WhatsApp" style={{width: '30px', marginRight: '10px'}} /></a> */}
                         </div>
                     </div>
