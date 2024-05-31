@@ -49,6 +49,16 @@ const Product = () => {
     const handleCloseEdit = () => {
         setEditProductId(null);
     };
+    
+    const handleToggleProductStatus = async (productId, newStatus) => {
+        try {
+          const response = await axios.put(`https://backend-tienda-mac-production.up.railway.app/products/${productId}/status`, { isActive: newStatus });
+          console.log(response.data.message); // 'Product status updated successfully'
+          fetchProducts(); // Actualiza la lista de productos después de cambiar el estado
+        } catch (error) {
+          console.error('Error updating product status:', error);
+        }
+      };
 
     const handleDeleteProduct = async (productId) => {
         try {
@@ -123,6 +133,9 @@ const Product = () => {
                                                 <button className="btn btn-info" onClick={() => handleShowDetails(product.id)}>Detalle</button>
                                                 <button className="btn btn-primary" onClick={() => handleEditProduct(product.id)}>Editar</button>
                                                 <button className="btn btn-danger" onClick={() => handleDeleteProduct(product.id)}>Eliminar</button>
+                                                <button className="btn btn-secondary" onClick={() => handleToggleProductStatus(product.id, !product.isActive)}>
+                                                    {product.isActive ? 'Desactivar' : 'Activar'}
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}
