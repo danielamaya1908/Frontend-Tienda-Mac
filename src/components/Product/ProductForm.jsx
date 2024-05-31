@@ -21,12 +21,14 @@ const ProductForm = ({ onSubmit }) => {
     capacityId: '',
     subcategoryId: '',
     discount: '',
+    conditionId: '',
   });
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [capacities, setCapacities] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [colors, setColors] = useState([]);
+  const [conditions, setConditions] = useState([])
   const [showExcelUpload, setShowExcelUpload] = useState(false);
 
   useEffect(() => {
@@ -34,12 +36,13 @@ const ProductForm = ({ onSubmit }) => {
     fetchBrands();
     fetchCapacities();
     fetchSubcategories();
+    fetchConditions();
     fetchColors();
   }, []);
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
+      const response = await fetch('http://localhost:3005/getAllCategories');
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
       }
@@ -52,7 +55,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchBrands = async () => {
     try {
-      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/getAllBrands');
+      const response = await fetch('http://localhost:3005/getAllBrands');
       if (!response.ok) {
         throw new Error('Failed to fetch brands');
       }
@@ -65,7 +68,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchCapacities = async () => {
     try {
-      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/getAllCapacities');
+      const response = await fetch('http://localhost:3005/getAllCapacities');
       if (!response.ok) {
         throw new Error('Failed to fetch capacities');
       }
@@ -78,7 +81,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/getAllSubcategories');
+      const response = await fetch('http://localhost:3005/getAllSubcategories');
       if (!response.ok) {
         throw new Error('Failed to fetch subcategories');
       }
@@ -89,9 +92,22 @@ const ProductForm = ({ onSubmit }) => {
     }
   };
 
+  const fetchConditions = async () => {
+    try {
+      const response = await fetch('http://localhost:3005/condition'); // Endpoint para obtener condiciones
+      if (!response.ok) {
+        throw new Error('Failed to fetch conditions');
+      }
+      const data = await response.json();
+      setConditions(data);
+    } catch (error) {
+      console.error('Error fetching conditions:', error);
+    }
+  };
+
   const fetchColors = async () => {
     try {
-      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/colors');
+      const response = await fetch('http://localhost:3005/colors');
       if (!response.ok) {
         throw new Error('Failed to fetch colors');
       }
@@ -189,6 +205,15 @@ const ProductForm = ({ onSubmit }) => {
               <option value="">Seleccione una marca</option>
               {brands.map(brand => (
                 <option key={brand.id} value={brand.id}>{brand.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="conditionId" className="form-label">Condición:</label>
+            <select id="conditionId" name="conditionId" className="form-control" value={formData.conditionId} onChange={handleChange}>
+              <option value="">Seleccione una condición</option>
+              {conditions.map(condition => (
+                <option key={condition.id} value={condition.id}>{condition.name}</option>
               ))}
             </select>
           </div>
