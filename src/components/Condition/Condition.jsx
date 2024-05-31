@@ -69,7 +69,7 @@ const Condition = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/${id}`);
+      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/condition/${id}`);
       setConditions(conditions.filter(cond => cond.id !== id));
       alert('Condición eliminada con éxito');
     } catch (error) {
