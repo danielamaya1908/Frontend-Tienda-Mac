@@ -16,7 +16,7 @@ const Condition = () => {
   useEffect(() => {
     const fetchConditions = async () => {
       try {
-        const response = await axios.get('http://localhost:3005/condition');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/condition');
         setConditions(response.data);
       } catch (error) {
         console.error('Error fetching conditions:', error);
@@ -38,13 +38,13 @@ const Condition = () => {
     try {
       if (formData.editingConditionId) {
         // Actualizar condición existente
-        await axios.put(`http://localhost:3005/condition/${formData.editingConditionId}`, formData);
+        await axios.put(`https://backend-tienda-mac-production.up.railway.app/condition/${formData.editingConditionId}`, formData);
         const updatedConditions = conditions.map(cond => (cond.id === formData.editingConditionId ? formData : cond));
         setConditions(updatedConditions);
         alert('Condición actualizada con éxito');
       } else {
         // Crear nueva condición
-        const response = await axios.post('http://localhost:3005/condition', formData);
+        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/condition', formData);
         setConditions([...conditions, response.data]);
         alert('Condición creada con éxito');
       }
@@ -68,7 +68,7 @@ const Condition = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3005/condition/${id}`);
+      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/${id}`);
       setConditions(conditions.filter(cond => cond.id !== id));
       alert('Condición eliminada con éxito');
     } catch (error) {
