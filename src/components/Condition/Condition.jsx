@@ -44,7 +44,8 @@ const Condition = () => {
         alert('Condición actualizada con éxito');
       } else {
         // Crear nueva condición
-        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/condition', formData);
+        const { name } = formData;
+        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/condition', { name });
         setConditions([...conditions, response.data]);
         alert('Condición creada con éxito');
       }

@@ -42,7 +42,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:3005/getAllCategories');
+      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
       if (!response.ok) {
         throw new Error('Failed to fetch categories');
       }
@@ -55,7 +55,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchBrands = async () => {
     try {
-      const response = await fetch('http://localhost:3005/getAllBrands');
+      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/getAllBrands');
       if (!response.ok) {
         throw new Error('Failed to fetch brands');
       }
@@ -68,7 +68,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchCapacities = async () => {
     try {
-      const response = await fetch('http://localhost:3005/getAllCapacities');
+      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/getAllCapacities');
       if (!response.ok) {
         throw new Error('Failed to fetch capacities');
       }
@@ -81,7 +81,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchSubcategories = async () => {
     try {
-      const response = await fetch('http://localhost:3005/getAllSubcategories');
+      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/getAllSubcategories');
       if (!response.ok) {
         throw new Error('Failed to fetch subcategories');
       }
@@ -94,7 +94,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchConditions = async () => {
     try {
-      const response = await fetch('http://localhost:3005/condition'); // Endpoint para obtener condiciones
+      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/condition'); // Endpoint para obtener condiciones
       if (!response.ok) {
         throw new Error('Failed to fetch conditions');
       }
@@ -107,7 +107,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchColors = async () => {
     try {
-      const response = await fetch('http://localhost:3005/colors');
+      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/product/colors');
       if (!response.ok) {
         throw new Error('Failed to fetch colors');
       }
