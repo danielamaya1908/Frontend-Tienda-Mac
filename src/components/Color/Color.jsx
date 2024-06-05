@@ -3,89 +3,89 @@ import axios from 'axios';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import MenuDashboard from '../MenuDashboard/MenuDashboard'; // Importar MenuDashboard
+import MenuDashboard from '../MenuDashboard/MenuDashboard';
 
 const Color = () => {
-    const [colors, setColors] = useState([]);
-    const [formData, setFormData] = useState({
-      editingColorId: null,
-      name: '',
-      categoryId: '',
+  const [colors, setColors] = useState([]);
+  const [formData, setFormData] = useState({
+    editingColorId: null,
+    name: '',
+    categoryId: '',
+  });
+  const [showForm, setShowForm] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchColors = async () => {
+      try {
+        const response = await axios.get('http://localhost:3005/colors');
+        setColors(response.data);
+      } catch (error) {
+        console.error('Error fetching colors:', error);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:3005/getAllCategories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchColors();
+    fetchCategories();
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
-    const [showForm, setShowForm] = useState(false);
-    const [categories, setCategories] = useState([]);
-  
-    useEffect(() => {
-      const fetchColors = async () => {
-        try {
-          const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/colors');
-          setColors(response.data);
-        } catch (error) {
-          console.error('Error fetching colors:', error);
-        }
-      };
-  
-      const fetchCategories = async () => {
-        try {
-          const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
-          setCategories(response.data);
-        } catch (error) {
-          console.error('Error fetching categories:', error);
-        }
-      };
-  
-      fetchColors();
-      fetchCategories();
-    }, []);
-  
-    const handleChange = (e) => {
-      setFormData({
-        ...formData,
-        [e.target.name]: e.target.value,
-      });
-    };
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      try {
-        if (formData.editingColorId) {
-          await axios.put(`https://backend-tienda-mac-production.up.railway.app/color/${formData.editingColorId}`, formData);
-          setColors(colors.map(col => (col.id === formData.editingColorId ? formData : col)));
-          alert('Color actualizado con éxito');
-        } else {
-          const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/color', formData);
-          setColors([...colors, response.data]);
-          alert('Color creado con éxito');
-        }
-        setFormData({
-          editingColorId: null,
-          name: '',
-          categoryId: '',
-        });
-        setShowForm(false);
-      } catch (error) {
-        console.error('Error:', error);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (formData.editingColorId) {
+        await axios.put(`http://localhost:3005/color/${formData.editingColorId}`, formData);
+        setColors(colors.map(col => (col.id === formData.editingColorId ? formData : col)));
+        alert('Color actualizado con éxito');
+      } else {
+        const response = await axios.post('http://localhost:3005/color', formData);
+        setColors([...colors, response.data]);
+        alert('Color creado con éxito');
       }
-    };
-  
-    const handleEdit = (color) => {
       setFormData({
-        editingColorId: color.id,
-        name: color.name,
-        categoryId: color.categoryId,
+        editingColorId: null,
+        name: '',
+        categoryId: '',
       });
-      setShowForm(true);
-    };
-  
-    const handleDelete = async (id) => {
-      try {
-        await axios.delete(`https://backend-tienda-mac-production.up.railway.app/color/${id}`);
-        setColors(colors.filter(col => col.id !== id));
-        alert('Color eliminado con éxito');
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleEdit = (color) => {
+    setFormData({
+      editingColorId: color.id,
+      name: color.name,
+      categoryId: color.categoryId,
+    });
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3005/color/${id}`);
+      setColors(colors.filter(col => col.id !== id));
+      alert('Color eliminado con éxito');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <div className="container-fluid">
@@ -130,7 +130,7 @@ const Color = () => {
                     <thead>
                       <tr>
                         <th>Nombre</th>
-                        <th>Descripción</th>
+                        <th>Categoría</th>
                         <th>Acciones</th>
                       </tr>
                     </thead>
@@ -138,7 +138,7 @@ const Color = () => {
                       {colors.map(color => (
                         <tr key={color.id}>
                           <td>{color.name}</td>
-                          <td>{color.description}</td>
+                          <td>{color.Category && color.Category.name}</td>
                           <td>
                             <button className="btn btn-danger" onClick={() => handleDelete(color.id)}>Eliminar</button>
                             <button className="btn btn-primary mx-2" onClick={() => handleEdit(color)}>Editar</button>
