@@ -15,13 +15,13 @@ const Footer = () => {
                 <div className="row">
                     <div className="col-md-3">
                         <h5 className="mb-3">Productos</h5>
-                        <p><a href="#" className="text-white">Mac</a></p>
-                        <p><a href="#" className="text-white">iPad</a></p>
-                        <p><a href="#" className="text-white">iPhone</a></p>
-                        <p><a href="#" className="text-white">Watch</a></p>
+                        <p><a href="macAll" className="text-white">Mac</a></p>
+                        <p><a href="ipadAll" className="text-white">iPad</a></p>
+                        <p><a href="iphoneAll" className="text-white">iPhone</a></p>
+                        <p><a href="AppleWatchAll" className="text-white">Watch</a></p>
                         <p><a href="#" className="text-white">Música</a></p>
                         <p><a href="#" className="text-white">Apple TV</a></p>
-                        <p><a href="#" className="text-white">Accesorios</a></p>
+                        <p><a href="AccesoriosAll" className="text-white">Accesorios</a></p>
                     </div>
                     <div className="col-md-3">
                         <h5 className="mb-3">Servicios</h5>
@@ -48,9 +48,9 @@ const Footer = () => {
                         <p><a href="#" className="text-white">Mi cuenta</a></p>
                         <h5 className="mt-4 mb-3">Síguenos en:</h5>
                         <div className="d-flex">
-                            <a href="https://web.facebook.com/tiendamacdecolombia/?locale=es_LA&_rdc=1&_rdr"><img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/kjnl34vrdvcs6gpscoja.png" alt="Facebook" style={{width: '30px', marginRight: '10px'}} /></a>
-                            <a href="https://www.instagram.com/tiendamac.co/"><img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/kminotyxqfmmlltrexbd.png" alt="Instagram" style={{width: '30px', marginRight: '10px'}} /></a>
-                            <a href="https://twitter.com/i/flow/login?redirect_after_login=%2Fi%2Fflow%2Flogin"><img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/nvgipm06kfzgoma0ejdh.png" alt="Twitter" style={{width: '30px', marginRight: '10px'}} /></a>
+                            <a href="https://web.facebook.com/tiendamacdecolombia/?locale=es_LA&_rdc=1&_rdr"><img src="src/img/icon-facebook.png" alt="Facebook" style={{width: '30px', marginRight: '10px'}} /></a>
+                            <a href="https://www.instagram.com/tiendamac.co/"><img src="src/img/icon-instagram.png" alt="Instagram" style={{width: '30px', marginRight: '10px'}} /></a>
+                            <a href="https://twitter.com/i/flow/login?redirect_after_login=%2Fi%2Fflow%2Flogin"><img src="src/img/icon-twitter.png" alt="Twitter" style={{width: '30px', marginRight: '10px'}} /></a>
                             {/* <a href="https://api.whatsapp.com/send?phone=573173026445&text=%C2%A1Hola%20Tienda%20Mac!%20"><img src="src/img/icon-whatsApp.png" alt="WhatsApp" style={{width: '30px', marginRight: '10px'}} /></a> */}
                         </div>
                     </div>

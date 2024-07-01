@@ -1,0 +1,17 @@
+.productTransitionEnter {
+  opacity: 0;
+}
+
+.productTransitionEnterActive {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.productTransitionExit {
+  opacity: 1;
+}
+
+.productTransitionExitActive {
+  opacity: 0;
+  transition: opacity 300ms ease-in;
+}

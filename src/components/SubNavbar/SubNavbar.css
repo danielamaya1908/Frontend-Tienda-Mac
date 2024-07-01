@@ -1,0 +1,32 @@
+.sub-navbar {
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 40px;
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+  }
+  
+  .dropdown-menu {
+    background-color: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+  
+  .dropdown-toggle {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    box-shadow: none;
+  }
+  
+  .dropdown-item {
+    color: white;
+    margin-bottom: 50px; /* Margen inferior para separar los elementos */
+  }
+  
+  .dropdown-menu.show {
+    display: block;
+  }
+  
+  .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
