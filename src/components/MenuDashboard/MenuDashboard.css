@@ -21,8 +21,7 @@
 
 .container-fluid {
     padding: 0;
-    margin: 0;
-    height: 100vh; /* Asegura que el contenedor principal también ocupe toda la altura */
+    margin: 0; /* Asegura que el contenedor principal también ocupe toda la altura */
 }
 
 html, body {
