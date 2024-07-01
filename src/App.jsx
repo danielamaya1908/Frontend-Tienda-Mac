@@ -151,8 +151,7 @@ function App() {
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<ProductDetail />} />
           }
-        /> 
-        <Route path="/register" element={<RegisterForm />} />
+        />
         <Route path="/iphone12" element={<Iphone12 />} />
         <Route path="/iphone13pro" element={<Iphone13pro />} />
         <Route path="/iphone13" element={<Iphone13 />} />
