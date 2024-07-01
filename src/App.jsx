@@ -68,7 +68,6 @@ import Harman from './components/Product/Sonido/Harman';
 import AppleTV4k from './components/Product/AppleTV/AppleTV4k';
 import AppleTVyHogar from './components/Product/AppleTV/AppleTVyHogar';
 import LoNuevo from './components/SubNavbar/LoNuevo';
-import Cart from './components/Cart/Cart';
 
 function ProtectedRoute({ element, isLoggedIn }) {
   return isLoggedIn ? element : <Navigate to="/login" />;
@@ -153,7 +152,6 @@ function App() {
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<ProductDetail />} />
           }
         /> 
-         <Route path="/Cart" element={<Cart />} /> {/* Añadido el path para Cart */}
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/iphone12" element={<Iphone12 />} />
         <Route path="/iphone13pro" element={<Iphone13pro />} />
@@ -208,7 +206,7 @@ function App() {
         <Route path="/AppleTV4k" element={<AppleTV4k />} />
         <Route path="/AppleTVyHogar" element={<AppleTVyHogar />} />
         <Route path="/LoNuevo" element={<LoNuevo />} />
-        
+
         <Route path="/detalle-producto/iphoneAll" element={<Navigate to="/iphoneAll" replace />} />
         <Route path="/detalle-producto/iphone15" element={<Navigate to="/iphone15" replace />} />
         <Route path="/detalle-producto/iphone15pro" element={<Navigate to="/iphone15pro" replace />} />
@@ -262,7 +260,6 @@ function App() {
          <Route path="/detalle-producto/AppleTV4k" element={<Navigate to="/AppleTV4k" replace />} />
          <Route path="/detalle-producto/AppleTVyHogar" element={<Navigate to="/AppleTVyHogar" replace />} />
          <Route path="/detalle-producto/LoNuevo" element={<Navigate to="/LoNuevo" replace />} />
-         <Route path="/detalle-producto/Cart" element={<Navigate to="/Cart" replace />} />
         <Route path="/detalle-producto/:id" element={<DetalleProducto />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
