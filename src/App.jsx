@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
 import Navbar from './components/NavBar/NavBar';
 import Home from './components/Home/Home';
 import Dashboard from './components/Dashboard/Dashboard';
 import LoginAdmin from './components/LoginAdmin/LoginAdmin';
-import Product from './components/Product/Product';
-import UserAdmin from './components/UserAdmin/UserAdmin';
-import BrandManagement from './components/Brand/Brands';
-import Categories from './components/Category/Category';
-import SubCategories from './components/SubCategories/SubCategories';
-import Color from './components/Color/Color';
+import Product from './components/Product/Product'; 
+import UserAdmin from './components/UserAdmin/UserAdmin'; 
+import BrandManagement from './components/Brand/Brands'; 
+import Categories from './components/Category/Category'; 
+import SubCategories from './components/SubCategories/SubCategories'; 
+import Color from './components/Color/Color'; 
 import Condition from './components/Condition/Condition';
-import Capacity from './components/Capacity/Capacity';
+import Capacity from './components/Capacity/Capacity'; 
 import ProductDetail from './components/Product/ProductDetail';
-import RegisterForm from './components/Login/RegisterForm';
-import TechnicalSupport from './components/TechnicalSupport/TechnicalSupport'; 
-import TechnicalSupportClient from './components/TechnicalSupport/TechnicalSupportClient'; 
-import FormTechnicalSupport from './components/TechnicalSupport/FormTechnicalSupport';
 import Iphone12 from './components/Product/iPhone/iPhone12';
 import Iphone13pro from './components/Product/iPhone/iPhone13pro';
 import Iphone13 from './components/Product/iPhone/Iphone13';
@@ -83,74 +80,74 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
+        <Route 
+          path="/" 
           element={
             <>
               <Navbar />
               <Home />
             </>
-          }
+          } 
         />
-        <Route
-          path="/7gP4mX!5vZwQj@n8rAe"
+        <Route 
+          path="/7gP4mX!5vZwQj@n8rAe" 
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<Dashboard />} />
-          }
+          } 
         />
-        <Route
-          path="/login"
-          element={<LoginAdmin onLogin={() => setIsLoggedIn(true)} />}
+        <Route 
+          path="/login" 
+          element={<LoginAdmin onLogin={() => setIsLoggedIn(true)} />} 
         />
-        <Route
-          path="/product"
+        <Route 
+          path="/product" 
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<Product />} />
-          }
+          } 
         />
-        <Route
-          path="/useradmin"
+        <Route 
+          path="/useradmin" 
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<UserAdmin />} />
-          }
+          } 
         />
-        <Route
-          path="/brands"
+        <Route 
+          path="/brands" 
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<BrandManagement />} />
-          }
+          } 
         />
-        <Route
-          path="/categories"
+        <Route 
+          path="/categories" 
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<Categories />} />
-          }
+          } 
         />
-        <Route
-          path="/subcategories"
+        <Route 
+          path="/subcategories" 
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<SubCategories />} />
-          }
+          } 
         />
-        <Route
-          path="/colors"
+        <Route 
+          path="/colors" 
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<Color />} />
-          }
+          } 
         />
-        <Route
+           <Route
           path="/conditions"
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<Condition />} />
           }
         />
-        <Route
-          path="/capacities"
+        <Route 
+          path="/capacities" 
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<Capacity />} />
-          }
+          } 
         />
-         <Route
+        <Route
           path="/product/:id"
           element={
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<ProductDetail />} />
@@ -211,11 +208,7 @@ function App() {
         <Route path="/AppleTV4k" element={<AppleTV4k />} />
         <Route path="/AppleTVyHogar" element={<AppleTVyHogar />} />
         <Route path="/LoNuevo" element={<LoNuevo />} />
-        <Route path="/technical-support" element={<TechnicalSupport />} />
-        <Route path="/TechnicalSupportClient" element={<TechnicalSupportClient />} />
-        <Route path="/add-equipment" element={<FormTechnicalSupport />} />
         
-        {/* Nueva ruta de redirección */}
         <Route path="/detalle-producto/iphoneAll" element={<Navigate to="/iphoneAll" replace />} />
         <Route path="/detalle-producto/iphone15" element={<Navigate to="/iphone15" replace />} />
         <Route path="/detalle-producto/iphone15pro" element={<Navigate to="/iphone15pro" replace />} />
