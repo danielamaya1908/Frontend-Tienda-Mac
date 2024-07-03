@@ -12,16 +12,16 @@ const Iphone13pro = () => {
     const fetchIphoneProducts = async () => {
       try {
         const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2013%20Pro'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2013%20Pro%20Max')
+          axios.get('http://localhost:3005/products/category/Smartphones/subcategory/iPhone/name/iPhone%2013%20Pro'),
+          axios.get('http://localhost:3005/products/category/Smartphones/subcategory/iPhone/name/iPhone%2013%20Pro%20Max')
         ]);
         const products = responses.flatMap(response => response.data);
         setIphoneProducts(products);
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            const imageResponse = await axios.get(`http://localhost:3005/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);
