@@ -40,7 +40,7 @@ const LoginUser = ({ onClose, onLoginSuccess }) => {
     }
   
     try {
-      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/auth/LoginUser', {
+      const response = await axios.post('http://localhost:3005/auth/LoginUser', {
         email,
         password
       });
