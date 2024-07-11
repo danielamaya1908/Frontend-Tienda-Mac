@@ -4,13 +4,13 @@ import axios from 'axios';
 import Navbar from '../NavBar/NavBar';
 import { useSwipeable } from 'react-swipeable';
 import Footer from '../Footer/Footer';
-import { Modal, Button } from 'react-bootstrap'; // Importa los componentes necesarios de Bootstrap
 import './DetalleProducto.css';
-import BuyModal from './BuyModal'; // Importa el componente modal que creaste
+import { useCart } from '../../context/CartContext';
 
 const DetalleProducto = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [images, setImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -18,7 +18,6 @@ const DetalleProducto = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [maxQuantity, setMaxQuantity] = useState(1);
-  const [showModal, setShowModal] = useState(false); // Estado para controlar la visibilidad del modal
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -49,8 +48,9 @@ const DetalleProducto = () => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
   };
 
-  const handleBuyButtonClick = () => {
-    setShowModal(true); // Muestra el modal al hacer clic en "Comprar ahora"
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+    navigate('/cart');
   };
 
   const nextImage = () => {
@@ -70,10 +70,6 @@ const DetalleProducto = () => {
 
   const handleGoBack = () => {
     navigate(-1);
-  };
-
-  const closeModal = () => {
-    setShowModal(false); // Oculta el modal
   };
 
   if (isLoading) return <div className="loading">Cargando...</div>;
@@ -141,7 +137,17 @@ const DetalleProducto = () => {
               </div>
             </div>
             <p className="product-text"><strong>Subtotal:</strong> {formatPrice(product.price * quantity)}</p>
-            <button className="btn btn-primary btn-lg mt-3 w-100" onClick={handleBuyButtonClick}>Comprar ahora</button>
+            <div className="d-flex justify-content-between mt-3">
+             {/*  <button className="btn btn-primary btn-lg flex-grow-1 me-2" onClick={handleAddToCart}>Agregar al carrito</button> */}
+              <a 
+                href={`https://api.whatsapp.com/send?phone=573173026445&text=¡Hola Tienda Mac! Me interesa comprar ${quantity} ${product.name} (${product.capacityName}, ${product.colorName}). ¿Podrían darme más información?`}
+                className="btn btn-success btn-lg flex-grow-1"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Comprar por WhatsApp
+              </a>
+            </div>
             <h3 className="product-heading mt-4">Descripción</h3>
             <p className="product-description">{product.description}</p>
           </div>
@@ -157,8 +163,6 @@ const DetalleProducto = () => {
         </button>
       </div>
       <Footer />
-      {/* Renderiza el modal con los props necesarios */}
-      <BuyModal show={showModal} onHide={closeModal} productName={product.name} />
     </div>
   );
 };

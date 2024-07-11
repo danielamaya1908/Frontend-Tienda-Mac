@@ -1,0 +1,59 @@
+.paymentPage {
+ 
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.paymentContainer {
+  flex: 1;
+}
+
+.paymentTitle {
+  color: #fffdfd;
+  font-weight: 600;
+}
+
+.paymentCard {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 10px;
+}
+
+.paymentOption {
+  margin-bottom: 15px;
+}
+
+.paymentLabel {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+}
+
+.paymentLabel svg {
+  margin-right: 10px;
+  font-size: 1.5rem;
+}
+
+.paymentText {
+  margin-left: 10px;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background-color: #007bff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.submitButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}

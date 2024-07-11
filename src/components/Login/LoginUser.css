@@ -1,0 +1,139 @@
+.login-user-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.unique-login-form {
+  background-color: rgba(30, 30, 30, 0.7);
+  color: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  position: relative;
+  width: 350px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.unique-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.unique-close-button:hover {
+  color: white;
+}
+
+.unique-h2 {
+  margin-bottom: 30px;
+  text-align: center;
+  color: white;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.unique-form-group {
+  margin-bottom: 25px;
+}
+
+.unique-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9em;
+  letter-spacing: 0.5px;
+}
+
+.unique-form-group input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+
+.unique-form-group input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.unique-password-input {
+  position: relative;
+}
+
+.unique-toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.unique-toggle-password:hover {
+  color: #0056b3;
+}
+
+.unique-btn-primary {
+  width: 100%;
+  background-color: #0056b3; /* Azul */
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+}
+
+.unique-btn-primary:hover {
+  background-color: #3b3d3f; /* Azul más oscuro */
+}
+
+.unique-register-link {
+  margin-top: 25px;
+  text-align: center;
+  cursor: pointer;
+  color: #add8e6; /* Azul clarito */
+  transition: color 0.3s ease;
+  font-size: 0.9em;
+}
+
+.unique-register-link:hover {
+  color: #3b3d3f; /* Azul más claro */
+}
+
+.unique-error-message {
+  color: #ff6b6b;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+  background-color: rgba(255, 107, 107, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+}
