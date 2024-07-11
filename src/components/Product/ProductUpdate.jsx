@@ -24,7 +24,7 @@ const ProductUpdate = ({ productId, onClose }) => {
 
     const fetchProductData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3005/product/${productId}`);
+            const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/product/${productId}`);
             setProductData(response.data); // Suponiendo que la respuesta del backend es un objeto con los datos del producto
         } catch (error) {
             console.error('Error fetching product data:', error);
@@ -42,7 +42,7 @@ const ProductUpdate = ({ productId, onClose }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:3005/product/${productId}`, productData);
+            await axios.put(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/product/${productId}`, productData);
             onClose();
         } catch (error) {
             console.error('Error updating product:', error);

@@ -21,7 +21,7 @@ const Categories = () => {
   // Fetch all categories
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://localhost:3005/getAllCategories');
+      const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/getAllCategories');
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -41,8 +41,8 @@ const Categories = () => {
     e.preventDefault();
     const method = formData.editingCategoryId ? 'put' : 'post';
     const url = formData.editingCategoryId
-      ? `http://localhost:3005/updateCategory/${formData.editingCategoryId}`
-      : 'http://localhost:3005/createCategory';
+      ? `https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/updateCategory/${formData.editingCategoryId}`
+      : 'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/createCategory';
     
     try {
       const response = await axios[method](url, {
@@ -79,7 +79,7 @@ const Categories = () => {
   // Delete category
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3005/deleteCategory/${id}`);
+      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/deleteCategory/${id}`);
       setCategories(categories.filter(cat => cat.id !== id));
       alert('Categoría eliminada con éxito');
     } catch (error) {

@@ -12,20 +12,20 @@ const AccesoriosParaMac = () => {
     const fetchIphoneProducts = async () => {
       try {
         const responses = await Promise.all([
-            axios.get('http://localhost:3005/products/category/Accesorios%20de%20video/subcategory/Adaptador%20USB-C%20a%20HDMI'),
-            axios.get('http://localhost:3005/products/category/Accesorios%20de%20carga/subcategory/Cargador%20de%204%20puertos'),
-            axios.get('http://localhost:3005/products/category/Cables%20de%20Audio%20y%20Video/subcategory/Cable%20HD-HDMI'),
-            axios.get('http://localhost:3005/products/category/Cables%20de%20imagen/subcategory/Adaptador%20Mini%20Displayport%20a%20VGA'),
-            axios.get('http://localhost:3005/products/category/Cables%20de%20imagen/subcategory/Adaptador%20usb-c%20a%20Vga'),
-            axios.get('http://localhost:3005/products/category/Accesorios%20de%20computación/subcategory/Mouse'),
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20video/subcategory/Adaptador%20USB-C%20a%20HDMI'),
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20carga/subcategory/Cargador%20de%204%20puertos'),
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Cables%20de%20Audio%20y%20Video/subcategory/Cable%20HD-HDMI'),
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Cables%20de%20imagen/subcategory/Adaptador%20Mini%20Displayport%20a%20VGA'),
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Cables%20de%20imagen/subcategory/Adaptador%20usb-c%20a%20Vga'),
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20computación/subcategory/Mouse'),
         ]);
         const products = responses.flatMap(response => response.data);
         setIphoneProducts(products);
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`http://localhost:3005/products/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);

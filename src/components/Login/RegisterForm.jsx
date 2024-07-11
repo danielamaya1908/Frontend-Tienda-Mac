@@ -37,7 +37,7 @@ const RegisterForm = ({ onClose }) => {
     setError('');
     setSuccessMessage('');
     try {
-      const response = await axios.post('http://localhost:3005/auth/register', {
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/auth/register', {
         firstName,
         lastName,
         email,

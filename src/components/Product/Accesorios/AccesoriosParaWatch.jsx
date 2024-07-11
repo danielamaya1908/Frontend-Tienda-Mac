@@ -12,19 +12,19 @@ const AccesoriosParaWatch = () => {
     const fetchIphoneProducts = async () => {
       try {
         const responses = await Promise.all([
-        axios.get('http://localhost:3005/products/category/Accesorios%20de%20carga/subcategory/Soporte%20de%20viaje%20para%20el%20cable%20de%20carga%20y%20el%20%20Apple%20Watch'),
-        axios.get('http://localhost:3005/products/category/Accesorios%20de%20carga/subcategory/Base%20de%20carga%20para%20iPhone%20y%20apple%20watch'),
-        axios.get('http://localhost:3005/products/category/Accesorios%20de%20reloj/subcategory/Protector%20de%20pantalla%20para%20Apple%20Watch'),
-        axios.get('http://localhost:3005/products/category/Accesorios%20de%20carga/subcategory/Bateria%20Portátil'),
-        axios.get('http://localhost:3005/products/category/Accesorios%20de%20carga/subcategory/Base%20de%20carga%202%20en%201%20para%20iPhone%20y%20Apple%20Watch'),
+        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20carga/subcategory/Soporte%20de%20viaje%20para%20el%20cable%20de%20carga%20y%20el%20%20Apple%20Watch'),
+        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20carga/subcategory/Base%20de%20carga%20para%20iPhone%20y%20apple%20watch'),
+        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20reloj/subcategory/Protector%20de%20pantalla%20para%20Apple%20Watch'),
+        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20carga/subcategory/Bateria%20Portátil'),
+        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20carga/subcategory/Base%20de%20carga%202%20en%201%20para%20iPhone%20y%20Apple%20Watch'),
     ]);
         const products = responses.flatMap(response => response.data);
         setIphoneProducts(products);
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`http://localhost:3005/products/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);

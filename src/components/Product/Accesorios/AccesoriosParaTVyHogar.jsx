@@ -14,17 +14,17 @@ const AccesoriosParaTVyHogar = () => {
     const fetchAccesoriosProducts = async () => {
       try {
         const responses = await Promise.all([
-            axios.get('http://localhost:3005/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
-            axios.get('http://localhost:3005/products/category/Accesorios%20de%20video/subcategory/Adaptador%20USB-C%20a%20HDMI'),          
-            axios.get('http://localhost:3005/products/category/Cables%20de%20Audio%20y%20Video/subcategory/Cable%20HD-HDMI'),
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Accesorios%20de%20video/subcategory/Adaptador%20USB-C%20a%20HDMI'),          
+            axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Cables%20de%20Audio%20y%20Video/subcategory/Cable%20HD-HDMI'),
         ]);
         const products = responses.flatMap(response => response.data);
         setAccesoriosProducts(products);
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`http://localhost:3005/products/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);
