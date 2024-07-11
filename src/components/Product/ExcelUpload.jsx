@@ -21,7 +21,7 @@ const ExcelUpload = () => {
       const formData = new FormData();
       formData.append('file', fileProducts);
       try {
-        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/postExcelProducts', formData, {
+        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/postExcelProducts', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -45,7 +45,7 @@ const ExcelUpload = () => {
       const formData = new FormData();
       formData.append('file', fileImages);
       try {
-        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/postExcelImages', formData, {
+        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/postExcelImages', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

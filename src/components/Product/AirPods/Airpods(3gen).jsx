@@ -12,16 +12,16 @@ const Airpods3gen = () => {
     const fetchAirpodsProducts = async () => {
       try {
         const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Audifonos/subcategory/Auriculares/name/AirPods%20(3ª generación)%20con%20estuche%20de%20carga%20inalámbrica'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Audifonos/subcategory/Auriculares/name/AirPods%20(3.ª generación)%20con%20estuche%20de%20carga%20Lightning')
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Audifonos/subcategory/Auriculares/name/AirPods%20(3ª generación)%20con%20estuche%20de%20carga%20inalámbrica'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Audifonos/subcategory/Auriculares/name/AirPods%20(3.ª generación)%20con%20estuche%20de%20carga%20Lightning')
         ]);                                                                                          
         const products = responses.flatMap(response => response.data);
         setAirpodsProducts(products);
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);

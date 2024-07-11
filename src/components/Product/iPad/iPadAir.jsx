@@ -12,17 +12,17 @@ const IpadAir = () => {
     const fetchIpadProducts = async () => {
       try {
         const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Computación/subcategory/Tablets/name/iPad%20Air'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Computación/subcategory/Tablets/name/iPad%20Air%20de%2011%20pulgadas%20M2'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Computación/subcategory/Tablets/name/iPad%20Air%20de%2013%20pulgadas%20M2')
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Tablets/name/iPad%20Air'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Tablets/name/iPad%20Air%20de%2011%20pulgadas%20M2'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Tablets/name/iPad%20Air%20de%2013%20pulgadas%20M2')
         ]);
         const products = responses.flatMap(response => response.data);
         setIpadProducts(products);
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);

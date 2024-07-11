@@ -6,14 +6,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBag, faUser, faSearch } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../img/Logo-letras-huecas-2-1536x985.png';
 import { Dropdown } from 'react-bootstrap';
-import LoginUser from '../Login/LoginUser';
-import UserInfo from '../Login/UserInfo';
 
 const Navbar = () => {
   const navigate = useNavigate();
 
   const [showSearch, setShowSearch] = useState(false);
-  const [showLoginUser, setShowLoginUser] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showIPhoneMenu, setShowIPhoneMenu] = useState(false);
   const [showIPadMenu, setShowIPadMenu] = useState(false);
@@ -26,8 +24,6 @@ const Navbar = () => {
   const [showContactMenu, setShowContactMenu] = useState(false);
   const [showSoundMenu, setShowSoundMenu] = useState(false);
   const [showOferMenu, setShowOferMenu] = useState(false);
-  const [user, setUser] = useState(null);
-  const [showUserInfo, setShowUserInfo] = useState(false);
 
   const searchInputRef = useRef(null);
 
@@ -44,49 +40,25 @@ const Navbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
   const handleSearchClick = () => {
     setShowSearch(!showSearch);
   };
 
   const handleUserClick = () => {
-    if (user) {
-      setShowUserInfo(!showUserInfo);
-    } else {
-      setShowLoginUser(!showLoginUser);
-    }
-  };
-
-  const handleLoginClose = () => {
-    setShowLoginUser(false);
-  };
-
-  const handleLoginSuccess = (loggedInUser) => {
-    setUser(loggedInUser);
-    setShowLoginUser(false);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    setUser(null);
-    setShowUserInfo(false);
+    setShowLoginForm(true);
   };
 
   const handleCartClick = () => {
-    navigate('/cart');
+    setShowCart(!showCart);
   };
 
-  const handleOutsideClick = (event) => {
-    if (event.target === event.currentTarget) {
-      setShowSearch(false);
-    }
+  const handleOutsideClick = () => {
+    setShowLoginForm(false);
+    setShowCart(false);
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/register');
   };
 
   return (
@@ -385,45 +357,49 @@ const Navbar = () => {
                 </Dropdown>
               </li>
             </ul>
-            </div>
-            <div className="d-flex me-3">
-          <div className="d-flex align-items-center me-3">
-            <FontAwesomeIcon
-              icon={faShoppingBag}
-              onClick={handleCartClick}
-              style={{ cursor: 'pointer', color: 'rgba(255, 255, 255, 0.5)' }}
-            />
           </div>
-         <div className="d-flex align-items-center me-3">
-        <FontAwesomeIcon
-          icon={faUser}
-          onClick={handleUserClick}
-          style={{ cursor: 'pointer', color: 'rgba(255, 255, 255, 0.5)' }}
-        />
-        {showLoginUser && <LoginUser onClose={handleLoginClose} onLoginSuccess={handleLoginSuccess} />}
-        {showUserInfo && user && (
-  <UserInfo 
-    user={user} 
-    onLogout={handleLogout} 
-    onClose={() => setShowUserInfo(false)} 
-  />
-)}
+          <div className="d-flex me-3">
+            <a href="Cart" className="nav-link me-2" style={{ color: 'rgba(255, 255, 255, 0.5)' }} onClick={handleCartClick}>
+              <FontAwesomeIcon icon={faShoppingBag} />
+            </a>
+            <a href="#" className="nav-link me-2" style={{ color: 'rgba(255, 255, 255, 0.5)' }} onClick={handleUserClick}>
+              <FontAwesomeIcon icon={faUser} />
+            </a>
+            <a href="#" className="nav-link" style={{ color: 'rgba(255, 255, 255, 0.5)' }} onClick={handleSearchClick}>
+              <FontAwesomeIcon icon={faSearch} />
+            </a>
+          </div>
+        </div>
+        </div>
       </div>
-            <span className="nav-link" style={{ color: 'rgba(255, 255, 255, 0.5)' }} onClick={handleSearchClick}>
-                <FontAwesomeIcon icon={faSearch} />
-              </span>
+      {showSearch && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style={{ zIndex: 1050, backgroundColor: 'rgba(0, 0, 0, 0.4)' }} onClick={handleOutsideClick}>
+          <div className="input-group mt-3" ref={searchInputRef} style={{ width: '80vw', maxWidth: '400px', backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: '20px', borderRadius: '5px' }}>
+            <input type="text" className="form-control" placeholder="Buscar en Tienda Mac..." aria-label="Buscar en Tienda Mac" aria-describedby="button-addon2" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', color: 'black' }} />
+            <button className="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
+          </div>
+        </div>
+      )}
+      {showLoginForm && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style={{ zIndex: 1050, backgroundColor: 'rgba(0, 0, 0, 0.4)' }} onClick={handleOutsideClick}>
+          <div className="card" style={{ width: '300px', padding: '20px', cursor: 'pointer', backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'white', border: 'none' }} onClick={(e) => setShowLoginForm(false)}>
+            <div className="card-body">
+              <h5 className="card-title">Iniciar Sesión</h5>
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="exampleInputEmail1" className="form-label">Correo Electrónico</label>
+                  <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="exampleInputPassword1" className="form-label">Contraseña</label>
+                  <input type="password" className="form-control" id="exampleInputPassword1" />
+                </div>
+                <button type="submit" className="btn btn-primary">Ingresar</button>
+              </form>
             </div>
           </div>
         </div>
-        {showSearch && (
-          <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style={{ zIndex: 1050, backgroundColor: 'rgba(0, 0, 0, 0.4)' }} onClick={handleOutsideClick}>
-            <div className="input-group mt-3" style={{ width: '80vw', maxWidth: '400px', backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: '20px', borderRadius: '5px' }}>
-              <input type="text" className="form-control" placeholder="Buscar en Tienda Mac..." aria-label="Buscar en Tienda Mac" aria-describedby="button-addon2" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', color: 'black' }} />
-              <button className="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </nav>
   );
 };

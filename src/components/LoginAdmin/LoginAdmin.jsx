@@ -9,7 +9,7 @@ function LoginAdmin({ onLogin }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    fetch("https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/validateUserAdmin", {
+    fetch("https://backend-tienda-mac-production.up.railway.app/validateUserAdmin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

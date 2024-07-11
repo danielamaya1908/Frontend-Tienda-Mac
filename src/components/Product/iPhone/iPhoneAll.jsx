@@ -11,15 +11,15 @@ const IphoneAll = () => {
   useEffect(() => {
     const fetchIphoneProducts = async () => {
       try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/category/Smartphones/subcategory/iPhone');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
         const products = response.data;
         setIphoneProducts(products);
 
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/products/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20video/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);

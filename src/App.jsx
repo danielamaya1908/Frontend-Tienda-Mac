@@ -5,8 +5,6 @@ import Navbar from './components/NavBar/NavBar';
 import Home from './components/Home/Home';
 import Dashboard from './components/Dashboard/Dashboard';
 import LoginAdmin from './components/LoginAdmin/LoginAdmin';
-import LoginUser from './components/Login/LoginUser';
-import RegisterForm from './components/Login/RegisterForm';
 import Product from './components/Product/Product'; 
 import UserAdmin from './components/UserAdmin/UserAdmin'; 
 import BrandManagement from './components/Brand/Brands'; 
@@ -70,9 +68,6 @@ import Harman from './components/Product/Sonido/Harman';
 import AppleTV4k from './components/Product/AppleTV/AppleTV4k';
 import AppleTVyHogar from './components/Product/AppleTV/AppleTVyHogar';
 import LoNuevo from './components/SubNavbar/LoNuevo';
-import Cart from './components/Cart/Cart';
-import { CartProvider } from './context/CartContext';
-import PaymentMethods from './components/Cart/PaymentMethods';
 
 function ProtectedRoute({ element, isLoggedIn }) {
   return isLoggedIn ? element : <Navigate to="/login" />;
@@ -80,29 +75,15 @@ function ProtectedRoute({ element, isLoggedIn }) {
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
-  const [showLoginUser, setShowLoginUser] = useState(false);
 
-  const toggleRegister = () => {
-    setShowRegister(!showRegister);
-  };
-
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const closeLoginUser = () => {
-    setShowLoginUser(false);
-  };
   return (
     <Router>
-<CartProvider>
       <Routes>
         <Route 
           path="/" 
           element={
             <>
-                  <Navbar />
+              <Navbar />
               <Home />
             </>
           } 
@@ -116,14 +97,6 @@ function App() {
         <Route 
           path="/login" 
           element={<LoginAdmin onLogin={() => setIsLoggedIn(true)} />} 
-        />
-             <Route 
-          path="/LoginUser" 
-          element={<LoginUser onLogin={handleLogin} onClose={closeLoginUser} />} 
-        />
-        <Route
-          path="/register"
-          element={<RegisterForm onClose={toggleRegister} />}
         />
         <Route 
           path="/product" 
@@ -155,7 +128,6 @@ function App() {
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<SubCategories />} />
           } 
         />
-        <Route path="/payment-methods" element={<PaymentMethods />} />
         <Route 
           path="/colors" 
           element={
@@ -233,7 +205,6 @@ function App() {
         <Route path="/AppleTV4k" element={<AppleTV4k />} />
         <Route path="/AppleTVyHogar" element={<AppleTVyHogar />} />
         <Route path="/LoNuevo" element={<LoNuevo />} />
-        <Route path="/cart" element={<Cart />} />
 
         <Route path="/detalle-producto/iphoneAll" element={<Navigate to="/iphoneAll" replace />} />
         <Route path="/detalle-producto/iphone15" element={<Navigate to="/iphone15" replace />} />
@@ -291,7 +262,6 @@ function App() {
         <Route path="/detalle-producto/:id" element={<DetalleProducto />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      </CartProvider>
     </Router>
   );
 }
