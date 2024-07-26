@@ -366,24 +366,54 @@ const Navbar = () => {
                     {/* No se muestra Dropdown.Menu */}
                   </Dropdown>
                 </li>
-              <li className="nav-item">
-                <Dropdown show={showContactMenu} onMouseEnter={() => setShowContactMenu(true)} onMouseLeave={() => setShowContactMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    Contáctanos
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showContactMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="#">Whatsapp</Dropdown.Item>
-                    <Dropdown.Item href="#">Correo electrónico</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
+                <li className="nav-item">
+  <Dropdown
+    show={showContactMenu}
+    onMouseEnter={() => setShowContactMenu(true)}
+    onMouseLeave={() => setShowContactMenu(false)}
+  >
+    <Dropdown.Toggle
+      variant="dark"
+      id="dropdown-basic"
+      style={{
+        backgroundColor: 'transparent',
+        border: 'none',
+        color: 'white',
+        cursor: 'pointer',
+        boxShadow: 'none',
+        paddingRight: '0',
+      }}
+    >
+      Contáctanos
+      <style>
+        {`
+          .dropdown-toggle::after {
+            display: none !important;
+          }
+        `}
+      </style>
+    </Dropdown.Toggle>
+    <Dropdown.Menu
+      style={{
+        display: showContactMenu ? 'block' : 'none',
+        boxShadow: '0 0 10px rgba(0,0,0,0.5)',
+      }}
+    >
+     <Dropdown.Item
+        href="https://api.whatsapp.com/send?phone=573173026445&text=%C2%A1Hola%20Tienda%20Mac!%20Me%20interesa%20comprar%201%20Parlante%20Aura%20studio%203%20(15W%20RMS-%20100W%20RMS,%20Negro).%20%C2%BFPodr%C3%ADan%20darme%20m%C3%A1s%20informaci%C3%B3n?"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Whatsapp
+      </Dropdown.Item>
+      <Dropdown.Item
+        href="https://mail.google.com/mail/?view=cm&fs=1&to=info@tiendapc.com.co&su=Consulta%20de%20producto&body=%C2%A1Hola%20Tienda%20Mac!%20Me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20:"
+      >
+        Correo electrónico
+      </Dropdown.Item>
+    </Dropdown.Menu>
+  </Dropdown>
+</li>
             </ul>
             </div>
             <div className="d-flex me-3">
