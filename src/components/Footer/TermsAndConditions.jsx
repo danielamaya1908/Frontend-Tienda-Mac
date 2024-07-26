@@ -14,7 +14,7 @@ const TermsAndConditions = () => {
           <Col md={12} lg={10} xl={8}>
             <div className="mb-4 text-center">
               <Image
-                src="src/img/TERMINOS_Y_CONDICIONES.jpg"
+                src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1721972268/TiendaMac/lbcvo6fkqshvqkh89bjy.webp"
                 fluid
                 className="terms-image w-100 border rounded shadow-sm animate__animated animate__fadeIn"
                 alt="Términos y Condiciones"

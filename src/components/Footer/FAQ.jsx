@@ -32,7 +32,7 @@ const FAQ = () => {
           <Col md={12} lg={10} xl={8}>
             <div className="mb-4 text-center">
               <Image 
-                src="src/img/preguntasfrecuentes.jpg" 
+                src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1721972269/TiendaMac/fg60x4xcewxhusurvswq.jpg" 
                 fluid 
                 className="faq-image w-100 border rounded shadow-sm animate__animated animate__fadeIn" 
                 alt="Preguntas Frecuentes" 

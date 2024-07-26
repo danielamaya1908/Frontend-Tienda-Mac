@@ -14,7 +14,7 @@ const PQR = () => {
           <Col md={12} lg={10} xl={8}>
             <div className="mb-4 text-center">
               <Image
-                src="src/img/pqrs.jpg" // Actualiza la ruta si es necesario
+                src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1721972268/TiendaMac/vlh1n6lijofexztruafg.jpg" // Actualiza la ruta si es necesario
                 fluid
                 className="pqr-image w-100 border rounded shadow-sm animate__animated animate__fadeIn"
                 alt="Contacto PQR"

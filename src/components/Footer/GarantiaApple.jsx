@@ -15,7 +15,7 @@ const AppleWarranty = () => {
             {/* Add the image at the start */}
             <div className="mb-4 text-center">
               <Image 
-                src="src/img/garantia.jpg" 
+                src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1721972268/TiendaMac/gjjqjoorhgmkijebdqxa.jpg" 
                 fluid 
                 className="w-100 border rounded shadow-sm animate__animated animate__fadeIn" 
                 alt="Garantía Productos Apple" 
