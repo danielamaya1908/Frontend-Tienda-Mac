@@ -1,0 +1,48 @@
+/* PQR.css */
+
+.pqr-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+  }
+  
+  .pqr-image {
+    max-height: 300px; /* Ajusta el tamaño según sea necesario */
+  }
+  
+  .pqr-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+  }
+  
+  .pqr-card .card-body {
+    padding: 2rem;
+  }
+  
+  .pqr-card .card-title {
+    font-size: 2.5rem;
+    color: #343a40;
+  }
+  
+  .pqr-card .card-text {
+    font-size: 1.125rem;
+    color: #495057;
+  }
+  
+  .pqr-card ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .pqr-card ul li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .pqr-card a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .pqr-card a:hover {
+    text-decoration: underline;
+  }
+  

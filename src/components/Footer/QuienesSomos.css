@@ -1,0 +1,99 @@
+/* QuienesSomos.css */
+
+.quienes-somos-container {
+    background-color: #f8f9fa;
+    padding: 40px 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+    margin-top: 50px;
+    margin-block-end: 50px;
+  }
+  
+  .quienes-somos-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px; /* Espacio entre elementos */
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .quienes-somos-image {
+    width: 100%;
+    max-width: 800px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .quienes-somos-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .quienes-somos-image img:hover {
+    transform: scale(1.05);
+  }
+  
+  .quienes-somos-info {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 40px; /* Aumentado para más espacio interno */
+    color: #000000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    text-align: left; /* Alineación del texto a la izquierda */
+  }
+  
+  .quienes-somos-info h1, .quienes-somos-info h2 {
+    font-family: 'Arial', sans-serif; /* Tipografía más clara */
+  }
+  
+  .quienes-somos-info h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333; /* Color de texto más oscuro para mejor contraste */
+  }
+  
+  .quienes-somos-info h2 {
+    font-size: 2rem;
+    margin: 30px 0 10px; /* Mayor espacio arriba y abajo del título */
+    color: #333; /* Color del título con mejor contraste */
+  }
+  
+  .quienes-somos-info p {
+    font-size: 1rem;
+    margin: 10px 0;
+    line-height: 1.8; /* Mayor espacio entre líneas para mejor legibilidad */
+  }
+  
+  @media (max-width: 768px) {
+    .quienes-somos-content {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .quienes-somos-image {
+      max-width: 100%;
+    }
+  
+    .quienes-somos-info {
+      padding: 20px; /* Menos padding en pantallas pequeñas */
+    }
+  }
+  
+  .fade-in {
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  

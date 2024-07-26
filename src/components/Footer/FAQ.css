@@ -1,0 +1,44 @@
+/* FAQ.css */
+
+.faq-container {
+  background-color: #f0f0f0; /* Fondo blanco oscuro */
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.faq-card {
+  background-color: #ffffff; /* Fondo blanco para la tarjeta */
+  color: #000000; /* Texto negro para la tarjeta */
+  border-radius: 8px;
+  padding: 20px;
+  transition: transform 0.3s ease-in-out;
+  /* Agregar una sombra suave para el efecto visual */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.faq-card:hover {
+  transform: translateY(-10px);
+}
+
+.faq-section-title {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.faq-question {
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.faq-question h5 {
+  font-size: 1.3rem;
+  color: #333333;
+}
+
+.faq-question p, .faq-question ul {
+  font-size: 1.1rem;
+  color: #000000;
+  line-height: 1.5;
+}

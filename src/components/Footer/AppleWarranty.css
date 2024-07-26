@@ -1,0 +1,36 @@
+.warranty-container {
+    background-color: #f2f2f2; /* Light grey background color */
+    padding: 40px;
+    border-radius: 10px;
+  }
+  
+  .warranty-card {
+    background-color: #ffffff; /* Fondo blanco para la tarjeta */
+    color: #000000; /* Texto negro para la tarjeta */
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.3s ease-in-out;
+    /* Agregar una sombra suave para el efecto visual */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .warranty-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .card-title {
+    font-size: 2.5rem;
+    color: #000000;
+  }
+  
+  .card-text h4 {
+    font-size: 1.5rem;
+    color: #333333;
+  }
+  
+  .card-text p {
+    font-size: 1.2rem;
+    color: #000000;
+    line-height: 1.6;
+  }
+  
