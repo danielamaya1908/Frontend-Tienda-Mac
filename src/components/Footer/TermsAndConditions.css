@@ -1,47 +1,46 @@
 /* TermsAndConditions.css */
 
 .terms-container {
-    background-color: #f7f7f7; /* Fondo blanco oscuro */
-    padding: 40px;
-    border-radius: 8px;
-  }
-  
-  .terms-card {
-    background-color: #ffffff; /* Fondo blanco para la tarjeta */
-    color: #000000; /* Texto negro para la tarjeta */
-    border-radius: 8px;
-    padding: 20px;
-    transition: transform 0.3s ease-in-out;
-    /* Agregar una sombra suave para el efecto visual */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .terms-card:hover {
-    transform: translateY(-10px);
-  }
-  
-  .terms-image {
-    /* Ajustar el fondo y borde de la imagen */
-    background-color: #e0e0e0;
-    border: 2px solid #dcdcdc;
-    border-radius: 8px;
-    /* Sombra para la imagen */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .terms-card h5 {
-    font-size: 1.3rem;
-    color: #333333;
-  }
-  
-  .terms-card p,
-  .terms-card ul {
-    font-size: 1.1rem;
-    color: #000000;
-    line-height: 1.5;
-  }
-  
-  .terms-card ul {
-    padding-left: 20px; /* Espacio para el listado */
-  }
-  
+  background-color: #f7f7f7; /* Fondo blanco oscuro */
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.terms-card {
+  background-color: #ffffff; /* Fondo blanco para la tarjeta */
+  color: #000000; /* Texto negro para la tarjeta */
+  border-radius: 8px;
+  padding: 20px;
+  transition: transform 0.3s ease-in-out;
+  /* Agregar una sombra suave para el efecto visual */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.terms-card:hover {
+  transform: translateY(-10px);
+}
+
+.terms-image {
+  /* Ajustar el fondo y borde de la imagen */
+  background-color: #e0e0e0;
+  border: 2px solid #dcdcdc;
+  border-radius: 8px;
+  /* Sombra para la imagen */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.terms-card h5 {
+  font-size: 1.3rem;
+  color: #333333;
+}
+
+.terms-card p,
+.terms-card ul {
+  font-size: 1.1rem;
+  color: #000000;
+  line-height: 1.5;
+}
+
+.terms-card ul {
+  padding-left: 20px; /* Espacio para el listado */
+}
