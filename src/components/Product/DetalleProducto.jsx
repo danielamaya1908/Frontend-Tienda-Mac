@@ -139,14 +139,14 @@ const DetalleProducto = () => {
             <p className="product-text"><strong>Subtotal:</strong> {formatPrice(product.price * quantity)}</p>
             <div className="d-flex justify-content-between mt-3">
               <button className="btn btn-primary btn-lg flex-grow-1 me-2" onClick={handleAddToCart}>Agregar al carrito</button>
-              <a 
+            {/*   <a 
                 href={`https://api.whatsapp.com/send?phone=573173026445&text=¡Hola Tienda Mac! Me interesa comprar ${quantity} ${product.name} (${product.capacityName}, ${product.colorName}). ¿Podrían darme más información?`}
                 className="btn btn-success btn-lg flex-grow-1"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Comprar por WhatsApp
-              </a>
+              </a> */}
             </div>
             <h3 className="product-heading mt-4">Descripción</h3>
             <p className="product-description">{product.description}</p>
