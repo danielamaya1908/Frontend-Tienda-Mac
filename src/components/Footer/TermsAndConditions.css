@@ -1,18 +1,16 @@
 /* TermsAndConditions.css */
-
 .terms-container {
-  background-color: #f7f7f7; /* Fondo blanco oscuro */
+  background-color: #f7f7f7;
   padding: 40px;
   border-radius: 8px;
 }
 
 .terms-card {
-  background-color: #ffffff; /* Fondo blanco para la tarjeta */
-  color: #000000; /* Texto negro para la tarjeta */
+  background-color: #ffffff;
+  color: #000000;
   border-radius: 8px;
   padding: 20px;
   transition: transform 0.3s ease-in-out;
-  /* Agregar una sombra suave para el efecto visual */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -21,11 +19,9 @@
 }
 
 .terms-image {
-  /* Ajustar el fondo y borde de la imagen */
   background-color: #e0e0e0;
   border: 2px solid #dcdcdc;
   border-radius: 8px;
-  /* Sombra para la imagen */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -34,13 +30,40 @@
   color: #333333;
 }
 
-.terms-card p,
-.terms-card ul {
+.terms-card p, .terms-card ul {
   font-size: 1.1rem;
   color: #000000;
   line-height: 1.5;
 }
 
 .terms-card ul {
-  padding-left: 20px; /* Espacio para el listado */
+  padding-left: 20px;
+}
+
+.nav-tabs .nav-link {
+  color: #495057;
+}
+
+.nav-tabs .nav-link.active {
+  font-weight: bold;
+}
+
+.nav-tabs {
+  flex-wrap: wrap;
+}
+
+.nav-tabs .nav-link {
+  white-space: nowrap;
+  margin-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+  .nav-tabs {
+    border-bottom: none;
+  }
+  .nav-tabs .nav-link {
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    margin-right: 5px;
+  }
 }

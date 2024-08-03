@@ -17,7 +17,7 @@ const TermsAndConditions = () => {
           <Col md={12}>
             <div className="mb-4 text-center">
               <Image
-                src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1721972268/TiendaMac/lbcvo6fkqshvqkh89bjy.webp"
+                src="src/img/TERMINOS_Y_CONDICIONES.jpg"
                 fluid
                 className="terms-image w-100 animate__animated animate__fadeIn"
                 alt="Términos y Condiciones"
@@ -393,7 +393,7 @@ const TermsAndConditions = () => {
                     <li>No solicitaremos el número de la tarjeta con que se realizó la compra. Abstenerse de enviar imágenes de la tarjeta.</li>
                     <li>Los documentos solicitados serán tratados únicamente para efectos de una verificación de seguridad atribuida a la compra realizada por usted en el portal web de Tienda-Mac Colombia.</li>
                   </ul>
-                  <p>Para mayor información ingresa a los Términos y condiciones de venta online publicados en <a href="https://backend-tienda-mac-production.up.railway.app/terms-and-conditions" target="_blank" rel="noopener noreferrer">https://backend-tienda-mac-production.up.railway.app/terms-and-conditions</a>.</p>
+                  <p>Para mayor información ingresa a los Términos y condiciones de venta online publicados en <a href="www.tiendamac.net/terms-and-conditions" target="_blank" rel="noopener noreferrer">www.tiendamac.net/terms-and-conditions</a>.</p>
 
                   <h6>6. Condiciones para la entrega del pedido en tienda física</h6>
                   <ul>
@@ -401,7 +401,7 @@ const TermsAndConditions = () => {
                     <li>Al momento del retiro y entrega del producto, el cliente (titular de la compra o pedido) deberá presentar el número del pedido que el sistema le asignó y su documento de identidad original.</li>
                     <li>No se permite ningún tipo de modificación de retiro luego del envío del Correo - Compra exitosa. En tal sentido, no se aceptan cambios de dirección de envío, tiempos de entrega del pedido, cambio en la tienda para retiro o modificaciones en los productos comprados.</li>
                     <li>No hay devoluciones de dinero. Solo son posibles cambios por productos de igual o mayor valor, previo al retiro del producto de la tienda.</li>
-                    <li>Para las garantías y ejercicio del derecho de retracto revisa los Términos y Condiciones dispuestos en nuestra página web: <a href="https://backend-tienda-mac-production.up.railway.app/terms-and-conditions" target="_blank" rel="noopener noreferrer">https://backend-tienda-mac-production.up.railway.app/terms-and-conditions</a>.</li>
+                    <li>Para las garantías y ejercicio del derecho de retracto revisa los Términos y Condiciones dispuestos en nuestra página web: <a href="www.tiendamac.net/terms-and-conditions" target="_blank" rel="noopener noreferrer">www.tiendamac.net/terms-and-conditions</a>.</li>
                   </ul>
                 </div>
               )}
