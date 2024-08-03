@@ -1,0 +1,97 @@
+/* Contenedor principal */
+.container {
+  background-color: #fff; /* Fondo blanco para contrastar con el texto */
+  color: #333; /* Color del texto */
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 700px;
+  margin: 40px auto;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000; /* Color negro para el título */
+  text-align: center;
+}
+
+/* Mensaje principal */
+.message {
+  font-size: 20px;
+  margin-bottom: 25px;
+  color: #2d2d2d; /* Color del mensaje */
+  text-align: center;
+}
+
+/* Contenedor de resumen */
+.summary {
+  background-color: #f9f9f9; /* Fondo gris claro para el resumen */
+  border: 1px solid #ddd; /* Borde gris claro */
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+/* Detalles del resumen */
+.details {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #555; /* Color gris oscuro para los detalles */
+}
+
+/* Botones */
+.buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.button, .downloadButton {
+  padding: 12px 25px;
+  font-size: 18px;
+  color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.button {
+  background-color: #007bff; /* Color azul para el botón */
+}
+
+.button:hover {
+  background-color: #0056b3; /* Color azul oscuro al pasar el ratón */
+}
+
+.downloadButton {
+  background-color: #28a745; /* Color verde para el botón de descarga */
+}
+
+.downloadButton:hover {
+  background-color: #218838; /* Color verde oscuro al pasar el ratón */
+}
+
+/* Mensaje de error */
+.error {
+  color: red;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Mensaje sin detalles */
+.noDetails {
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Cargando */
+.loading {
+  font-size: 18px;
+  text-align: center;
+}

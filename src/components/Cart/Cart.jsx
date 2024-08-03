@@ -20,7 +20,7 @@ const Cart = () => {
   const handleProceedToPayment = () => {
     const token = localStorage.getItem('token');
     if (token) {
-      navigate('/payment-methods');
+      navigate('/payment-methods', { state: { totalAmount: totalPrice } });
     } else {
       navigate('/LoginUser');
     }
