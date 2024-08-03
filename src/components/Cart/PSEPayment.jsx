@@ -45,7 +45,7 @@ const PSEPayment = () => {
         customer: customerData,
         confirm: 'false',
         send_email: 'true',
-        redirect_url: 'https://backend-tienda-mac-production.up.railway.app/api/openpay/payment-confirmation'
+        redirect_url: 'https://www.tiendamac.net/payment-confirmation' 
       };
 
       const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/create-charge', paymentData);
