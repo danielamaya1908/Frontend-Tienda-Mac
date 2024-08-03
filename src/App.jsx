@@ -41,8 +41,8 @@ import MacStudio from './components/Product/Mac/MacStudio';
 import SoporteTecnico from './components/SoporteTecnico/SoporteTecnico';
 import SoporteTecnicoCliente from './components/SoporteTecnico/SoporteTecnicoCliente';
 import SoporteTecnicoClienteDetalle from './components/SoporteTecnico/SoporteTecnicoClienteDetalle';
-import SoporteTecnicoDetalle from './components/SoporteTecnico/SoporteTecnicoDetalle';
-import MacbookPro from './components/Product/Mac/MacbookPro'; */
+import SoporteTecnicoDetalle from './components/SoporteTecnico/SoporteTecnicoDetalle'; */
+import MacbookPro from './components/Product/Mac/MacbookPro';
 import MacbookAir from './components/Product/Mac/MacbookAir';
 import Imac from './components/Product/Mac/iMac';
 import MacUsed from './components/Product/Mac/MacUsed';
@@ -168,8 +168,8 @@ function App() {
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<SubCategories />} />
           } 
         />
-        <Route path="/payment-methods" element={<PaymentMethods />} />
-{        <Route path="/payment-confirmation" element={<PaymentConfirmation />} />}
+       <Route path="/payment-methods" element={<PaymentMethods />} />
+       {<Route path="/payment-confirmation" element={<PaymentConfirmation />} />}
         <Route 
           path="/colors" 
           element={
@@ -198,13 +198,13 @@ function App() {
         <Route path="/PQRS" element={<PQRS />} />
         <Route path="/QuienesSomos" element={<QuienesSomos />} />
         <Route path="/Ubicacion" element={<Ubicacion />} />
-        {/* <Route path="/soporte-tecnico-client" element={<SoporteTecnicoCliente />} />
+       {/*  <Route path="/soporte-tecnico-client" element={<SoporteTecnicoCliente />} />
         <Route path="/soportetecnicocliente/:id" element={<SoporteTecnicoClienteDetalle />} />
         <Route path="/soporteTecnico/:id" element={<SoporteTecnicoDetalle />} /> */}
         <Route path="/warranty" element={<AppleWarranty/>} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/iphone12" element={<Iphone12 />} />
-       {/*  <Route path="/soporte-tecnico" element={<SoporteTecnico />} />
+{/*         <Route path="/soporte-tecnico" element={<SoporteTecnico />} />
         <Route path="/FormEquipo" element={<FormEquipo />} /> */}
         <Route path="/iphone13pro" element={<Iphone13pro />} />
         <Route path="/iphone13" element={<Iphone13 />} />
