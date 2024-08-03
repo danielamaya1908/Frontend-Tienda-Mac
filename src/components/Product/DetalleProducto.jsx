@@ -138,7 +138,7 @@ const DetalleProducto = () => {
             </div>
             <p className="product-text"><strong>Subtotal:</strong> {formatPrice(product.price * quantity)}</p>
             <div className="d-flex justify-content-between mt-3">
-             {/*  <button className="btn btn-primary btn-lg flex-grow-1 me-2" onClick={handleAddToCart}>Agregar al carrito</button> */}
+              <button className="btn btn-primary btn-lg flex-grow-1 me-2" onClick={handleAddToCart}>Agregar al carrito</button>
               <a 
                 href={`https://api.whatsapp.com/send?phone=573173026445&text=¡Hola Tienda Mac! Me interesa comprar ${quantity} ${product.name} (${product.capacityName}, ${product.colorName}). ¿Podrían darme más información?`}
                 className="btn btn-success btn-lg flex-grow-1"
