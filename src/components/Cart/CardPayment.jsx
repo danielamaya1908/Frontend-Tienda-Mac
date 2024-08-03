@@ -44,7 +44,7 @@ const CardPayment = () => {
         customer: customerData,
         confirm: 'false',
         send_email: 'true',
-        redirect_url: `https://backend-tienda-mac-production.up.railway.app/payment-confirmation` // Ajusta la URL aquí
+        redirect_url: 'https://backend-tienda-mac-production.up.railway.app/api/openpay/payment-confirmation' // Ajusta la URL aquí
       };
 
       const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/create-charge', paymentData);
