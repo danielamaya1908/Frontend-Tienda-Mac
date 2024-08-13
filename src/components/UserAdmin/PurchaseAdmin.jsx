@@ -1,0 +1,185 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './PurchaseAdmin.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSort, faCalendarAlt, faDollarSign, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { Modal, Button } from 'react-bootstrap';
+import MenuDashboard from '../MenuDashboard/MenuDashboard';
+
+const PurchaseAdmin = () => {
+  const [purchases, setPurchases] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
+
+  useEffect(() => {
+    const fetchPurchases = async () => {
+      try {
+        const response = await axios.get('http://localhost:3005/adminpurchases');
+        const purchasesWithImages = response.data.map(purchase => {
+          const product = purchase.Product;
+          const imagePath = product && product.Image ? product.Image.path.split('\\').pop() : null;
+          return {
+            ...purchase,
+            date: new Date(purchase.createdAt),
+            productName: product ? product.name : 'No hay producto relacionado',
+            imageUrl: imagePath ? `http://localhost:3005/images/${imagePath}` : null,
+          };
+        });
+
+        setPurchases(purchasesWithImages);
+      } catch (err) {
+        console.error('Error fetching purchases:', err);
+        setError('Error al obtener las compras.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPurchases();
+  }, []);
+
+  const sortPurchases = (purchasesToSort) => {
+    return purchasesToSort.sort((a, b) => {
+      return sortOrder === 'desc' ? b.date - a.date : a.date - b.date;
+    });
+  };
+
+  const filterPurchases = (purchasesToFilter) => {
+    return purchasesToFilter.filter(purchase => {
+      const statusMatch = filterStatus === 'all' || purchase.status === filterStatus;
+      const dateMatch = 
+        (!dateRange.start || purchase.date >= new Date(dateRange.start)) &&
+        (!dateRange.end || purchase.date <= new Date(dateRange.end));
+      return statusMatch && dateMatch;
+    });
+  };
+
+  const handleSort = () => {
+    setSortOrder(prevOrder => prevOrder === 'desc' ? 'asc' : 'desc');
+  };
+
+  const handleFilterChange = (e) => {
+    setFilterStatus(e.target.value);
+  };
+
+  const handleDateChange = (e) => {
+    setDateRange({ ...dateRange, [e.target.name]: e.target.value });
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedImage('');
+  };
+
+  const formatPrice = (amount) => {
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
+  if (loading) return <p className="loading">Cargando...</p>;
+  if (error) return <p className="error">{error}</p>;
+  if (purchases.length === 0) return <p className="no-purchases">No se encontraron compras.</p>;
+
+  const filteredAndSortedPurchases = sortPurchases(filterPurchases(purchases));
+
+  return (
+    <>
+      <div className="container-fluid">
+        <div className="row">
+          <MenuDashboard />
+          <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div className="container">
+              <h2 className="main-title">Compras Administrativas</h2>
+              <div className="filters">
+                <button onClick={handleSort} className="sort-button">
+                  <FontAwesomeIcon icon={faSort} /> Ordenar por fecha ({sortOrder === 'desc' ? 'Más reciente' : 'Más antiguo'})
+                </button>
+                <select onChange={handleFilterChange} value={filterStatus} className="filter-select">
+                  <option value="all">Todos los estados</option>
+                  <option value="charge_pending">Pendiente</option>
+                  <option value="completed">Completado</option>
+                  <option value="cancelled">Cancelado</option>
+                </select>
+                <div className="date-range">
+                  <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
+                  <input
+                    type="date"
+                    name="start"
+                    value={dateRange.start}
+                    onChange={handleDateChange}
+                    className="date-input"
+                  />
+                  <span>a</span>
+                  <input
+                    type="date"
+                    name="end"
+                    value={dateRange.end}
+                    onChange={handleDateChange}
+                    className="date-input"
+                  />
+                </div>
+              </div>
+              {filteredAndSortedPurchases.map((purchase) => (
+                <div className="purchase-card card" key={purchase.id}>
+                  <div className="row g-3">
+                    <div className="col-md-8">
+                      <div className="purchase-header">
+                        <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
+                        <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
+                        <span className={`purchase-status ${purchase.status}`}>
+                          <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
+                        </span>
+                      </div>
+                      <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
+                      <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
+                      <p className="purchase-item">
+                        <FontAwesomeIcon icon={faDollarSign} className="icon" />
+                        <strong>Monto:</strong> {formatPrice(purchase.amount)} {purchase.currency}
+                      </p>
+                      <p className="purchase-item"><strong>Método de Pago:</strong> {purchase.payment_method}</p>
+                      <p className="purchase-item"><strong>Referencia:</strong> {purchase.reference}</p>
+                      <p className="purchase-item"><strong>ID de Cargo:</strong> {purchase.charge_id}</p>
+                    </div>
+                    <div className="col-md-4 d-flex justify-content-center align-items-center">
+                      {purchase.imageUrl ? (
+                        <img 
+                          src={purchase.imageUrl} 
+                          alt={purchase.productName} 
+                          className="product-image"
+                          onClick={() => handleImageClick(purchase.imageUrl)}
+                        />
+                      ) : (
+                        <p className="purchase-item">No hay imagen disponible.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <Modal show={showModal} onHide={handleModalClose}>
+        <Modal.Body>
+          <img src={selectedImage} alt="Imagen del producto" className="modal-img" />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleModalClose}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+};
+
+export default PurchaseAdmin;

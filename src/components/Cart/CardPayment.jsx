@@ -4,10 +4,14 @@ import axios from 'axios';
 import styles from './CardPayment.module.css';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkedAlt, FaIdCard } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
+import { useCart } from '../../context/CartContext'; // Importar el contexto del carrito
 
 const CardPayment = () => {
   const location = useLocation();
+  const { clearCart, cartItems } = useCart(); // Obtener la función clearCart y los items del carrito del contexto
   const [totalAmount, setTotalAmount] = useState(500); // Valor por defecto
+  const [userId, setUserId] = useState(null);
+  const [error, setError] = useState(null);
   const [customerData, setCustomerData] = useState({
     name: '',
     last_name: '',
@@ -16,12 +20,19 @@ const CardPayment = () => {
     department: '',
     city: '',
     additional: '',
-    document_number: ''
+    document_number: '',
+    quantity: 1 // Añadir el campo quantity con un valor por defecto de 1
   });
 
+
   useEffect(() => {
-    if (location.state && location.state.totalAmount) {
-      setTotalAmount(location.state.totalAmount);
+    if (location.state) {
+      if (location.state.totalAmount) {
+        setTotalAmount(location.state.totalAmount);
+      }
+      if (location.state.userId) {
+        setUserId(location.state.userId);
+      }
     }
   }, [location.state]);
 
@@ -35,7 +46,13 @@ const CardPayment = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
     try {
+      const productId = cartItems.length > 0 ? cartItems[0].id : null;
+
+      if (!productId) {
+        throw new Error('No se encontró ningún producto en el carrito');
+      }
       const paymentData = {
         method: 'card',
         amount: totalAmount,
@@ -44,14 +61,22 @@ const CardPayment = () => {
         customer: customerData,
         confirm: 'false',
         send_email: 'true',
-        redirect_url: 'https://www.tiendamac.net/payment-confirmation' // Ajusta la URL aquí
+        redirect_url: `${window.location.origin}/payment-confirmation`, // URL relativa a la aplicación
+        userId: userId,
+        productId: productId
       };
 
-      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/create-charge', paymentData);
+      const response = await axios.post('http://localhost:3005/api/openpay/create-charge', paymentData);
 
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data && response.data.payment_method && response.data.payment_method.url) {
+        // Actualizar el stock en el backend
+        await axios.post('http://localhost:3005/update-quantity', { items: cartItems });
+
+        // Vaciar el carrito
+        clearCart();
+        // Redirigir al usuario
         window.location.href = response.data.payment_method.url;
       } else {
         console.error('No se recibió una URL de redirección válida');
@@ -194,7 +219,7 @@ const CardPayment = () => {
       </Form.Group>
       <div className={styles.buttonContainer}>
         <Button variant="primary" type="submit" className={styles.submitButton}>
-          Pagar con Tarjeta
+          Procesar Pago
         </Button>
       </div>
     </Form>

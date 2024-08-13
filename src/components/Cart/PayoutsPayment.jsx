@@ -3,8 +3,10 @@ import { Form, Button, Col, Row } from 'react-bootstrap';
 import axios from 'axios';
 import styles from './PayoutsPayment.module.css';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkedAlt, FaIdCard } from 'react-icons/fa';
+import { useCart } from '../../context/CartContext'; // Importar el contexto del carrito
 
 const PayoutsPayment = ({ totalAmount }) => {
+  const { clearCart } = useCart(); // Obtener la función clearCart del contexto
   const [customerData, setCustomerData] = useState({
     name: '',
     last_name: '',
@@ -38,12 +40,15 @@ const PayoutsPayment = ({ totalAmount }) => {
         },
       };
 
-      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/store-payment', paymentData);
+      const response = await axios.post('http://localhost:3005/api/openpay/store-payment', paymentData);
 
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data && response.data.receipt_url) {
         setReceiptUrl(response.data.receipt_url);
+        // Vaciar el carrito
+        clearCart();
+        // Redirigir al usuario
         window.location.href = response.data.receipt_url;
       } else {
         console.error('No se recibió una URL de recibo válida');

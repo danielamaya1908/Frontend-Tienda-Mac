@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
 import Navbar from '../NavBar/NavBar';
 import Footer from '../Footer/Footer';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Container, Row, Col, Image, Card } from 'react-bootstrap';
 import { Trash, Dash, Plus, Cart as CartIcon, CreditCard } from 'react-bootstrap-icons';
+import axios from 'axios';
+import LoginUser from '../Login/LoginUser';
 import styles from './Cart.module.css';
 
 const Cart = () => {
   const { cartItems, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCart();
+  const [productImages, setProductImages] = useState({});
+  const [showLoginUser, setShowLoginUser] = useState(false);
+  const [user, setUser] = useState(null);
+  const [redirectAfterLogin, setRedirectAfterLogin] = useState('/cart');
   const navigate = useNavigate();
-  
+
   const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const formatPrice = (price) => {
@@ -20,11 +26,70 @@ const Cart = () => {
   const handleProceedToPayment = () => {
     const token = localStorage.getItem('token');
     if (token) {
-      navigate('/payment-methods', { state: { totalAmount: totalPrice } });
+      const user = JSON.parse(localStorage.getItem('user'));
+      navigate('/payment-methods', { 
+        state: { 
+          totalAmount: totalPrice,
+          userId: user ? user.id : null
+        } 
+      });
     } else {
-      navigate('/LoginUser');
+      setRedirectAfterLogin('/cart');
+      setShowLoginUser(true);
     }
   };
+
+  const handleLoginSuccess = (loggedInUser) => {
+    setUser(loggedInUser);
+    setShowLoginUser(false);
+    navigate(redirectAfterLogin);
+  };
+
+  useEffect(() => {
+    const fetchProductImages = async () => {
+      try {
+        const imageRequests = cartItems.map(async (item) => {
+          try {
+            const response = await axios.get(`http://localhost:3005/products/${item.id}/images`);
+            const imageFileNames = response.data;
+            const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
+            return { [item.id]: imageUrls };
+          } catch (error) {
+            console.error(`Error getting images for product ${item.id}:`, error);
+            return { [item.id]: [] };
+          }
+        });
+
+        const images = await Promise.all(imageRequests);
+        const imagesMap = images.reduce((acc, imageObj) => ({ ...acc, ...imageObj }), {});
+        setProductImages(imagesMap);
+      } catch (error) {
+        console.error('Error fetching product images:', error);
+      }
+    };
+
+    fetchProductImages();
+  }, [cartItems]);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  if (showLoginUser) {
+    return (
+      <div>
+        <Navbar />
+        <LoginUser 
+          onLoginSuccess={handleLoginSuccess} 
+          onClose={() => setShowLoginUser(false)} 
+        />
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.cartPage}>
@@ -49,7 +114,21 @@ const Cart = () => {
                 <Card.Body>
                   <Row className="align-items-center">
                     <Col xs={12} md={3} className="mb-3 mb-md-0">
-                      <Image src={item.image} alt={item.name} className={styles.cartItemImage} fluid />
+                      {productImages[item.id] && productImages[item.id][0] ? (
+                        <Image
+                          src={productImages[item.id][0]} 
+                          alt={item.name} 
+                          className={styles.cartItemImage} 
+                          fluid 
+                        />
+                      ) : (
+                        <Image
+                          src="ruta/a/imagen/default.jpg" 
+                          alt={item.name}
+                          className={styles.cartItemImage}
+                          fluid
+                        />
+                      )}
                     </Col>
                     <Col xs={12} md={4}>
                       <h5 className="mb-2">{item.name}</h5>
@@ -84,11 +163,8 @@ const Cart = () => {
                 <h4>{formatPrice(totalPrice)}</h4>
               </Card.Body>
             </Card>
-            <div className="d-flex justify-content-between">
-              <Button variant="outline-danger" className="mb-3" onClick={clearCart}>
-                <Trash className="me-2" /> Vaciar Carrito
-              </Button>
-              <Button variant="primary" className="mb-3" onClick={handleProceedToPayment}>
+            <div className="d-flex justify-content-center">
+              <Button variant="primary" size="lg" onClick={handleProceedToPayment} disabled={cartItems.length === 0}>
                 <CreditCard className="me-2" /> Proceder al Pago
               </Button>
             </div>

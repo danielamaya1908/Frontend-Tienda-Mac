@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUsers, faShoppingBasket, faTicketAlt, faTrademark, faListAlt, faPalette, faCubes, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faShoppingBasket, faTicketAlt, faTrademark, faListAlt, faPalette, faCubes, faCheckSquare, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { NavDropdown } from 'react-bootstrap';
 import './MenuDashboard.css'; // Asegúrate de que este importe apunta al archivo CSS correcto
 
@@ -72,6 +72,12 @@ const MenuDashboard = () => {
                         <NavLink to="/coupons" className="nav-link text-white">
                             <FontAwesomeIcon icon={faTicketAlt} className="me-2" />
                             Cupones
+                        </NavLink>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/admin/purchases" className="nav-link text-white">
+                            <FontAwesomeIcon icon={faShoppingCart} className="me-2" />
+                            Compras
                         </NavLink>
                     </li>
                 </ul>

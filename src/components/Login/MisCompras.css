@@ -1,0 +1,102 @@
+.mis-compras-container {
+  padding: 20px;
+  background-color: #1e1e1e; /* Fondo oscuro para el contenedor */
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  max-width: 900px;
+  margin: 20px auto;
+  color: #e0e0e0; /* Texto claro para contraste */
+  position: relative;
+}
+
+.back-button {
+  background-color: #333; /* Fondo oscuro para el botón */
+  border: none;
+  border-radius: 5px;
+  color: #e0e0e0; /* Texto claro */
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.back-button:hover {
+  background-color: #007bff; /* Fondo azul para hover */
+  color: #fff; /* Texto blanco para hover */
+}
+
+.filters {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.filter-button {
+  background-color: #333; /* Fondo oscuro para los botones */
+  border: 1px solid #444; /* Borde gris oscuro */
+  border-radius: 5px;
+  color: #e0e0e0; /* Texto claro para los botones */
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 10px 20px;
+  margin: 0 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filter-button.active,
+.filter-button:hover {
+  background-color: #007bff; /* Fondo azul para el botón activo o en hover */
+  color: #fff; /* Texto blanco */
+  border-color: #007bff;
+}
+
+.compras-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.compra-item {
+  background-color: #2c2c2c; /* Fondo oscuro para los ítems */
+  border: 1px solid #444; /* Borde gris oscuro */
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.compra-item p {
+  margin: 10px 0;
+}
+
+.compra-item strong {
+  color: #e0e0e0; /* Texto claro */
+}
+
+.estado {
+  font-weight: bold;
+}
+
+.estado.completada {
+  color: #28a745; /* Verde para completada */
+}
+
+.estado.cancelada {
+  color: #dc3545; /* Rojo para cancelada */
+}
+
+.estado.pendiente {
+  color: #ffc107; /* Amarillo para pendiente */
+}
+
+.no-compras {
+  text-align: center;
+  color: #bbb; /* Texto gris claro */
+  font-size: 1.1rem;
+  margin-top: 20px;
+}

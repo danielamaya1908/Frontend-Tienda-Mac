@@ -85,6 +85,9 @@ import Ubicacion  from './components/Footer/Ubicacion';
 import QuienesSomos  from './components/Footer/QuienesSomos';
 import PaymentMethods from './components/Cart/PaymentMethods';
 import PaymentConfirmation from './components/Cart/PaymentConfirmation';
+import UserPurchases from './components/Login/UserPurchases.jsx';
+import DetallesCuenta from './components/Login/DetallesCuenta.jsx';
+import PurchaseAdmin from './components/UserAdmin/PurchaseAdmin.jsx';
 
 
 function ProtectedRoute({ element, isLoggedIn }) {
@@ -144,6 +147,12 @@ function App() {
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<Product />} />
           } 
         />
+         <Route 
+          path="/admin/purchases" 
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn} element={<PurchaseAdmin />} />
+          } 
+        />
         <Route 
           path="/useradmin" 
           element={
@@ -194,6 +203,8 @@ function App() {
             <ProtectedRoute isLoggedIn={isLoggedIn} element={<ProductDetail />} />
           }
         />
+         <Route path="/UserPurchases" element={<UserPurchases/>} />
+         <Route path="/detalles-cuenta" element={<DetallesCuenta />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/PQRS" element={<PQRS />} />
         <Route path="/QuienesSomos" element={<QuienesSomos />} />

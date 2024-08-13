@@ -1,142 +1,127 @@
 .register-user-overlay {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente para que el home se vea a través */
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px); /* Difumina el fondo detrás */
 }
 
 .unique-register-form {
-    background: rgba(30, 30, 30, 0.7);
+    background: rgba(0, 0, 0, 0.7); /* Fondo oscuro pero transparente para el formulario */
     color: white;
-    padding: 10px; /* Ajuste de padding a 10px */
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    width: 350px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 500px;
     position: relative;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .unique-close-button {
     position: absolute;
-    top: 10px; /* Ajuste de posición para adaptarse al nuevo padding */
-    right: 10px; /* Ajuste de posición para adaptarse al nuevo padding */
+    top: 10px;
+    right: 10px;
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.unique-close-button:hover {
     color: white;
+    font-size: 24px;
+    cursor: pointer;
 }
 
 .unique-h2 {
-    margin-bottom: 20px; /* Ajuste de margen inferior */
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: bold;
     text-align: center;
-    color: white;
-    font-weight: 300;
-    letter-spacing: 1px;
+}
+
+.unique-form-row {
+    display: flex;
+    gap: 10px; /* Espacio entre columnas */
+    margin-bottom: 10px; /* Margen inferior */
 }
 
 .unique-form-group {
-    margin-bottom: 20px; /* Ajuste de margen inferior */
+    flex: 1;
 }
 
 .unique-form-group label {
     display: block;
-    margin-bottom: 6px; /* Ajuste de margen inferior */
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9em;
-    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+    font-size: 14px;
 }
 
 .unique-form-group input {
     width: 100%;
-    padding: 8px; /* Ajuste de padding a 8px */
-    border: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-    background-color: rgba(255, 255, 255, 0.05);
-    color: white;
-    font-size: 16px;
-    transition: all 0.3s ease;
+    padding: 8px;
     border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.5); /* Fondo de input oscuro */
+    color: white;
+    box-sizing: border-box;
+    font-size: 14px;
 }
 
-.unique-form-group input:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.5);
-    background-color: rgba(255, 255, 255, 0.1);
+.unique-password-input {
+    position: relative;
+}
+
+.unique-password-input input {
+    padding-right: 30px;
 }
 
 .unique-toggle-password {
     position: absolute;
-    right: 6px; /* Ajuste de posición para adaptarse al nuevo padding */
     top: 50%;
+    right: 10px;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.unique-toggle-password:hover {
     color: white;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 .unique-btn-primary {
     width: 100%;
-    background-color: #007bff; /* Azul */
-    color: white;
-    border: none;
-    padding: 10px; /* Ajuste de padding a 10px */
+    padding: 10px;
     border-radius: 5px;
-    cursor: pointer;
+    border: none;
+    background: #007bff;
+    color: white;
     font-size: 16px;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
+    cursor: pointer;
 }
 
 .unique-btn-primary:hover {
-    background-color: #0056b3; /* Azul más oscuro */
+    background: #0056b3;
 }
 
-.unique-login-link {
-    margin-top: 20px; /* Ajuste de margen superior */
+.unique-error-message,
+.unique-success-message {
     text-align: center;
-    cursor: pointer;
-    color: #add8e6; /* Azul clarito */
-    transition: color 0.3s ease;
-    font-size: 0.9em;
-}
-
-.unique-login-link:hover {
-    color: #87cefa; /* Azul más claro */
+    margin: 10px 0;
 }
 
 .unique-error-message {
-    color: #ff6b6b;
-    text-align: center;
-    margin-bottom: 15px; /* Ajuste de margen inferior */
-    font-size: 0.9em;
-    background-color: rgba(255, 107, 107, 0.1);
-    padding: 8px; /* Ajuste de padding a 8px */
-    border-radius: 5px;
+    color: red;
 }
+
 .unique-success-message {
-    color: #f8f4f4; /* Gris oscuro */
-    background-color: rgba(169, 169, 169, 0.1);
-    border: 1px solid #A9A9A9;
-    border-radius: 4px;
-    padding: 10px;
+    color: #28a745;
+}
+
+.unique-login-link {
+    margin-top: 10px;
     text-align: center;
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
+    cursor: pointer;
+    color: #007bff;
+    font-size: 14px;
+}
+
+.unique-login-link:hover {
+    text-decoration: underline;
+}
