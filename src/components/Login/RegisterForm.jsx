@@ -59,11 +59,9 @@ const RegisterForm = ({ onClose }) => {
         console.log('Registro exitoso');
         setSuccessMessage('Te has registrado exitosamente en Tienda Mac');
         
-        // Guardar el token y la información del usuario
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
         
-        // Redirección a home después de 2 segundos
         setTimeout(() => {
           navigate('/home');
         }, 2000);
@@ -87,7 +85,7 @@ const RegisterForm = ({ onClose }) => {
         {successMessage && <p className="unique-success-message">{successMessage}</p>}
         <form onSubmit={handleSubmit}>
           <div className="row">
-            <div className="col-md-6 unique-form-group">
+            <div className="col-md-4 unique-form-group">
               <label htmlFor="firstName">Nombre</label>
               <input
                 type="text"
@@ -95,11 +93,11 @@ const RegisterForm = ({ onClose }) => {
                 name="firstName"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Ingrese su nombre"
+                placeholder="Nombre"
                 required
               />
             </div>
-            <div className="col-md-6 unique-form-group">
+            <div className="col-md-4 unique-form-group">
               <label htmlFor="lastName">Apellido</label>
               <input
                 type="text"
@@ -107,13 +105,11 @@ const RegisterForm = ({ onClose }) => {
                 name="lastName"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Ingrese su apellido"
+                placeholder="Apellido"
                 required
               />
             </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6 unique-form-group">
+            <div className="col-md-4 unique-form-group">
               <label htmlFor="email">Correo Electrónico</label>
               <input
                 type="email"
@@ -121,24 +117,24 @@ const RegisterForm = ({ onClose }) => {
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Ingrese su correo electrónico"
+                placeholder="Correo Electrónico"
                 required
               />
             </div>
-            <div className="col-md-6 unique-form-group">
-              <label htmlFor="phoneNumber">Número de Teléfono</label>
+          </div>
+          <div className="row">
+            <div className="col-md-4 unique-form-group">
+              <label htmlFor="phoneNumber">Teléfono</label>
               <input
                 type="text"
                 id="phoneNumber"
                 name="phoneNumber"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Ingrese su número de teléfono"
+                placeholder="Teléfono"
               />
             </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6 unique-form-group">
+            <div className="col-md-4 unique-form-group">
               <label htmlFor="address">Dirección</label>
               <input
                 type="text"
@@ -146,24 +142,24 @@ const RegisterForm = ({ onClose }) => {
                 name="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Ingrese su dirección"
+                placeholder="Dirección"
               />
             </div>
-            <div className="col-md-6 unique-form-group">
-              <label htmlFor="documentNumber">Número de Documento</label>
+            <div className="col-md-4 unique-form-group">
+              <label htmlFor="documentNumber">Documento</label>
               <input
                 type="text"
                 id="documentNumber"
                 name="documentNumber"
                 value={documentNumber}
                 onChange={(e) => setDocumentNumber(e.target.value)}
-                placeholder="Ingrese su número de documento"
+                placeholder="Documento"
                 required
               />
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6 unique-form-group">
+            <div className="col-md-4 unique-form-group">
               <label htmlFor="city">Ciudad</label>
               <input
                 type="text"
@@ -171,10 +167,10 @@ const RegisterForm = ({ onClose }) => {
                 name="city"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                placeholder="Ingrese su ciudad"
+                placeholder="Ciudad"
               />
             </div>
-            <div className="col-md-6 unique-form-group">
+            <div className="col-md-4 unique-form-group">
               <label htmlFor="country">País</label>
               <input
                 type="text"
@@ -182,12 +178,10 @@ const RegisterForm = ({ onClose }) => {
                 name="country"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                placeholder="Ingrese su país"
+                placeholder="País"
               />
             </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6 unique-form-group">
+            <div className="col-md-4 unique-form-group">
               <label htmlFor="zipCode">Código Postal</label>
               <input
                 type="text"
@@ -195,7 +189,7 @@ const RegisterForm = ({ onClose }) => {
                 name="zipCode"
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
-                placeholder="Ingrese su código postal"
+                placeholder="Código Postal"
               />
             </div>
           </div>
@@ -208,7 +202,7 @@ const RegisterForm = ({ onClose }) => {
                 name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Ingrese su contraseña"
+                placeholder="Contraseña"
                 required
               />
               <button
