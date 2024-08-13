@@ -5,7 +5,7 @@ import Footer from '../Footer/Footer';
 import Navbar from '../NavBar/NavBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faCalendarAlt, faDollarSign, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Image } from 'react-bootstrap';
 
 const UserPurchases = () => {
   const [purchases, setPurchases] = useState([]);
@@ -16,13 +16,14 @@ const UserPurchases = () => {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-  const [selectedProductUrl, setSelectedProductUrl] = useState('');
+  const [productImages, setProductImages] = useState({});
 
   useEffect(() => {
     const fetchPurchases = async () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No se encontró el token en localStorage.');
+
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/auth/purchases', {
           headers: { 'x-auth-token': token },
         });
@@ -35,7 +36,7 @@ const UserPurchases = () => {
             date: new Date(purchase.createdAt),
             productName: product ? product.name : 'No hay producto relacionado',
             imageUrl: imagePath ? `https://backend-tienda-mac-production.up.railway.app/images/${imagePath}` : null,
-            productUrl: product ? `/products/${product.id}` : '#', // URL del producto
+            productUrl: product ? `/products/${product.id}` : '#',
           };
         });
 
@@ -47,7 +48,31 @@ const UserPurchases = () => {
         setLoading(false);
       }
     };
+
+    const fetchProductImages = async () => {
+      try {
+        const imageRequests = purchases.map(async (purchase) => {
+          try {
+            const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${purchase.Product.id}/images`);
+            const imageFileNames = response.data;
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            return { [purchase.Product.id]: imageUrls };
+          } catch (error) {
+            console.error(`Error getting images for product ${purchase.Product.id}:`, error);
+            return { [purchase.Product.id]: [] };
+          }
+        });
+
+        const images = await Promise.all(imageRequests);
+        const imagesMap = images.reduce((acc, imageObj) => ({ ...acc, ...imageObj }), {});
+        setProductImages(imagesMap);
+      } catch (error) {
+        console.error('Error fetching product images:', error);
+      }
+    };
+
     fetchPurchases();
+    fetchProductImages();
   }, []);
 
   const sortPurchases = (purchasesToSort) => {
@@ -143,58 +168,55 @@ const UserPurchases = () => {
         {filteredAndSortedPurchases.map((purchase) => (
           <div className="purchase-card card" key={purchase.id}>
             <div className="row g-3">
-              <div className="col-md-8">
-                <div className="purchase-header">
-                  <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
-                  <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
-                  <span className={`purchase-status ${purchase.status}`}>
-                    <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
-                  </span>
-                </div>
-                <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
-                <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
-                <p className="purchase-item">
-                  <FontAwesomeIcon icon={faDollarSign} className="icon" />
-                  <strong>Monto:</strong> {formatPrice(purchase.amount)} {purchase.currency}
-                </p>
-                <p className="purchase-item"><strong>Método de Pago:</strong> {purchase.payment_method}</p>
-                <p className="purchase-item"><strong>Referencia:</strong> {purchase.reference}</p>
-                <p className="purchase-item"><strong>ID de Cargo:</strong> {purchase.charge_id}</p>
-                {/* <Button 
-                  className="buy-again-button"
-                  onClick={() => handleBuyAgain(purchase.productUrl)}
-                >
-                  Volver a Comprar
-                </Button> */}
-              </div>
-              <div className="col-md-4 d-flex justify-content-center align-items-center">
-                {purchase.imageUrl ? (
-                  <img 
-                    src={purchase.imageUrl} 
+              <div className="col-md-4">
+                {productImages[purchase.Product.id] && productImages[purchase.Product.id][0] ? (
+                  <Image
+                    src={productImages[purchase.Product.id][0]} 
                     alt={purchase.productName} 
-                    className="product-image"
-                    onClick={() => handleImageClick(purchase.imageUrl)}
+                    className="purchase-image" 
+                    fluid 
+                    onClick={() => handleImageClick(productImages[purchase.Product.id][0])}
                   />
                 ) : (
-                  <p className="purchase-item">No hay imagen disponible.</p>
+                  <Image
+                    src="ruta/a/imagen/default.jpg" 
+                    alt={purchase.productName} 
+                    className="purchase-image" 
+                    fluid 
+                    onClick={() => handleImageClick('ruta/a/imagen/default.jpg')}
+                  />
                 )}
+              </div>
+              <div className="col-md-8">
+                <div className="purchase-header">
+                  <h5 className="purchase-product-name">{purchase.productName}</h5>
+                  <p className="purchase-date">{purchase.date.toLocaleDateString()}</p>
+                </div>
+                <div className="purchase-info">
+                  <p className="purchase-price">
+                    <FontAwesomeIcon icon={faDollarSign} /> {formatPrice(purchase.totalAmount)}
+                  </p>
+                  <p className="purchase-status">
+                    <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
+                  </p>
+                  <Button variant="primary" onClick={() => handleBuyAgain(purchase.productUrl)}>
+                    Comprar de nuevo
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         ))}
       </div>
-      <Footer />
-
-      <Modal show={showModal} onHide={handleModalClose}>
+      <Modal show={showModal} onHide={handleModalClose} centered>
         <Modal.Body>
-          <img src={selectedImage} alt="Imagen del producto" className="modal-img" />
+          <Image src={selectedImage} alt="Imagen del producto" fluid />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleModalClose}>
-            Cerrar
-          </Button>
+          <Button variant="secondary" onClick={handleModalClose}>Cerrar</Button>
         </Modal.Footer>
       </Modal>
+      <Footer />
     </>
   );
 };
