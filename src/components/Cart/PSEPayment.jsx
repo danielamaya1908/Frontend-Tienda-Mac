@@ -61,7 +61,7 @@ const PSEPayment = () => {
         customer: customerData,
         confirm: 'false',
         send_email: 'true',
-        redirect_url: 'http://localhost:5173/payment-confirmation',
+        redirect_url: 'https://www.tiendamac.net/payment-confirmation',
         userId: userId,
         productId: productId
       };
