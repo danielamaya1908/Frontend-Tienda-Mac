@@ -43,7 +43,7 @@ const RegisterForm = ({ onClose }) => {
     setError('');
     setSuccessMessage('');
     try {
-      const response = await axios.post('http://localhost:3005/auth/register', {
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/auth/register', {
         firstName,
         lastName,
         email,

@@ -26,7 +26,7 @@ const PaymentConfirmation = () => {
 
     const fetchPaymentDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:3005/api/openpay/confirm-payment/${chargeId}`);
+        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/api/openpay/confirm-payment/${chargeId}`);
         setPaymentDetails(response.data);
       } catch (err) {
         setError('No se pudo obtener los detalles del pago.');

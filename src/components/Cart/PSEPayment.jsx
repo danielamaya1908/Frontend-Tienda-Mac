@@ -66,12 +66,12 @@ const PSEPayment = () => {
         productId: productId
       };
 
-      const response = await axios.post('http://localhost:3005/api/openpay/create-charge', paymentData);
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/create-charge', paymentData);
 
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data && response.data.payment_method && response.data.payment_method.url) {
-        await axios.post('http://localhost:3005/update-quantity', { items: cartItems });
+        await axios.post('https://backend-tienda-mac-production.up.railway.app/update-quantity', { items: cartItems });
         clearCart();
         window.location.href = response.data.payment_method.url;
       } else {
