@@ -1,10 +1,11 @@
 import React from 'react';
+import './SubNavbar.css';
 
 const SubNavbar = () => {
   return (
     <nav className="sub-navbar navbar navbar-expand-lg navbar-dark">
       <div className="container-fluid">
-        <ul className="navbar-nav mx-auto">
+        <ul className="sub-navbar-nav">
           <li className="nav-item">
             <a className="nav-link" href="LoNuevo">Lo Nuevo</a>
           </li>

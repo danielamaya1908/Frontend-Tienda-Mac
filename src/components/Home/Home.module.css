@@ -28,6 +28,29 @@ body {
   transform: translate(-50%, -50%);
 }
 
+.card-custom-bg {
+  background-color: #F8F9FA; /* Color de fondo de la tarjeta */
+}
+
+.card-img-container {
+  background-color: #F8F9FA; /* Color de fondo de la imagen */
+  height: 150px; /* Altura fija para el contenedor de la imagen */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.card-custom-text {
+  font-size: 0.75rem; /* Tamaño del texto más pequeño (12px) */
+}
+.card-custom-bg {
+  background-color: #F8F9FA;
+}
+.card-custom-text {
+  font-size: 0.75rem; /* Tamaño del texto más pequeño (12px) */
+}
+
 @media (max-width: 767px) {
   .content {
     width: 90%;
@@ -98,7 +121,7 @@ body {
   text-align: center; /* Alineación centrada */
   margin-top: 20px; /* Espacio superior */
   font-size: 24px; /* Tamaño de fuente */
-  color: #FFFFFF; /* Color del texto */
+  color: #e2dada; /* Color del texto */
 }
 
 .fadeIn {

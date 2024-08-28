@@ -1,18 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './NavBar.module.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+import React, { useState, useEffect, useRef } from 'react';
+import { Navbar as BootstrapNavbar, Nav, NavDropdown, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBag, faUser, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './NavBar.css';
 import logo from '../../img/Logo-letras-huecas-2-1536x985.png';
-import { Dropdown } from 'react-bootstrap';
 import LoginUser from '../Login/LoginUser';
 import UserInfo from '../Login/UserInfo';
 
 const Navbar = () => {
-  const navigate = useNavigate();
-
   const [showSearch, setShowSearch] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showUserInfo, setShowUserInfo] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [user, setUser] = useState(null);
+  const searchInputRef = useRef(null);
+
   const [showLoginUser, setShowLoginUser] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showIPhoneMenu, setShowIPhoneMenu] = useState(false);
@@ -26,12 +32,13 @@ const Navbar = () => {
   const [showContactMenu, setShowContactMenu] = useState(false);
   const [showSoundMenu, setShowSoundMenu] = useState(false);
   const [showOferMenu, setShowOferMenu] = useState(false);
-  const [user, setUser] = useState(null);
-  const [showUserInfo, setShowUserInfo] = useState(false);
 
-  const searchInputRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    setUser(storedUser);
+
     const handleClickOutside = (event) => {
       if (searchInputRef.current && !searchInputRef.current.contains(event.target)) {
         setShowSearch(false);
@@ -44,13 +51,6 @@ const Navbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
   const handleSearchClick = () => {
     setShowSearch(!showSearch);
   };
@@ -59,402 +59,296 @@ const Navbar = () => {
     if (user) {
       setShowUserInfo(!showUserInfo);
     } else {
-      setShowLoginUser(!showLoginUser);
+      setShowLoginForm(!showLoginForm);
     }
-  };
-
-  const handleLoginClose = () => {
-    setShowLoginUser(false);
-  };
-
-  const handleLoginSuccess = (loggedInUser) => {
-    setUser(loggedInUser);
-    setShowLoginUser(false);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    setUser(null);
-    setShowUserInfo(false);
   };
 
   const handleCartClick = () => {
     navigate('/cart');
   };
 
+  const handleSupportClick = () => {
+    navigate('/soporte-tecnico-client');
+  };
+
   const handleOutsideClick = (event) => {
     if (event.target === event.currentTarget) {
       setShowSearch(false);
+      setShowLoginForm(false);
+      setShowUserInfo(false);
     }
   };
 
+  const toggleMobileMenu = () => {
+    setShowMobileMenu(!showMobileMenu);
+  };
+
+  const handleDropdownMouseEnter = (dropdownName) => {
+    if (!showMobileMenu) {
+      setActiveDropdown(dropdownName);
+    }
+  };
+
+  const handleDropdownMouseLeave = () => {
+    if (!showMobileMenu) {
+      setActiveDropdown(null);
+    }
+  };
+
+  const toggleDropdown = (dropdownName) => {
+    if (showMobileMenu) {
+      setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName);
+    }
+  };
+
+  const handleLoginSuccess = (user) => {
+    setUser(user);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    setShowUserInfo(false);
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', color: 'rgba(255, 255, 255, 0.8)', position: "sticky", top: "0px", height: "60px", zIndex: 1000 }}>
-      <div className="container-fluid" style={{ pointerEvents: 'none' }}>
-      <div className="d-flex justify-content-between align-items-center w-100" style={{ pointerEvents: 'auto' }}>
-        <div className="d-flex justify-content-between align-items-center w-100">
-          <div className="d-flex align-items-center me-3">
-          <img
-            src={logo}
-            alt="Logo"
-            className="navbar-logo"
-            style={{ width: '150px', maxHeight: '90px', marginLeft: '20px', marginRight: '-30px', cursor: 'pointer' }}
-            onClick={() => window.location.href = '/'}
-          />
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span className="navbar-toggler-icon"></span>
-            </button>
-          </div>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto me-auto">
-            <li className="nav-item">
-              <Dropdown show={false}>
-                <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                  Descubre lo Nuevo
-                  <style>
-                    {`
-                      .dropdown-toggle::after {
-                        display: none !important;
-                      }
-                    `}
-                  </style>
-                </Dropdown.Toggle>
-                {/* No se muestra Dropdown.Menu */}
-              </Dropdown>
-            </li>
-              <li className="nav-item">
-                <Dropdown show={showMacMenu} onMouseEnter={() => setShowMacMenu(true)} onMouseLeave={() => setShowMacMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    Mac
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showMacMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="macAll">Macs</Dropdown.Item>
-                    <Dropdown.Item href="macbookAir">MacBook Air</Dropdown.Item>
-                    <Dropdown.Item href="macbookPro">MacBook Pro</Dropdown.Item>
-                    <Dropdown.Item href="imac">iMac</Dropdown.Item>
-                    <Dropdown.Item href="macMini">Mac mini</Dropdown.Item>
-                    <Dropdown.Item href="macStudio">Mac Studio</Dropdown.Item>
-                    {/* <Dropdown.Item href="studioDisplay">Studio Display</Dropdown.Item> */}
-                    <Dropdown.Item href="AccesoriosParaMac">Accesorios para Mac</Dropdown.Item>
-                    <Dropdown.Item href="MacUsed">Mac Usadas</Dropdown.Item>
-                    {/* <Dropdown.Item href="#">Comparar todas las Mac</Dropdown.Item>
-                    <Dropdown.Item href="#">Mac Does That</Dropdown.Item> */}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-              <li className="nav-item">
-                <Dropdown show={showIPadMenu} onMouseEnter={() => setShowIPadMenu(true)} onMouseLeave={() => setShowIPadMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    iPad
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showIPadMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="ipadAll">iPads</Dropdown.Item>
-                    <Dropdown.Item href="ipadPro">iPad Pro</Dropdown.Item>
-                    <Dropdown.Item href="ipadAir">iPad Air</Dropdown.Item>
-                    <Dropdown.Item href="ipad">iPad</Dropdown.Item>
-                    <Dropdown.Item href="ipadMini">iPad Mini</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaiPad">Accesorios para iPad</Dropdown.Item>
-                    <Dropdown.Item href="ipadUsed">iPad Usados</Dropdown.Item>
-                    {/* <Dropdown.Item href="#">Comparar todos los iPad</Dropdown.Item> */}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-              <li className="nav-item">
-                <Dropdown show={showIPhoneMenu} onMouseEnter={() => setShowIPhoneMenu(true)} onMouseLeave={() => setShowIPhoneMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                iPhone
-                <style>
-                  {`
-                    .dropdown-toggle::after {
-                      display: none !important;
-                    }
-                  `}
-                </style>
-              </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showIPhoneMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                  <Dropdown.Item href="iphoneAll">iPhones</Dropdown.Item>
-                    <Dropdown.Item href="iphone15pro">iPhone 15 Pro</Dropdown.Item>
-                    <Dropdown.Item href="iphone15">iPhone 15</Dropdown.Item>
-                    <Dropdown.Item href="iphone14pro">iPhone 14 Pro</Dropdown.Item>
-                    <Dropdown.Item href="iphone14">iPhone 14</Dropdown.Item>
-                    <Dropdown.Item href="iphone13pro">iPhone 13 Pro</Dropdown.Item>
-                    <Dropdown.Item href="iphone13">iPhone 13</Dropdown.Item>
-                    <Dropdown.Item href="iphone12">iPhone 12</Dropdown.Item>
-                    <Dropdown.Item href="iphone11">iPhone 11</Dropdown.Item>
-                    <Dropdown.Item href="iphoneSE">iPhone SE</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaiPhone">Accesorios para iPhone</Dropdown.Item>
-                    <Dropdown.Item href="iPhoneUsed">iPhone Usados</Dropdown.Item>
-                 {/*    <Dropdown.Item href="#">Comparar todos los iPhone</Dropdown.Item> */}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-              <li className="nav-item">
-                <Dropdown show={showAppleWatchMenu} onMouseEnter={() => setShowAppleWatchMenu(true)} onMouseLeave={() => setShowAppleWatchMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    Apple Watch
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showAppleWatchMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="AppleWatchAll">Watchs</Dropdown.Item>
-                    <Dropdown.Item href="AppleWatchUltra2">Apple Watch Ultra 2</Dropdown.Item>
-                    <Dropdown.Item href="AppleWatchUltra">Apple Watch Ultra</Dropdown.Item>
-                    <Dropdown.Item href="AppleWatchSeries9">Apple Watch Series 9</Dropdown.Item>
-                    <Dropdown.Item href="AppleWatchSeries8">Apple Watch Series 8</Dropdown.Item>
-                    <Dropdown.Item href="AppleWatchSeries7">Apple Watch Series 7</Dropdown.Item>
-                    <Dropdown.Item href="AppleWatchSE">Apple Watch SE</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaWatch">Accesorios para Apple Watch</Dropdown.Item>
-                    <Dropdown.Item href="AppleWatchUsed">Apple Watch Usados</Dropdown.Item>
-                  {/*   <Dropdown.Item href="#">Comparar todos los Apple Watch</Dropdown.Item> */}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-              <li className="nav-item">
-                <Dropdown show={showAirPodsMenu} onMouseEnter={() => setShowAirPodsMenu(true)} onMouseLeave={() => setShowAirPodsMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    AirPods
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showAirPodsMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="airpods">AirPods</Dropdown.Item>
-                    <Dropdown.Item href="airpodspro">AirPods Pro (2ª Gen)</Dropdown.Item>
-                    <Dropdown.Item href="airpods3gen">AirPods (3ª Gen)</Dropdown.Item>
-                    <Dropdown.Item href="airpods2gen">AirPods (2ª Gen)</Dropdown.Item>
-                    <Dropdown.Item href="airpodsmax">AirPods Max</Dropdown.Item>
-                    {/* <Dropdown.Item href="#">Parlantes, Audífonos y más</Dropdown.Item> */}
-                    <Dropdown.Item href="AccesoriosParaAirpods">Accesorios para AirPods</Dropdown.Item>
-                    <Dropdown.Item href="airpodsUsed">AirPods Usados</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-              <li className="nav-item">
-                <Dropdown show={showAppleTvMenu} onMouseEnter={() => setShowAppleTvMenu(true)} onMouseLeave={() => setShowAppleTvMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    Apple TV & Hogar
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showAppleTvMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="AppleTVyHogar">Apple TV & Hogar</Dropdown.Item>
-                    <Dropdown.Item href="AppleTV4k">Apple TV 4K</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaTVyHogar">Accesorios para Apple TV & Hogar</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-              <li className="nav-item">
-                <Dropdown show={showSoundMenu} onMouseEnter={() => setShowSoundMenu(true)} onMouseLeave={() => setShowSoundMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    Sonido
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showSoundMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="SonidoAll">Todo de Sonido</Dropdown.Item>
-                    <Dropdown.Item href="Jbl">JBL</Dropdown.Item>
-                    <Dropdown.Item href="Bose">BOSE</Dropdown.Item>
-                    <Dropdown.Item href="Harman">HARMAN</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-              <li className="nav-item">
-                <Dropdown show={showAccessoriesMenu} onMouseEnter={() => setShowAccessoriesMenu(true)} onMouseLeave={() => setShowAccessoriesMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    Accesorios
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showAccessoriesMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="AccesoriosAll">Todos los Accesorios</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaMac">Accesorios para Mac</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaiPad">Accesorios para iPad</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaiPhone">Accesorios para iPhone</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaWatch">Accesorios para Watch</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaAirpods">Accesorios para AirPods</Dropdown.Item>
-                    <Dropdown.Item href="AccesoriosParaTVyHogar">Accesorios para TV & Hogar</Dropdown.Item>
-                   {/*  <Dropdown.Item href="#">AirTag y Accesorios</Dropdown.Item> */}
-                  </Dropdown.Menu>
-                </Dropdown>
-                </li>
-                <li className="nav-item">
-                <Dropdown show={showOferMenu} onMouseEnter={() => setShowOferMenu(true)} onMouseLeave={() => setShowOferMenu(false)}>
-                  <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                    Ofertas
-                    <style>
-                      {`
-                        .dropdown-toggle::after {
-                          display: none !important;
-                        }
-                      `}
-                    </style>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu style={{ display: showOferMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                    <Dropdown.Item href="#">Ofertas del Mes</Dropdown.Item>
-                    <Dropdown.Item href="#">Ofertas Especiales</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </li>
-                <li className="nav-item">
-                  <Dropdown show={showCreditMenu} onMouseEnter={() => setShowCreditMenu(true)} onMouseLeave={() => setShowCreditMenu(false)}>
-                    <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                      Crédito
-                      <style>
-                        {`
-                          .dropdown-toggle::after {
-                            display: none !important;
-                          }
-                        `}
-                      </style>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu style={{ display: showCreditMenu ? 'block' : 'none', boxShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
-                      <Dropdown.Item href="#">Sistecredito</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </li>
-                <li className="nav-item">
-                  <Dropdown show={false}>
-                    <Dropdown.Toggle variant="dark" id="dropdown-basic" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', cursor: 'pointer', boxShadow: 'none', paddingRight: '0' }}>
-                      Soporte
-                      <style>
-                        {`
-                          .dropdown-toggle::after {
-                            display: none !important;
-                          }
-                        `}
-                      </style>
-                    </Dropdown.Toggle>
-                    {/* No se muestra Dropdown.Menu */}
-                  </Dropdown>
-                </li>
-                <li className="nav-item">
-  <Dropdown
-    show={showContactMenu}
-    onMouseEnter={() => setShowContactMenu(true)}
-    onMouseLeave={() => setShowContactMenu(false)}
-  >
-    <Dropdown.Toggle
-      variant="dark"
-      id="dropdown-basic"
-      style={{
-        backgroundColor: 'transparent',
-        border: 'none',
-        color: 'white',
-        cursor: 'pointer',
-        boxShadow: 'none',
-        paddingRight: '0',
-      }}
-    >
-      Contáctanos
-      <style>
-        {`
-          .dropdown-toggle::after {
-            display: none !important;
-          }
-        `}
-      </style>
-    </Dropdown.Toggle>
-    <Dropdown.Menu
-      style={{
-        display: showContactMenu ? 'block' : 'none',
-        boxShadow: '0 0 10px rgba(0,0,0,0.5)',
-      }}
-    >
-     <Dropdown.Item
-        href="https://api.whatsapp.com/send?phone=573173026445&text=%C2%A1Hola%20Tienda%20Mac!%20Me%20interesa%20comprar%201%20Parlante%20Aura%20studio%203%20(15W%20RMS-%20100W%20RMS,%20Negro).%20%C2%BFPodr%C3%ADan%20darme%20m%C3%A1s%20informaci%C3%B3n?"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Whatsapp
-      </Dropdown.Item>
-      <Dropdown.Item
-        href="https://mail.google.com/mail/?view=cm&fs=1&to=info@tiendapc.com.co&su=Consulta%20de%20producto&body=%C2%A1Hola%20Tienda%20Mac!%20Me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20:"
-      >
-        Correo electrónico
-      </Dropdown.Item>
-    </Dropdown.Menu>
-  </Dropdown>
-</li>
-            </ul>
-            </div>
-            <div className="d-flex me-3">
-          <div className="d-flex align-items-center me-3">
-            <FontAwesomeIcon
-              icon={faShoppingBag}
-              onClick={handleCartClick}
-              style={{ cursor: 'pointer', color: 'rgba(255, 255, 255, 0.5)' }}
+    <>
+      <BootstrapNavbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" className="navbar-custom">
+        <Container fluid className="container-fluid-custom navbar-container-fluid">
+          <BootstrapNavbar.Brand href="/">
+            <img
+              src={logo}
+              alt="Logo"
+              className="navbar-logo"
+              onClick={() => window.location.href = '/'}
             />
-          </div>
-         <div className="d-flex align-items-center me-3">
-        <FontAwesomeIcon
-          icon={faUser}
-          onClick={handleUserClick}
-          style={{ cursor: 'pointer', color: 'rgba(255, 255, 255, 0.5)' }}
-        />
-        {showLoginUser && <LoginUser onClose={handleLoginClose} onLoginSuccess={handleLoginSuccess} />}
-        {showUserInfo && user && (
-  <UserInfo 
-    user={user} 
-    onLogout={handleLogout} 
-    onClose={() => setShowUserInfo(false)} 
-  />
-)}
-      </div>
-            <span className="nav-link" style={{ color: 'rgba(255, 255, 255, 0.5)' }} onClick={handleSearchClick}>
-                <FontAwesomeIcon icon={faSearch} />
-              </span>
+          </BootstrapNavbar.Brand>
+          <div className="d-flex order-lg-2">
+            <div className="d-flex align-items-center me-2">
+              <FontAwesomeIcon
+                icon={faShoppingBag}
+                onClick={handleCartClick}
+                style={{ cursor: 'pointer', color: '#f8f9fa' }}
+              />
             </div>
+            <div className="d-flex align-items-center me-2" style={{ position: 'relative' }}>
+            <FontAwesomeIcon
+              icon={faUser}
+              onClick={handleUserClick}
+              style={{ cursor: 'pointer', color: '#f8f9fa' }}
+            />
+            {showLoginForm && <LoginUser onClose={() => setShowLoginForm(false)} onLoginSuccess={handleLoginSuccess} />}
+            {showUserInfo && user && (
+              <UserInfo
+                user={user}
+                onLogout={handleLogout}
+                onClose={() => setShowUserInfo(false)}
+                className="user-info-container"
+              />
+            )}
           </div>
-        </div>
-        {showSearch && (
-          <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style={{ zIndex: 1050, backgroundColor: 'rgba(0, 0, 0, 0.4)' }} onClick={handleOutsideClick}>
-            <div className="input-group mt-3" style={{ width: '80vw', maxWidth: '400px', backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: '20px', borderRadius: '5px' }}>
-              <input type="text" className="form-control" placeholder="Buscar en Tienda Mac..." aria-label="Buscar en Tienda Mac" aria-describedby="button-addon2" style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', color: 'black' }} />
-              <button className="btn btn-outline-secondary" type="button" id="button-addon2">Buscar</button>
-            </div>
+            <span className="nav-link d-flex align-items-center me-2" style={{ color: '#f8f9fa' }} onClick={handleSearchClick}>
+              <FontAwesomeIcon icon={faSearch} />
+            </span>
           </div>
-        )}
-      </div>
-    </nav>
+          <BootstrapNavbar.Toggle aria-controls="responsive-navbar-nav" onClick={toggleMobileMenu} />
+          <BootstrapNavbar.Collapse id="responsive-navbar-nav" className={showMobileMenu ? 'show' : ''}>
+            <Nav className="mr-auto ">
+              <Nav.Link>Descubre lo nuevo</Nav.Link>
+              <NavDropdown
+                title="Mac"
+                id="mac-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'mac'}
+                onClick={() => toggleDropdown('mac')}
+                onMouseEnter={() => handleDropdownMouseEnter('mac')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+                <NavDropdown.Item href="macAll">Macs</NavDropdown.Item>
+                <NavDropdown.Item href="macbookAir">MacBook Air</NavDropdown.Item>
+                <NavDropdown.Item href="macbookPro">MacBook Pro</NavDropdown.Item>
+                <NavDropdown.Item href="imac">iMac</NavDropdown.Item>
+                <NavDropdown.Item href="macMini">Mac Mini</NavDropdown.Item>
+                <NavDropdown.Item href="macStudio">Mac Studio</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaMac">Accesorios para Mac</NavDropdown.Item>
+                <NavDropdown.Item href="MacUsed">Mac Usadas</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown
+                title="iPads"
+                id="ipads-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'ipads'}
+                onClick={() => toggleDropdown('ipads')}
+                onMouseEnter={() => handleDropdownMouseEnter('ipads')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+                <NavDropdown.Item href="ipadAll">iPads</NavDropdown.Item>
+                <NavDropdown.Item href="ipadPro">iPad Pro</NavDropdown.Item>
+                <NavDropdown.Item href="ipadAir">iPad Air</NavDropdown.Item>
+                <NavDropdown.Item href="ipad">iPad</NavDropdown.Item>
+                <NavDropdown.Item href="ipadMini">iPad Mini</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaiPad">Accesorios para iPad</NavDropdown.Item>
+                <NavDropdown.Item href="ipadUsed">iPad Usados</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown
+                title="iPhones"
+                id="iphones-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'iphones'}
+                onClick={() => toggleDropdown('iphones')}
+                onMouseEnter={() => handleDropdownMouseEnter('iphones')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+                <NavDropdown.Item href="iphoneAll">iPhones</NavDropdown.Item>
+                <NavDropdown.Item href="iphone15pro">iPhone 15 Pro</NavDropdown.Item>
+                <NavDropdown.Item href="iphone15">iPhone 15</NavDropdown.Item>
+                <NavDropdown.Item href="iphone14pro">iPhone 14 Pro</NavDropdown.Item>
+                <NavDropdown.Item href="iphone14">iPhone 14</NavDropdown.Item>
+                <NavDropdown.Item href="iphone13pro">iPhone 13 Pro</NavDropdown.Item>
+                <NavDropdown.Item href="iphone13">iPhone 13</NavDropdown.Item>
+                <NavDropdown.Item href="iphone12">iPhone 12</NavDropdown.Item>
+                <NavDropdown.Item href="iphone11">iPhone 11</NavDropdown.Item>
+                <NavDropdown.Item href="iphoneSE">iPhone SE</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaiPhone">Accesorios para iPhone</NavDropdown.Item>
+                <NavDropdown.Item href="iPhoneUsed">iPhone Usados</NavDropdown.Item>
+              </NavDropdown>
+              
+              <NavDropdown
+                title="Apple Watch"
+                id="applewatch-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'applewatch'}
+                onClick={() => toggleDropdown('applewatch')}
+                onMouseEnter={() => handleDropdownMouseEnter('applewatch')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+              <NavDropdown.Item href="AppleWatchAll">Watchs</NavDropdown.Item>
+              <NavDropdown.Item href="AppleWatchUltra2">Apple Watch Ultra 2</NavDropdown.Item>
+              <NavDropdown.Item href="AppleWatchUltra">Apple Watch Ultra</NavDropdown.Item>
+              <NavDropdown.Item href="AppleWatchSeries9">Apple Watch Series 9</NavDropdown.Item>
+              <NavDropdown.Item href="AppleWatchSeries8">Apple Watch Series 8</NavDropdown.Item>
+              <NavDropdown.Item href="AppleWatchSeries7">Apple Watch Series 7</NavDropdown.Item>
+              <NavDropdown.Item href="AppleWatchSE">Apple Watch SE</NavDropdown.Item>
+              <NavDropdown.Item href="AccesoriosParaWatch">Accesorios para Apple Watch</NavDropdown.Item>
+              <NavDropdown.Item href="AppleWatchUsed">Apple Watch Usados</NavDropdown.Item>
+
+              </NavDropdown>
+              <NavDropdown
+                title="AirPods"
+                id="airpods-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'airpods'}
+                onClick={() => toggleDropdown('airpods')}
+                onMouseEnter={() => handleDropdownMouseEnter('airpods')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+                <NavDropdown.Item href="airpods">AirPods</NavDropdown.Item>
+                <NavDropdown.Item href="airpodspro">AirPods Pro (2ª Gen)</NavDropdown.Item>
+                <NavDropdown.Item href="airpods3gen">AirPods (3ª Gen)</NavDropdown.Item>
+                <NavDropdown.Item href="airpods2gen">AirPods (2ª Gen)</NavDropdown.Item>
+                <NavDropdown.Item href="airpodsmax">AirPods Max</NavDropdown.Item>
+                {/* <NavDropdown.Item href="#">Parlantes, Audífonos y más</NavDropdown.Item> */}
+                <NavDropdown.Item href="AccesoriosParaAirpods">Accesorios para AirPods</NavDropdown.Item>
+                <NavDropdown.Item href="airpodsUsed">AirPods Usados</NavDropdown.Item>
+
+              </NavDropdown>
+              <NavDropdown
+                title="Apple TV & Hogar"
+                id="appletv-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'appletv'}
+                onClick={() => toggleDropdown('appletv')}
+                onMouseEnter={() => handleDropdownMouseEnter('appletv')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+               <NavDropdown.Item href="AppleTVyHogar">Apple TV & Hogar</NavDropdown.Item>
+              <NavDropdown.Item href="AppleTV4k">Apple TV 4K</NavDropdown.Item>
+              <NavDropdown.Item href="AccesoriosParaTVyHogar">Accesorios para Apple TV & Hogar</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown
+                title="Sonido"
+                id="sonido-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'sonido'}
+                onClick={() => toggleDropdown('sonido')}
+                onMouseEnter={() => handleDropdownMouseEnter('sonido')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+                <NavDropdown.Item href="SonidoAll">Todo de Sonido</NavDropdown.Item>
+                <NavDropdown.Item href="Jbl">JBL</NavDropdown.Item>
+                <NavDropdown.Item href="Bose">BOSE</NavDropdown.Item>
+                <NavDropdown.Item href="Harman">HARMAN</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown
+                title="Accesorios"
+                id="accesorios-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'accesorios'}
+                onClick={() => toggleDropdown('accesorios')}
+                onMouseEnter={() => handleDropdownMouseEnter('accesorios')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+               <NavDropdown.Item href="AccesoriosAll">Todos los Accesorios</NavDropdown.Item>
+              <NavDropdown.Item href="AccesoriosParaMac">Accesorios para Mac</NavDropdown.Item>
+              <NavDropdown.Item href="AccesoriosParaiPad">Accesorios para iPad</NavDropdown.Item>
+              <NavDropdown.Item href="AccesoriosParaiPhone">Accesorios para iPhone</NavDropdown.Item>
+              <NavDropdown.Item href="AccesoriosParaWatch">Accesorios para Watch</NavDropdown.Item>
+              <NavDropdown.Item href="AccesoriosParaAirpods">Accesorios para AirPods</NavDropdown.Item>
+              <NavDropdown.Item href="AccesoriosParaTVyHogar">Accesorios para TV & Hogar</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown
+              title="Ofertas"
+              id="ofertas-dropdown"
+              className="no-caret"
+              show={activeDropdown === 'ofertas'}
+              onClick={() => toggleDropdown('ofertas')}
+              onMouseEnter={() => handleDropdownMouseEnter('ofertas')}
+              onMouseLeave={handleDropdownMouseLeave}
+              >
+              <NavDropdown.Item href="#">Ofertas Especiales</NavDropdown.Item>
+              <NavDropdown.Item href="#">Ofertas del Mes</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown
+              title="Crédito"
+              id="credito-dropdown"
+              className="no-caret"
+              show={activeDropdown === 'credito'}
+              onClick={() => toggleDropdown('credito')}
+              onMouseEnter={() => handleDropdownMouseEnter('credito')}
+              onMouseLeave={handleDropdownMouseLeave}
+              >
+              <NavDropdown.Item href="#">Sistecredito</NavDropdown.Item>
+              </NavDropdown>
+              <NavDropdown
+  title="Contáctanos"
+  id="contactanos-dropdown"
+  className="no-caret"
+  show={activeDropdown === 'contactanos'}
+  onClick={() => toggleDropdown('contactanos')}
+  onMouseEnter={() => handleDropdownMouseEnter('contactanos')}
+  onMouseLeave={handleDropdownMouseLeave}
+>
+  <NavDropdown.Item
+    href="https://api.whatsapp.com/send?phone=573173026445&text=%C2%A1Hola%20Tienda%20Mac!%20Me%20interesa%20comprar%201%20Parlante%20Aura%20studio%203%20(15W%20RMS-%20100W%20RMS,%20Negro).%20%C2%BFPodr%C3%ADas%20darme%20informaci%C3%B3n%20adicional%3F%20Gracias!"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Whatsapp
+  </NavDropdown.Item>
+  <NavDropdown.Item
+    href="https://mail.google.com/mail/?view=cm&fs=1&to=info@tiendapc.com.co&su=Consulta%20de%20producto&body=%C2%A1Hola%20Tienda%20Mac!%20Me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20:"
+  >
+    Correo electrónico
+  </NavDropdown.Item>
+</NavDropdown>
+
+              <Nav.Link href="#" onClick={handleSupportClick}>Soporte</Nav.Link>
+            </Nav>
+          </BootstrapNavbar.Collapse>
+        </Container>
+      </BootstrapNavbar>
+    </>
   );
 };
 

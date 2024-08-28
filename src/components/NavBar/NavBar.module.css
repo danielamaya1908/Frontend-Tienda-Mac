@@ -1,14 +1,234 @@
-.navbar {
-    background-color: #000000 /* Fondo del navbar negro más oscuro */
+/* Estilos generales del navbar */
+.navbar-dark {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.navbar-dark .navbar-brand,
+.navbar-dark .navbar-nav .nav-link {
+  color: #fff;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #ddd;
+}
+
+.navbar-fixed-top {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 800;
+}
+
+/* Margin for content below navbar */
+.navbar + * {
+  margin-top: 60px;
+}
+
+/* Estilos para los elementos del menú */
+.navbar-nav {
+  width: 100%;
+}
+
+.navbar-nav .nav-item {
+  padding: 0px; /* Espaciado uniforme entre los elementos del menú */
+}
+
+
+.navbar-dark .navbar-nav .nav-link {
+  color: #fff;  /* Changed to full white */
+  transition: color 0.3s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+  color: rgba(255,255,255,.75);
+}
+
+/* Estilos para los dropdowns */
+.no-caret .dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-menu {
+  margin-top: 0;
+  border-radius: 0;
+}
+
+.dropdown-item {
+  padding: .5rem 1.5rem;
+  font-weight: 400;
+  color: #212529;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: #16181b;
+  text-decoration: none;
+  background-color: #f8f9fa;
+}
+
+/* Estilos para los iconos */
+.nav-link .fa-icon {
+  font-size: 1.2em;
+}
+
+/* Estilos para el botón de toggle en móvil */
+.navbar-toggler {
+  border-color: #f8f9fa;
+  margin-right: 15px;
+  margin-top: -20px;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Estilos para los overlays */
+.search-overlay,
+.login-overlay,
+.user-info-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.search-form-container,
+.login-form-container,
+/* Estilos para el contenedor de la información del usuario */
+.user-info-container {
+  position: absolute; /* Posiciona absolutamente con respecto al contenedor padre */
+  top: -19px; /* Coloca el contenedor justo debajo del icono de usuario */
+  right: -15px; /* Alinea el contenedor a la derecha */
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1002;
+  padding: 10px;
+  width: 250px; /* Puedes ajustar el ancho según sea necesario */
+}
+
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Estilos para pantallas grandes (escritorio) */
+@media (min-width: 992px) {
+  .navbar-nav .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+    background-color: white;
+    color: #212529;
+  }
+
+  /* Mantener un diseño fluido en pantallas grandes */
+  .navbar-container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+    max-height: 50px;
+  }
+}
+
+/* Estilos para pantallas pequeñas (móvil) */
+@media (max-width: 991px) {
+  .navbar-collapse {
+    position: absolute;
+    top: 56px;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 1rem;
+  }
+
+  .user-info-container {
+    position: absolute; /* Posiciona absolutamente con respecto al contenedor padre */
+    top: -19px; /* Coloca el contenedor justo debajo del icono de usuario */
+    right: -100px; /* Alinea el contenedor a la derecha */
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1002;
+    padding: 10px;
+    width: 250px; /* Puedes ajustar el ancho según sea necesario */
   }
   
-  .navbar-nav .nav-link {
-    color: #000000/* Letras oscuras en el navbar */
+  .d-flex.order-lg-2 {
+    position: absolute;
+    right: 80px;
+    top: 23px;
   }
   
-  .navbar-nav .nav-link:hover {
-    color: #ffffff; /* Cambiar color al pasar el mouse */
+  .navbar-nav {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
+  
+  .navbar-nav .dropdown-menu {
+    position: static;
+    float: none;
+    width: auto;
+    margin-top: 0;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+  }
+
+  .navbar-nav .dropdown-item {
+    color: #212529;
+  }
+
+  .navbar-nav .dropdown-item:hover,
+  .navbar-nav .dropdown-item:focus {
+    color: #16181b;
+    background-color: #f8f9fa;
+  }
+  
+  .no-caret:hover .dropdown-menu {
+    display: none;
+  }
+  
+  .no-caret.show .dropdown-menu {
+    display: block;
+  }
+
+  /* Ajustar el contenedor fluido en móviles */
+  .navbar-container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+    max-height: 40px; /* Ajuste de altura similar al escritorio */
+  }
+}
+.navbar-logo {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px; /* Puedes ajustar esto si es necesario */
+  margin-top: -10px;
+  margin-left: 20px;
+  margin-right: -10px;
+  cursor: pointer;
+}
+@media (max-width: 768px) {
   .navbar-logo {
-    margin-right: 500px; /* Ajusta el margen derecho según tu necesidad */
+    max-width: 100px; /* Tamaño menor en pantallas pequeñas */
+    max-height: 60px; /* Altura menor en pantallas pequeñas */
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-logo {
+    max-width: 100px; /* Tamaño aún menor en pantallas muy pequeñas */
+    max-height: 90px; /* Altura menor en pantallas muy pequeñas */
+  }
 }
