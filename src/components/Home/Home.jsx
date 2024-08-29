@@ -199,7 +199,7 @@ const Home = () => {
     <div className="row g-2 flex-grow-1 mx-2 justify-content-center">
       {/* Productos (4 por página) */}
       {newProducts.slice(currentNewPage * 4, currentNewPage * 4 + 4).map((product) => (
-        <div key={product.id} className="col-9 col-sm-6 col-md-4 col-lg-3">
+        <div key={product.id} className="col-10 col-sm-6 col-md-4 col-lg-3">
           <div className="card h-100 border-0 bg-light d-flex flex-column" style={{ maxWidth: '300px', margin: '0 auto' }}>
             <div className="d-flex align-items-center justify-content-center" style={{ height: '150px', overflow: 'hidden' }}>
               <img src={newProductImages[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
