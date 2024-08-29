@@ -19,6 +19,7 @@
   color: #333;
   font-weight: 700;
   margin-bottom: 30px;
+  text-align: center; /* Centrar el título */
 }
 
 .cart-item {
@@ -56,6 +57,7 @@
   background-color: #f8f9fa;
   border: none;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px; /* Ajustar el margen inferior */
 }
 
 .btn {
@@ -74,5 +76,32 @@
 
   .cart-item-image {
     height: 100px;
+  }
+
+  .cart-title {
+    font-size: 1.5rem;
+  }
+
+  .quantity {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .cart-container {
+    padding: 15px;
+  }
+
+  .cart-item-image {
+    height: 80px;
+  }
+
+  .cart-title {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+
+  .quantity {
+    font-size: 0.9rem;
   }
 }

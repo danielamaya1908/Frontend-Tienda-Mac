@@ -92,7 +92,7 @@ const Cart = () => {
   }
 
   return (
-    <div className={styles.cartPage}>
+    <div className={styles.cartPage} style={{ paddingTop: '60px' }}>
       <Navbar />
       <Container className={`my-5 ${styles.cartContainer}`}>
         <h2 className={`${styles.cartTitle} text-center mb-4`}>

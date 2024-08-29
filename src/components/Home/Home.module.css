@@ -44,18 +44,6 @@ body {
 .card-custom-text {
   font-size: 0.75rem; /* Tamaño del texto más pequeño (12px) */
 }
-.card-custom-bg {
-  background-color: #F8F9FA;
-}
-.card-custom-text {
-  font-size: 0.75rem; /* Tamaño del texto más pequeño (12px) */
-}
-
-@media (max-width: 767px) {
-  .content {
-    width: 90%;
-  }
-}
 
 .color-757575ff {
   color: #757575ff;
@@ -117,6 +105,7 @@ body {
   width: 100%; /* Ajuste para que la imagen ocupe toda la tarjeta */
   object-fit: cover; /* Ajusta la imagen para que se vea completa */
 }
+
 .homeContainer h2 {
   text-align: center; /* Alineación centrada */
   margin-top: 20px; /* Espacio superior */
@@ -132,4 +121,64 @@ body {
 .fadeOut {
   opacity: 0;
   transition: opacity 0.3s ease-out;
+}
+
+/* Media Queries */
+
+@media (max-width: 1200px) {
+  .content {
+    width: 80%;
+  }
+
+  .card-img-container {
+    height: 120px; /* Ajusta la altura según sea necesario */
+  }
+}
+
+@media (max-width: 992px) {
+  .content {
+    width: 90%;
+  }
+
+  .card-img-container {
+    height: 100px; /* Ajusta la altura según sea necesario */
+  }
+
+  .homeContainer h2 {
+    font-size: 20px; /* Tamaño de fuente más pequeño para pantallas medianas */
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    height: auto; /* Ajusta la altura para pantallas más pequeñas */
+  }
+
+  .content {
+    width: 95%;
+    font-size: 0.9rem; /* Tamaño de fuente más pequeño para pantallas pequeñas */
+  }
+
+  .card-img-container {
+    height: 80px; /* Ajusta la altura según sea necesario */
+  }
+
+  .homeContainer h2 {
+    font-size: 18px; /* Tamaño de fuente más pequeño para pantallas pequeñas */
+  }
+}
+
+@media (max-width: 576px) {
+  .content {
+    width: 100%;
+    font-size: 0.8rem; /* Tamaño de fuente aún más pequeño para pantallas muy pequeñas */
+  }
+
+  .card-img-container {
+    height: 60px; /* Ajusta la altura según sea necesario */
+  }
+
+  .homeContainer h2 {
+    font-size: 16px; /* Tamaño de fuente más pequeño para pantallas muy pequeñas */
+  }
 }

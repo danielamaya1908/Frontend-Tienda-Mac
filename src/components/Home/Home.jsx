@@ -187,107 +187,101 @@ const Home = () => {
 
   return (
     <div className={styles.homeContainer}>
-      <img src={appleImage} alt="Apple" className={`img-fluid ${styles.customImg}`} />  
-      {/* Sección "Lo Nuevo" */}
-      <div className="container-fluid">
-        <div className="text-center my-4">
+    <img src={appleImage} alt="Apple" className={`img-fluid ${styles.customImg}`} />  
+    <div className="container-fluid">
+    <div className="text-center my-4">
           <h2>Productos Más Recientes</h2>
-          <br></br>
         </div>
-        <div className="container-fluid px-5">
-          <div className="row justify-content-center">
-          <div className="col-12">
-  <div className="d-flex align-items-center justify-content-between mb-3">
-    <button className="btn btn-primary rounded-circle" onClick={prevNewPage}>&lt;</button>
-    <div className="row g-2 flex-grow-1 mx-3">
-      {newProducts.slice(currentNewPage * productsPerPageNew, (currentNewPage + 1) * productsPerPageNew).map((product) => (
-        <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-          <div className="card h-100 border-0 card-custom-bg d-flex flex-column" style={{ maxWidth: '300px', margin: 'auto' }}>
-            <div className="card-img-container" style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src={newProductImages[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-            </div>
-            <div className="card-body text-center d-flex flex-column justify-content-between p-2">
-              <h6 className="card-title text-truncate" style={{ fontSize: '1rem', margin: '0' }}>{product.name}</h6>
-              <p className="card-text text-truncate" style={{ fontSize: '0.875rem', margin: '0' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
-              <a href={`/detalle-producto/${product.id}`} className="btn btn-primary mt-2">Comprar</a>
-            </div>
+    <div className="col-12">
+<div className="d-flex align-items-center justify-content-between mb-3">
+  <button className="btn btn-primary rounded-circle" onClick={prevNewPage}>&lt;</button>
+  <div className="row g-2 flex-grow-1 mx-2 justify-content-center">
+    {/* Productos (4 por página) */}
+    {newProducts.slice(currentNewPage * 4, currentNewPage * 4 + 4).map((product) => (
+      <div key={product.id} className="col-11 col-sm-3 col-md-3">
+        <div className="card h-100 border-0 card-custom-bg d-flex flex-column">
+          <div className="d-flex align-items-center justify-content-center" style={{ height: '150px', overflow: 'hidden' }}>
+            <img src={newProductImages[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
           </div>
-        </div>
-      ))}
-    </div>
-    <button className="btn btn-primary rounded-circle" onClick={nextNewPage}>&gt;</button>
-  </div>
-
-              <br></br>
-      {/* Sección "Productos Destacados" */}
-      <SubNavbar />
-          <br/>
-            </div>
-            <div className="col-12">
-            <div className="d-flex align-items-center justify-content-between mb-3">
-              <button className="btn btn-primary rounded-circle" onClick={prevFeaturedPage}>&lt;</button>
-              <div className="row g-2 flex-grow-1 mx-3">
-                {/* Productos (4 arriba y 4 abajo) */}
-                {featuredProducts.slice(currentFeaturedPage * productsPerPageFeatured, currentFeaturedPage * productsPerPageFeatured + 8).map((product) => (
-                  <div key={product.id} className="col-12 col-sm-6 col-md-3">
-                    <div className="card h-100 border-0 card-custom-bg d-flex flex-column">
-                      <div className="d-flex align-items-center justify-content-center" style={{ height: '150px', overflow: 'hidden' }}>
-                        <img src={featuredProductImages[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                      </div>
-                      <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-2">
-                      <h6 className="card-title text-truncate" style={{ fontSize: '1.25rem' }}>{product.name}</h6>
-                      <p className="card-text text-truncate" style={{ fontSize: '1rem' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
-                        <a href={`/detalle-producto/${product.id}`} className="btn btn-primary mt-2">
-                          Comprar
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button className="btn btn-primary rounded-circle" onClick={nextFeaturedPage}>&gt;</button>
-            </div>
-          </div>
-          </div>
-          <br/>
-      {/* Sección "Accesorios" */}
-          <h2>Accesorios</h2>
-          <br></br>
-        </div>
-        <div className="container-fluid px-5">
-          <div className="row justify-content-center">
-          <div className="col-12">
-  <div className="d-flex align-items-center justify-content-between mb-3">
-    <button className="btn btn-primary rounded-circle" onClick={prevPage}>&lt;</button>
-    <div className="row g-2 flex-grow-1 mx-1">
-      {homeProducts.slice(currentPage * productsPerPageAccessories, (currentPage + 1) * productsPerPageAccessories).map((product) => (
-        <div key={product.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
-          <div className="card h-100 border-0 bg-light d-flex flex-column" style={{ maxWidth: '300px', margin: 'auto' }}>
-            <div className="card-img-container" style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-              <img src={productImages[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-            </div>
-            <div className="card-body text-center d-flex flex-column justify-content-between p-2">
-              <h6 className="card-title text-truncate" style={{ fontSize: '1.25rem', margin: '0' }}>{product.name}</h6>
-              <p className="card-text text-truncate" style={{ fontSize: '1rem', margin: '0' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
-              <a href={`/detalle-producto/${product.id}`} className="btn btn-primary mt-2">Comprar</a>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-    <button className="btn btn-primary rounded-circle" onClick={nextPage}>&gt;</button>
-  </div>
-
-            </div>
+          <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-2">
+            <h6 className="card-title text-truncate" style={{ fontSize: '1rem' }}>{product.name}</h6>
+            <p className="card-text text-truncate" style={{ fontSize: '0.875rem' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
+            <a href={`/detalle-producto/${product.id}`} className="btn btn-primary mt-2">
+              Comprar
+            </a>
           </div>
         </div>
       </div>
-      <br></br>
-      <br></br>
-      
-      <Footer />
+    ))}
+  </div>
+  <button className="btn btn-primary rounded-circle" onClick={nextNewPage}>&gt;</button>
+</div>
+</div>
+<br/>
+
+      {/* Sección "Productos Destacados" */}
+      <div>
+    <SubNavbar />
     </div>
-  );
+    <br/>
+      <div className="col-12">
+          <div className="d-flex align-items-center justify-content-between mb-3">
+            <button className="btn btn-primary rounded-circle" onClick={prevFeaturedPage}>&lt;</button>
+            <div className="row g-2 flex-grow-1 mx-3">
+              {/* Productos (4 arriba y 4 abajo) */}
+              {featuredProducts.slice(currentFeaturedPage * productsPerPageFeatured, currentFeaturedPage * productsPerPageFeatured + 8).map((product) => (
+                <div key={product.id} className="col-12 col-sm-6 col-md-3">
+                  <div className="card h-100 border-0 card-custom-bg d-flex flex-column">
+                    <div className="d-flex align-items-center justify-content-center" style={{ height: '150px', overflow: 'hidden' }}>
+                      <img src={featuredProductImages[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                    </div>
+                    <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-2">
+                    <h6 className="card-title text-truncate" style={{ fontSize: '1.25rem' }}>{product.name}</h6>
+                    <p className="card-text text-truncate" style={{ fontSize: '1rem' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
+                      <a href={`/detalle-producto/${product.id}`} className="btn btn-primary mt-2">
+                        Comprar
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button className="btn btn-primary rounded-circle" onClick={nextFeaturedPage}>&gt;</button>
+          </div>
+      </div>
+      <br/>
+      {/* Sección "Accesorios" */}
+          <div className="text-center my-4">
+          <h2>Accesorios</h2>
+        </div>
+      <div className="col-12">
+      <div className="d-flex align-items-center justify-content-between mb-3">
+        <button className="btn btn-primary rounded-circle" style={{ width: '36px', height: '36px', padding: '0' }} onClick={prevPage}>&lt;</button>
+        <div className="row g-2 flex-grow-1 mx-2 justify-content-center">
+          {homeProducts.slice(currentPage * 4, (currentPage + 1) * 4).map((product) => (
+            <div key={product.id} className="col-10 col-sm-6 col-md-4 col-lg-3">
+              <div className="card h-100 border-0 bg-light d-flex flex-column" style={{ maxWidth: '300px', margin: '0' }}>
+                <div className="card-img-container" style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                  <img src={productImages[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                </div>
+                <div className="card-body text-center d-flex flex-column justify-content-between p-2">
+                  <h6 className="card-title text-truncate" style={{ fontSize: '1.25rem', margin: '0' }}>{product.name}</h6>
+                  <p className="card-text text-truncate" style={{ fontSize: '1rem', margin: '0' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
+                  <a href={`/detalle-producto/${product.id}`} className="btn btn-primary mt-2">Comprar</a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button className="btn btn-primary rounded-circle" style={{ width: '36px', height: '36px', padding: '0' }} onClick={nextPage}>&gt;</button>
+      </div>
+    </div>
+    <br/>
+
+     </div>
+    <Footer />
+  </div>
+);
 };
 
 export default Home;
