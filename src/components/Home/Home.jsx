@@ -185,6 +185,7 @@ const Home = () => {
     );
   };
 
+  
   return (
     <div className={styles.homeContainer}>
     <img src={appleImage} alt="Apple" className={`img-fluid ${styles.customImg}`} />  
@@ -194,11 +195,11 @@ const Home = () => {
         </div>
     <div className="col-12">
 <div className="d-flex align-items-center justify-content-between mb-3">
-  <button className="btn btn-primary rounded-circle" onClick={prevNewPage}>&lt;</button>
+  <button className="btn btn-primary rounded-circle" style={{ width: '36px', height: '36px', padding: '0' }} onClick={prevNewPage}>&lt;</button>
   <div className="row g-2 flex-grow-1 mx-2 justify-content-center">
     {/* Productos (4 por página) */}
     {newProducts.slice(currentNewPage * 4, currentNewPage * 4 + 4).map((product) => (
-      <div key={product.id} className="col-11 col-sm-3 col-md-3">
+      <div key={product.id} className="col-10 col-sm-6 col-md-4 col-lg-3">
         <div className="card h-100 border-0 card-custom-bg d-flex flex-column">
           <div className="d-flex align-items-center justify-content-center" style={{ height: '150px', overflow: 'hidden' }}>
             <img src={newProductImages[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
@@ -214,7 +215,7 @@ const Home = () => {
       </div>
     ))}
   </div>
-  <button className="btn btn-primary rounded-circle" onClick={nextNewPage}>&gt;</button>
+  <button className="btn btn-primary rounded-circle" style={{ width: '36px', height: '36px', padding: '0' }} onClick={nextNewPage}>&gt;</button>
 </div>
 </div>
 <br/>
