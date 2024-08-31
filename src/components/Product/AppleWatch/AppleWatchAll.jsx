@@ -75,4 +75,3 @@ const AppleWatchAll = () => {
 };
 
 export default AppleWatchAll;
-
