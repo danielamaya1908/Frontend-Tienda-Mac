@@ -41,34 +41,34 @@ const IphoneSE = () => {
     <div className="iphone-products">
       <Navbar />
       <div className="container py-5">
-        <h1 className="text-center mb-4">iPhone SE</h1>
+        <h1 className="text-center mb-4 fs-4">iPhone SE</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {iphoneProducts.map((product) => (
             <div className="col" key={product.id}>
-              <div className="card h-100" style={{ width: '22rem' }}>
-                <div className="card-img-top ratio ratio-16x9 border border-secondary rounded-top">
-                  {productImages[product.id] && productImages[product.id][0] && (
-                    <img src={productImages[product.id][0]} alt={`Product ${product.name}`} className="img-fluid rounded-top" />
-                  )}
-                </div>
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title"><strong>{product.name}</strong></h5>
-                  <p className="card-text">Capacidad: <strong>{product.capacityName}</strong></p>
-                  <p className="card-text">Precio: <strong>{formatPrice(product.price)}</strong></p>
-                  <div className="mt-auto d-flex justify-content-between">
-                  <a href={`/detalle-producto/${product.id}`} className="btn btn-primary">
-                      Comprar
-                    </a>
+              <a href={`/detalle-producto/${product.id}`} className="text-decoration-none">
+                <div className="card h-100 small-card">
+                  <div className="card-img-top ratio ratio-16x9 border border-secondary rounded-top">
+                    {productImages[product.id] && productImages[product.id][0] && (
+                      <img src={productImages[product.id][0]} alt={`Product ${product.name}`} className="img-fluid rounded-top" />
+                    )}
+                  </div>
+                  <div className="card-body d-flex flex-column">
+                    <h5 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h5>
+                    <p className="card-text fs-7 text-truncate">Capacidad: <strong>{product.capacityName}</strong></p>
+                    <p className="card-text fs-7 text-truncate">Precio: <strong>{formatPrice(product.price)}</strong></p>
+                    <div className="mt-auto d-flex justify-content-between">
+                      <span className="btn btn-primary btn-sm">Comprar</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </a>
             </div>
           ))}
         </div>
       </div>
       <Footer />
     </div>
-  );
+  );  
 };
 
 export default IphoneSE;
