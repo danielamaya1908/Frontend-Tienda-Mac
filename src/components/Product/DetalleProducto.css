@@ -111,32 +111,29 @@
   .detalle-producto .container {
     padding: 15px;
   }
+
   .carousel-inner img {
     max-height: 300px;
   }
+
   .btn-close-custom {
     width: 30px;
     height: 30px;
   }
+
   .product-name,
   .product-heading,
   .product-specs,
   .product-description {
     font-size: 1.25rem;
   }
+
   .btn-primary {
-    font-size: 0.75rem; /* Reduce el tamaño de la fuente del botón */
-    padding: 5px 10px; /* Ajusta el padding para que el botón sea más pequeño */
-  }
-  .input-group button {
     font-size: 0.875rem;
   }
-  /* Nuevos estilos para el botón "Agregar al carrito" */
-  .btn-add-to-cart {
-    font-size: 0.75rem;
-    padding: 5px 10px;
-    max-width: 120px; /* Ajusta este valor según tus necesidades */
-    width: 100%;
+
+  .input-group button {
+    font-size: 0.875rem;
   }
 }
 
