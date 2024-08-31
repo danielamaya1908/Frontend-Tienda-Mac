@@ -57,7 +57,7 @@ import AppleWatchUltra from './components/Product/AppleWatch/AppleWatchUltra';
 import AppleWatchSeries7 from './components/Product/AppleWatch/AppleWatchSeries7';
 import AppleWatchSeries8 from './components/Product/AppleWatch/AppleWatchSeries8';
 import AppleWatchSeries9 from './components/Product/AppleWatch/AppleWatchSeries9';
-import AppleWatchAll from './components/Product/AppleWatch/AppleWatchAll';
+/* import AppleWatchAll from './components/Product/AppleWatch/AppleWatchAll.jsx'; */
 import AppleWatchSE from './components/Product/AppleWatch/AppleWatchSE';
 import AppleWatchUsed from './components/Product/AppleWatch/AppleWatchUsed';
 import AccesoriosParaTVyHogar from './components/Product/Accesorios/AccesoriosParaTVyHogar';
@@ -252,7 +252,7 @@ function App() {
         <Route path="/AppleWatchSeries7" element={<AppleWatchSeries7 />} />
         <Route path="/AppleWatchSeries8" element={<AppleWatchSeries8 />} />
         <Route path="/AppleWatchSeries9" element={<AppleWatchSeries9 />} />
-        <Route path="/AppleWatchAll" element={<AppleWatchAll />} />
+   {/*      <Route path="/AppleWatchAll" element={<AppleWatchAll />} /> */}
         <Route path="/AppleWatchUsed" element={<AppleWatchUsed />} />
         <Route path="/AppleWatchSE" element={<AppleWatchSE />} />
         <Route path="/AccesoriosParaTVyHogar" element={<AccesoriosParaTVyHogar />} />
@@ -309,7 +309,7 @@ function App() {
         <Route path="/detalle-producto/AppleWatchSeries8" element={<Navigate to="/AppleWatchSeries8" replace />} />
         <Route path="/detalle-producto/AppleWatchSeries9" element={<Navigate to="/AppleWatchSeries9" replace />} />
         <Route path="/detalle-producto/AppleWatchUsed" element={<Navigate to="/AppleWatchUsed" replace />} />
-        <Route path="/detalle-producto/AppleWatchAll" element={<Navigate to="/AppleWatchAll" replace />} />
+    {/*     <Route path="/detalle-producto/AppleWatchAll" element={<Navigate to="/AppleWatchAll" replace />} /> */}
         <Route path="/detalle-producto/AccesoriosParaTVyHogar" element={<Navigate to="/AccesoriosParaTVyHogar" replace />} />
         <Route path="/detalle-producto/AccesoriosAll" element={<Navigate to="/AccesoriosAll" replace />} />
         <Route path="/detalle-producto/AccesoriosParaiPhone" element={<Navigate to="/AccesoriosParaiPhone" replace />} />
