@@ -18,6 +18,8 @@ const DetalleProducto = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [maxQuantity, setMaxQuantity] = useState(1);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const maxDescriptionLength = 88; // Ajusta según sea necesario
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -75,6 +77,13 @@ const DetalleProducto = () => {
   if (isLoading) return <div className="loading">Cargando...</div>;
   if (error) return <div className="error">{error}</div>;
   if (!product) return <div className="no-product">No se encontró el producto.</div>;
+
+  const handleToggleDescription = () => {
+    setIsDescriptionExpanded(prev => !prev);
+  };
+
+  const shortDescription = product.description.slice(0, maxDescriptionLength);
+  const isDescriptionLong = product.description.length > maxDescriptionLength;
 
   return (
     <div className="detalle-producto">
@@ -139,7 +148,7 @@ const DetalleProducto = () => {
             <p className="product-text"><strong>Subtotal:</strong> {formatPrice(product.price * quantity)}</p>
             <div className="d-flex justify-content-between mt-3">
               <button className="btn btn-primary btn-lg flex-grow-1 me-2" onClick={handleAddToCart}>Agregar al carrito</button>
-            {/*   <a 
+              {/* <a 
                 href={`https://api.whatsapp.com/send?phone=573173026445&text=¡Hola Tienda Mac! Me interesa comprar ${quantity} ${product.name} (${product.capacityName}, ${product.colorName}). ¿Podrían darme más información?`}
                 className="btn btn-success btn-lg flex-grow-1"
                 target="_blank"
@@ -149,7 +158,14 @@ const DetalleProducto = () => {
               </a> */}
             </div>
             <h3 className="product-heading mt-4">Descripción</h3>
-            <p className="product-description">{product.description}</p>
+            <p className="product-description">
+              {isDescriptionExpanded ? product.description : shortDescription}
+              {isDescriptionLong && (
+                <button onClick={handleToggleDescription} className="btn btn-link">
+                  {isDescriptionExpanded ? 'Ver menos' : 'Ver más'}
+                </button>
+              )}
+            </p>
           </div>
         </div>
         <button 
