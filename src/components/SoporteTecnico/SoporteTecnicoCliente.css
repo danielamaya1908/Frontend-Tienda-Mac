@@ -1,0 +1,138 @@
+.soporte-tecnico {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.soporte-tecnico h1 {
+  margin: 20px 0;
+  font-size: 24px;
+  color: #f0f0f0;
+  text-align: center;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.login-prompt {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.login-prompt h1 {
+  font-size: 28px;
+  color: #f0f0f0;
+}
+
+.login-prompt p {
+  font-size: 18px;
+  color: #ff4d4d;
+  margin-bottom: 20px;
+}
+
+.btn-login {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-login:hover {
+  background-color: #0056b3;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+}
+
+.controls input,
+.controls select {
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 5px;
+  margin-right: 10px;
+  flex: 1;
+  background-color: #333;
+  color: #f0f0f0;
+}
+
+table {
+  width: calc(100% - 40px);
+  margin: 20px auto;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+table th,
+table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+.estado {
+  display: inline-block;
+  width: 120px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  color: white;
+  text-align: center;
+  font-size: 0.9em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.estado.ingreso { background-color: #007bff; }
+.estado.pendiente { background-color: #ffc107; }
+.estado.diagnosticando { background-color: #17a2b8; }
+.estado.en-reparacion { background-color: #6c757d; }
+.estado.entregado { background-color: #28a745; }
+
+.btn-ver {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-ver:hover {
+  background-color: #0056b3;
+}
+
+.pagination {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.page-number {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.page-number:hover {
+  background-color: #0056b3;
+}

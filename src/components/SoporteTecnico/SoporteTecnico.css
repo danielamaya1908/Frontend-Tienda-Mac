@@ -1,0 +1,108 @@
+.soporte-tecnico {
+  background-color: #1e1e1e;
+  color: white;
+  padding: 50px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+input, select, .btn-agregar {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+}
+
+.btn-agregar {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  color: black;
+}
+
+th, td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.estado-container {
+  position: relative;
+  width: 200px; /* Ancho fijo para el contenedor */
+}
+
+.estado {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 0.9em;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+  border: none;
+  color: white !important;
+  cursor: pointer;
+  text-align: center; /* Centra el texto */
+  white-space: nowrap; /* Evita que el texto se divida en múltiples líneas */
+  overflow: hidden; /* Oculta el texto que exceda el ancho */
+  text-overflow: ellipsis; /* Muestra puntos suspensivos si el texto es muy largo */
+}
+
+.estado.ingreso { background-color: #17a2b8; }
+.estado.pendiente { background-color: #dc3545; }
+.estado.diagnosticando { background-color: #ffc107; }
+.estado.en-reparacion { background-color: #6c757d; }
+.estado.entregado { background-color: #28a745; }
+
+.estado option {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+.status-description {
+  font-size: 0.8em;
+  margin-top: 5px;
+  width: 200px; /* Mismo ancho que el contenedor del estado */
+  white-space: normal; /* Permite que el texto se divida en múltiples líneas */
+}
+
+.btn-ver {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.page-number {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
