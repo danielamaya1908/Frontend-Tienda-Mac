@@ -38,7 +38,7 @@ import MacMini from './components/Product/Mac/MacMini';
 import MacStudio from './components/Product/Mac/MacStudio';
 import FormEquipo from './components/SoporteTecnico/FormEquipo';
 import SoporteTecnico from './components/SoporteTecnico/SoporteTecnico';
-import SoporteTecnicoCliente from './components/SoporteTecnico/SoporteTecnicoCliente';
+import SoporteTecnicoCliente from './components/SoporteTecnico/SoporteTecnicoCliente.jsx';
 import SoporteTecnicoClienteDetalle from './components/SoporteTecnico/SoporteTecnicoClienteDetalle';
 import SoporteTecnicoDetalle from './components/SoporteTecnico/SoporteTecnicoDetalle';
 import MacbookPro from './components/Product/Mac/MacbookPro';
