@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
 
 // Define la URL base en una constante
-const BASE_URL = 'http://localhost:3005';
+const BASE_URL = 'https://backend-tienda-mac-production.up.railway.app';
 
 const SoporteTecnicoClienteDetalle = () => {
   const { id } = useParams();

@@ -21,7 +21,7 @@ const SoporteTecnicoDetalle = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:3005/soporte-tecnico/${id}`, {
+        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -216,7 +216,7 @@ const SoporteTecnicoDetalle = () => {
             {soporte.ImageSoporteTecnicos && Array.isArray(soporte.ImageSoporteTecnicos) && soporte.ImageSoporteTecnicos.length > 0 ? (
               <div className="d-flex flex-wrap">
                 {soporte.ImageSoporteTecnicos.map((imagen, index) => {
-                  const imageUrl = `http://localhost:3005${imagen.url}`;
+                  const imageUrl = `https://backend-tienda-mac-production.up.railway.app${imagen.url}`;
                   console.log('URL de la imagen:', imageUrl);
                   return (
                     <div key={index} className="m-2" style={{ position: 'relative', cursor: 'pointer' }}>

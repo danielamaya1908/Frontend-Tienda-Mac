@@ -61,7 +61,7 @@ const FormEquipo = () => {
     });
 
     try {
-      const response = await axios.post('http://localhost:3005/soporte-tecnico', formData, {
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/soporte-tecnico', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -112,7 +112,7 @@ const FormEquipo = () => {
 
     if (value) {
       try {
-        const response = await axios.get(`http://localhost:3005/soporte-tecnico/cliente/${value}`);
+        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/cliente/${value}`);
         console.log('Datos del cliente:', response.data); // Verifica la estructura de los datos
         setClienteInfo(response.data);
         setError('');
