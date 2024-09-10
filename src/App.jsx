@@ -226,6 +226,7 @@ function App() {
         <Route path="/soportetecnicocliente/:id" element={<SoporteTecnicoClienteDetalle />} />
         <Route path="/warranty" element={<AppleWarranty/>} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/FormEquipo" element={<FormEquipo />} />
         <Route path="/iphone12" element={<Iphone12 />} />
         <Route path="/iphone13pro" element={<Iphone13pro />} />
         <Route path="/iphone13" element={<Iphone13 />} />
