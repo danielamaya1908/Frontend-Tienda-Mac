@@ -223,7 +223,7 @@ function App() {
         <Route path="/QuienesSomos" element={<QuienesSomos />} />
         <Route path="/Ubicacion" element={<Ubicacion />} />
         <Route path="/soporte-tecnico-client" element={<SoporteTecnicoCliente />} />
-        <Route path="/soportetecnicocliente/:id" element={<SoporteTecnicoClienteDetalle />} />
+        <Route path="//soporte-tecnico-client/:id" element={<SoporteTecnicoClienteDetalle />} />
         <Route path="/warranty" element={<AppleWarranty/>} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/FormEquipo" element={<FormEquipo />} />
