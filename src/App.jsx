@@ -38,7 +38,7 @@ import MacMini from './components/Product/Mac/MacMini';
 import MacStudio from './components/Product/Mac/MacStudio';
 import FormEquipo from './components/SoporteTecnico/FormEquipo';
 import SoporteTecnico from './components/SoporteTecnico/SoporteTecnico';
-import SoporteTecnicoCliente from './components/SoporteTecnico/SoporteTecnicoCliente.jsx';
+import SoporteTecnicoCliente from './components/SoporteTecnico/SoporteTecnicoCliente';
 import SoporteTecnicoClienteDetalle from './components/SoporteTecnico/SoporteTecnicoClienteDetalle';
 import SoporteTecnicoDetalle from './components/SoporteTecnico/SoporteTecnicoDetalle';
 import MacbookPro from './components/Product/Mac/MacbookPro';
@@ -223,7 +223,7 @@ function App() {
         <Route path="/QuienesSomos" element={<QuienesSomos />} />
         <Route path="/Ubicacion" element={<Ubicacion />} />
         <Route path="/soporte-tecnico-client" element={<SoporteTecnicoCliente />} />
-        <Route path="//soporte-tecnico-client/:id" element={<SoporteTecnicoClienteDetalle />} />
+        <Route path="/soportetecnicocliente/:id" element={<SoporteTecnicoClienteDetalle />} />
         <Route path="/warranty" element={<AppleWarranty/>} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/FormEquipo" element={<FormEquipo />} />
