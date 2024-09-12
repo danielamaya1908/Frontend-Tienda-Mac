@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './Home.module.css';
 import Footer from '../Footer/Footer';
-import appleImage from '../../img/publicidad1.png';
+import Slideshow from './Slideshow';
 import SubNavbar from '../SubNavbar/SubNavbar';
 
 const Home = () => {
@@ -188,7 +188,7 @@ const Home = () => {
   
   return (
     <div className={styles.homeContainer}>
-    <img src={appleImage} alt="Apple" className={`img-fluid ${styles.customImg}`} />  
+    <Slideshow />
     <div className="container-fluid">
     <div className="text-center my-4">
           <h2>Productos Más Recientes</h2>
