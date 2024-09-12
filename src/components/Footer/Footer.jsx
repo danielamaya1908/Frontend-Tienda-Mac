@@ -57,9 +57,9 @@ const Footer = () => {
                         </a>
                         </div>
                     </div>
-                </div>
-                <div className="row mt-4">
-                    <div className="col-md-3">
+                    </div>
+               {/*  <div className="row mt-4">
+                    <div className="col-md-4 mb-4 mb-md-0">
                         <h5 className="mb-2">ENTÉRATE PRIMERO DE NUESTRAS OFERTAS Y PRODUCTOS EXCLUSIVOS</h5>
                         <form>
                             <div className="mb-3">
@@ -75,8 +75,6 @@ const Footer = () => {
                                             <input type="text" className="form-control" placeholder="Celular" />
                                         </div>
                                     </div>
-                                    <div className="row">
-                                    </div>
                                     <div className="mb-3 form-check">
                                         <input type="checkbox" className="form-check-input" id="terms" />
                                         <label className="form-check-label" htmlFor="terms">Acepto los términos y condiciones</label>
@@ -86,7 +84,7 @@ const Footer = () => {
                             )}
                         </form>
                     </div>
-                </div>
+                </div> */}
                 <div className="row mt-4">
                     <div className="col">
                         <p className="text-center">&copy; 2024 Tienda Mac. Todos los derechos reservados.</p>
