@@ -7,7 +7,7 @@ import {
   FaTimesCircle, FaCamera, FaBluetooth, FaWifi, FaKeyboard, FaVolumeUp, 
   FaHeadphones, FaPowerOff, FaPlug, FaUsb, FaTv, FaExclamationTriangle
 } from 'react-icons/fa';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 const SoporteTecnicoDetalle = () => {
   const { id } = useParams();
   const [soporte, setSoporte] = useState(null);
@@ -110,11 +110,11 @@ const SoporteTecnicoDetalle = () => {
     }
   };
 
-  const TimelineItem = ({ estado, activo, imagenes, currentState, index, currentStateIndex }) => {
-    const getProgressBarVariant = (estado, index, currentStateIndex) => {
-      if (index < currentStateIndex) return "success"; // Estados completados
-      if (index === currentStateIndex) return "primary"; // Estado actual
-      return "secondary"; // Estados futuros
+  const TimelineItem = ({ estado, imagenes, currentState, index, currentStateIndex }) => {
+    const getProgressBarVariant = (index, currentStateIndex) => {
+      if (index < currentStateIndex) return "success";
+      if (index === currentStateIndex) return "primary";
+      return "secondary";
     };
   
     return (
