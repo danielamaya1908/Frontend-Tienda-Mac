@@ -102,7 +102,7 @@ const SoporteTecnico = () => {
         return 'El próximo estado será Pendiente. Puede demorar de 1 a 3 días hábiles para su revisión y cambiar de estado.';
       case 'Pendiente':
         return 'Esperando confirmación del cliente.';
-      case 'en-reparacion':
+      case 'En-Reparacion':
         return 'El equipo está siendo reparado.';
       case 'Listo-Para-Entrega':
         return 'El equipo está listo para ser recogido por el cliente.';
@@ -135,7 +135,7 @@ const SoporteTecnico = () => {
                 <option value="Ingreso">Ingreso</option>
                 <option value="Pendiente">Pendiente</option>
                 <option value="Diagnosticando">Diagnosticando</option>
-                <option value="en-reparacion">En Reparación</option>
+                <option value="En-Reparacion">En Reparación</option>
                 <option value="Listo-Para-Entrega">Listo Para Entrega</option>
                 <option value="Entregado">Entregado</option>
               </select>
@@ -170,7 +170,7 @@ const SoporteTecnico = () => {
                           <option value="Ingreso">Ingreso</option>
                           <option value="Diagnosticando">Diagnosticando</option>
                           <option value="Pendiente">Pendiente</option>
-                          <option value="en-reparacion">En Reparación</option>
+                          <option value="En-Reparacion">En Reparación</option>
                           <option value="Listo-Para-Entrega">Listo Para Entrega</option>
                           <option value="Entregado">Entregado</option>
                         </select>
