@@ -11,15 +11,15 @@ const AppleWatchSeries8 = () => {
   useEffect(() => {
     const fetchAppleWatchProducts = async () => {
       try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartwatches%20y%20accesorios/subcategory/Smartwatches/name/Apple%20Watch%20Series%208');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.appproducts/category/Smartwatches%20y%20accesorios/subcategory/Smartwatches/name/Apple%20Watch%20Series%208');
         const products = response.data;
         setAppleWatchProducts(products);
 
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.appproducts/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.appimages/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);
