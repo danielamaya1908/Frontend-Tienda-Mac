@@ -3,6 +3,7 @@
   color: #f0f0f0;
   padding: 0;
   font-family: Arial, sans-serif;
+  margin-top: 20px; /* Este margen separa todo el contenedor de la parte superior */
 }
 
 .soporte-tecnico h1 {
@@ -12,7 +13,9 @@
   text-align: center;
   border-bottom: 2px solid #f0f0f0;
   padding-bottom: 10px;
+  padding-top: 10px; /* También puedes ajustar el padding aquí si lo prefieres */
 }
+
 
 .login-prompt {
   text-align: center;
@@ -101,9 +104,10 @@ table tbody tr:nth-child(odd) {
 }
 
 .estado.ingreso { background-color: #007bff; }
-.estado.pendiente { background-color: #ffc107; }
-.estado.diagnosticando { background-color: #17a2b8; }
+.estado.pendiente { background-color: #ff0707dc; }
+.estado.diagnosticando { background-color: #ffc107; }
 .estado.en-reparacion { background-color: #6c757d; }
+.estado.listo-para-entrega { background-color: #17a2b8; }
 .estado.entregado { background-color: #28a745; }
 
 .btn-ver {
@@ -136,3 +140,4 @@ table tbody tr:nth-child(odd) {
 .page-number:hover {
   background-color: #0056b3;
 }
+

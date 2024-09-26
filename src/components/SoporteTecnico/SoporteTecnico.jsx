@@ -3,17 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './SoporteTecnico.css';
 import MenuDashboard from '../MenuDashboard/MenuDashboard';
+import { FaPlus, FaSyncAlt, FaUpload } from 'react-icons/fa';  // Icons for add, update, and upload
 
 const SoporteTecnico = () => {
   const navigate = useNavigate();
   const [ordenesServicio, setOrdenesServicio] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('Todos los Estados');
+  const [imagenes, setImagenes] = useState({}); // State to handle uploaded images
 
   useEffect(() => {
     const fetchOrdenesServicio = async () => {
       try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/soporte-Tecnico');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app//soporte-Tecnico');
         setOrdenesServicio(response.data);
       } catch (error) {
         console.error('Error al obtener órdenes de servicio:', error);
@@ -46,13 +48,49 @@ const SoporteTecnico = () => {
     try {
       let data = { estado: newEstado };
 
-      const response = await axios.put(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/estado`, data);
+      const response = await axios.put(`https://backend-tienda-mac-production.up.railway.app//soporte-tecnico/${id}/estado`, data);
 
       setOrdenesServicio(ordenesServicio.map(orden => 
         orden.id === id ? { ...orden, estado: newEstado, fechaSalida: response.data.fechaSalida } : orden
       ));
+
+      // Pide actualizar la imagen cuando cambia el estado
+      if (imagenes[id]) {
+        alert('Por favor, actualice la imagen para este estado.');
+      }
     } catch (error) {
       console.error('Error al actualizar el estado:', error);
+    }
+  };
+
+  const handleImagenChange = (id, file) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagenes(prevState => ({
+        ...prevState,
+        [id]: {
+          file,
+          preview: reader.result,
+        }
+      }));
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubirImagen = async (id) => {
+    const formData = new FormData();
+    formData.append('imagen', imagenes[id].file);
+
+    try {
+      await axios.post(`https://backend-tienda-mac-production.up.railway.app//soporte-tecnico/${id}/subir-imagen`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      alert('Imagen subida con éxito');
+    } catch (error) {
+      console.error('Error al subir la imagen:', error);
+      alert('Error al subir la imagen');
     }
   };
 
@@ -66,8 +104,10 @@ const SoporteTecnico = () => {
         return 'Esperando confirmación del cliente.';
       case 'en-reparacion':
         return 'El equipo está siendo reparado.';
+      case 'Listo-Para-Entrega':
+        return 'El equipo está listo para ser recogido por el cliente.';
       case 'Entregado':
-        return 'Puede pasar a recoger en tienda.';
+        return 'El equipo fue entregado al cliente con éxito.';
       default:
         return '';
     }
@@ -96,6 +136,7 @@ const SoporteTecnico = () => {
                 <option value="Pendiente">Pendiente</option>
                 <option value="Diagnosticando">Diagnosticando</option>
                 <option value="en-reparacion">En Reparación</option>
+                <option value="Listo-Para-Entrega">Listo Para Entrega</option>
                 <option value="Entregado">Entregado</option>
               </select>
               <button onClick={handleAgregarEquipo} className="btn-agregar">Agregar Nuevo Equipo</button>
@@ -103,15 +144,15 @@ const SoporteTecnico = () => {
             <table>
               <thead>
                 <tr>
-                  <th>#Orden de Servicio</th>
+                  <th>#</th>
                   <th>Estado</th>
-                  <th>Nombre del Cliente</th>
-                  <th># Identificación del Cliente</th>
-                  <th>Nombre de Equipo</th>
-                  <th>Marca del Equipo</th>
-                  <th>Serial del Equipo</th>
-                  <th>Fecha de Ingreso</th>
-                  <th>Fecha de Salida</th>
+                  <th>Cliente</th>
+                  <th>Id Cliente</th>
+                  <th>Nombre</th>
+                  <th>Marca</th>
+                  <th>Serial</th>
+                  <th>Ingreso</th>
+                  <th>Entrega</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -127,12 +168,43 @@ const SoporteTecnico = () => {
                           className={`estado ${orden.estado.toLowerCase().replace(/\s+/g, '-')}`}
                         >
                           <option value="Ingreso">Ingreso</option>
-                          <option value="Pendiente">Pendiente</option>
                           <option value="Diagnosticando">Diagnosticando</option>
+                          <option value="Pendiente">Pendiente</option>
                           <option value="en-reparacion">En Reparación</option>
+                          <option value="Listo-Para-Entrega">Listo Para Entrega</option>
                           <option value="Entregado">Entregado</option>
                         </select>
                         <p className="status-description">{getStatusDescription(orden.estado)}</p>
+
+                        <div className="image-actions">
+                          {imagenes[orden.id] && imagenes[orden.id].preview ? (
+                            <>
+                              <div className="image-preview">
+                                <img src={imagenes[orden.id].preview} alt="Previsualización" style={{ maxHeight: '100px', maxWidth: '100px' }} />
+                              </div>
+                              <button onClick={() => document.getElementById(`file-input-${orden.id}`).click()} className="btn-update">
+                                <FaSyncAlt /> Actualizar Imagen
+                              </button>
+                            </>
+                          ) : (
+                            <button onClick={() => document.getElementById(`file-input-${orden.id}`).click()} className="btn-add">
+                              <FaPlus /> Agregar Imagen
+                            </button>
+                          )}
+                          <input
+                            type="file"
+                            id={`file-input-${orden.id}`}
+                            style={{ display: 'none' }}
+                            accept="image/*"
+                            onChange={(e) => handleImagenChange(orden.id, e.target.files[0])}
+                          />
+                        </div>
+
+                        {imagenes[orden.id] && imagenes[orden.id].file && (
+                          <button onClick={() => handleSubirImagen(orden.id)} className="btn-upload">
+                            <FaUpload /> Subir Imagen
+                          </button>
+                        )}
                       </div>
                     </td>
                     <td>

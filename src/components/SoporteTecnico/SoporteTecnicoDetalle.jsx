@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Modal, Button } from 'react-bootstrap'; // Asegúrate de tener react-bootstrap instalado
+import { Container, Row, Col, Card, Button, ProgressBar, Modal, Table, Badge } from 'react-bootstrap';
+import { 
+  FaArrowLeft, FaMobileAlt, FaTools, FaUser, FaCheckCircle, 
+  FaTimesCircle, FaCamera, FaBluetooth, FaWifi, FaKeyboard, FaVolumeUp, 
+  FaHeadphones, FaPowerOff, FaPlug, FaUsb, FaTv, FaExclamationTriangle
+} from 'react-icons/fa';
 
 const SoporteTecnicoDetalle = () => {
   const { id } = useParams();
@@ -10,7 +14,11 @@ const SoporteTecnicoDetalle = () => {
   const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [estadoImages, setEstadoImages] = useState({});
+  const [imagenesIngreso, setImagenesIngreso] = useState([]);
   const navigate = useNavigate();
+
+  const estados = ['Ingreso', 'Diagnosticando', 'Pendiente', 'En-Reparacion', 'Entregado'];
 
   useEffect(() => {
     const fetchSoporteTecnico = async () => {
@@ -21,17 +29,55 @@ const SoporteTecnicoDetalle = () => {
           return;
         }
 
-        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`, {
+        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app//soporte-tecnico/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
         if (response.status === 200) {
-          console.log('Datos del soporte técnico:', response.data);
           setSoporte(response.data);
-
-          // Asumiendo que `response.data` ahora incluye la información del usuario bajo `response.data.User`
           if (response.data.User) {
             setUser(response.data.User);
+          }
+
+          // Fetch ingreso images
+          const imagenesIngresoResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app//soporte-tecnico/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (imagenesIngresoResponse.status === 200 && imagenesIngresoResponse.data.ImageSoporteTecnicos) {
+            const imagenesIngreso = imagenesIngresoResponse.data.ImageSoporteTecnicos
+              .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+              .slice(0, 10);
+            setImagenesIngreso(imagenesIngreso);
+          }
+
+          // Fetch images for other states
+          const latestImageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app//soporte-tecnico/${id}/latest-image`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (latestImageResponse.status === 200 && latestImageResponse.data.imagenes) {
+            const imagenes = latestImageResponse.data.imagenes.sort((a, b) => 
+              new Date(a.fechaSubida) - new Date(b.fechaSubida)
+            );
+            
+            const newEstadoImages = {
+              Diagnosticando: [],
+              'En-Reparacion': [],
+              Entregado: []
+            };
+
+            const estadosConImagenes = ['Diagnosticando', 'En-Reparacion', 'Entregado'];
+            let estadoIndex = 0;
+
+            imagenes.forEach(imagen => {
+              if (estadoIndex < estadosConImagenes.length) {
+                newEstadoImages[estadosConImagenes[estadoIndex]].push(imagen);
+                estadoIndex++;
+              }
+            });
+            
+            setEstadoImages(newEstadoImages);
           }
         } else {
           console.error('Error al obtener los detalles del soporte técnico:', response);
@@ -51,219 +97,301 @@ const SoporteTecnicoDetalle = () => {
 
   const handleCloseModal = () => setShowModal(false);
 
+  const getEstadoColor = (estado) => {
+    switch (estado) {
+      case 'Ingreso': return '#007bff';
+      case 'Diagnosticando': return '#ffc107';
+      case 'Pendiente': return '#dc3545';
+      case 'En-Reparacion': return '#17a2b8';
+      case 'Entregado': return '#28a745';
+      default: return '#6c757d';
+    }
+  };
+
+  const TimelineItem = ({ estado, activo, imagenes, currentState, index, currentStateIndex }) => {
+    const getProgressBarVariant = (estado, index, currentStateIndex) => {
+      if (index < currentStateIndex) return "success"; // Estados completados
+      if (index === currentStateIndex) return "primary"; // Estado actual
+      return "secondary"; // Estados futuros
+    };
+  
+    return (
+      <Card className={`mb-3 ${currentState === estado ? 'border-primary border-5' : ''}`}>
+        <Card.Body>
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <Card.Title className={currentState === estado ? 'text-primary font-weight-bold' : ''}>
+              {estado}
+            </Card.Title>
+            {currentState === estado && (
+              <Badge bg="primary" className="p-2">
+                <FaExclamationTriangle className="me-1" />
+                Estado Actual
+              </Badge>
+            )}
+          </div>
+          <ProgressBar 
+            now={100} 
+            variant={getProgressBarVariant(estado, index, currentStateIndex)}
+            style={{height: '10px', marginBottom: '1rem'}}
+          />
+          {estado === 'Pendiente' ? (
+            <Card.Text>
+              <FaExclamationTriangle className="text-warning me-2" />
+              Esperando confirmación del cliente
+            </Card.Text>
+          ) : (
+            imagenes && imagenes.length > 0 && (
+              <Row xs={2} md={3} lg={4} className="g-2">
+                {imagenes.map((imagen, index) => (
+                  <Col key={index}>
+                    <Card.Img
+                      src={`https://backend-tienda-mac-production.up.railway.app/${imagen.url}`}
+                      alt={`Estado ${estado}`}
+                      onClick={() => handleImageClick(`https://backend-tienda-mac-production.up.railway.app/${imagen.url}`)}
+                      style={{ cursor: 'pointer', border: currentState === estado ? '2px solid #007bff' : 'none' }}
+                    />
+                  </Col>
+                ))}
+              </Row>
+            )
+          )}
+        </Card.Body>
+      </Card>
+    );
+  };
+
   if (!soporte) {
     return (
-      <div>
-        <div className="container mt-4">
-          <p>Cargando detalles...</p>
-        </div>
-      </div>
+      <Container className="mt-4">
+        <p>Cargando detalles...</p>
+      </Container>
     );
   }
 
-  console.log('Imágenes del soporte:', soporte.ImageSoporteTecnicos);
+  const imagenesPerEstado = {
+    Ingreso: imagenesIngreso,
+    Diagnosticando: estadoImages.Diagnosticando || [],
+    Pendiente: [],
+    'En-Reparacion': estadoImages['En-Reparacion'] || [],
+    Entregado: estadoImages.Entregado || []
+  };
+
+  const estadoIndex = estados.indexOf(soporte.estado);
+  const progreso = ((estadoIndex + 1) / estados.length) * 100;
 
   return (
-    <div>
-      <div className="container mt-4">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h1>Detalles del Soporte Técnico #{soporte.id}</h1>
-          <button className="btn btn-secondary" onClick={() => navigate(-1)}>Volver</button>
-        </div>
-        
-        <div className="card mb-4">
-          <div className="card-body">
-            <table className="table table-striped table-bordered">
-              <tbody>
-                <tr>
-                  <th>Marca</th>
-                  <td>{soporte.marca}</td>
-                </tr>
-                <tr>
-                  <th>Modelo</th>
-                  <td>{soporte.modelo}</td>
-                </tr>
-                <tr>
-                  <th>Serial</th>
-                  <td>{soporte.serial}</td>
-                </tr>
-                <tr>
-                  <th>Estado</th>
-                  <td>{soporte.estado}</td>
-                </tr>
-                <tr>
-                  <th>Fecha de Ingreso</th>
-                  <td>{new Date(soporte.createdAt).toLocaleDateString()}</td>
-                </tr>
-                <tr>
-                <th>Fecha de Salida</th>
-                <td>{soporte.fechaSalida ? new Date(soporte.fechaSalida).toLocaleDateString() : 'No disponible'}</td>
-              </tr>
-                <tr>
-                  <th>Garantía</th>
-                  <td>{soporte.garantia ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Rayones</th>
-                  <td>{soporte.rayones ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Golpes</th>
-                  <td>{soporte.golpes ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Enciende</th>
-                  <td>{soporte.enciende ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Parlantes</th>
-                  <td>{soporte.parlantes ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Auricular</th>
-                  <td>{soporte.auricular ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Bluetooth</th>
-                  <td>{soporte.bluetooth ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Botones</th>
-                  <td>{soporte.botones ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Cámara</th>
-                  <td>{soporte.camara ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Pin de Carga</th>
-                  <td>{soporte.pinCarga ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Puertos</th>
-                  <td>{soporte.puertos ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Teclado</th>
-                  <td>{soporte.teclado ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Wifi</th>
-                  <td>{soporte.wifi ? 'Sí' : 'No'}</td>
-                </tr>
-                <tr>
-                  <th>Pantalla</th>
-                  <td>{soporte.pantalla ? 'Sí' : 'No'}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+    <Container className="mt-4">
+      <h1 className="text-center mb-4">
+        <FaMobileAlt className="me-2" />
+        Soporte Técnico #{soporte.id}
+      </h1>
+      <Button variant="primary" className="mb-4" onClick={() => navigate(-1)}>
+        <FaArrowLeft className="me-2" />
+        Volver
+      </Button>
 
-        <div className="card mb-4">
-          <div className="card-body">
-            <h3>Información del Usuario:</h3>
-            {user ? (
-              <table className="table table-striped table-bordered">
+      <Card className="mb-4 border-primary">
+        <Card.Body>
+          <Card.Title className="text-center mb-4">
+            <h2>
+              <Badge bg="primary" style={{fontSize: '1.5rem', padding: '10px 20px'}}>
+                Estado Actual: {soporte.estado}
+              </Badge>
+            </h2>
+          </Card.Title>
+          <ProgressBar 
+            now={progreso} 
+            label={`${progreso.toFixed(0)}%`} 
+            className="mb-3" 
+            style={{height: '30px', fontSize: '1.2rem'}}
+          />
+          {estados.map((estado, index) => (
+            <TimelineItem
+              key={estado}
+              estado={estado}
+              activo={index <= estadoIndex}
+              imagenes={imagenesPerEstado[estado]}
+              currentState={soporte.estado}
+              index={index}
+              currentStateIndex={estadoIndex}
+            />
+          ))}
+        </Card.Body>
+      </Card>
+
+      <Row>
+        <Col xs={12}>
+        <Card className="mb-4">
+            <Card.Body>
+              <Card.Title><FaMobileAlt className="me-2" />Detalles del Dispositivo</Card.Title>
+              <Table striped bordered hover>
+                <tbody>
+                  <tr><th>Marca</th><td>{soporte.marca}</td></tr>
+                  <tr><th>Modelo</th><td>{soporte.modelo}</td></tr>
+                  <tr><th>Serial</th><td>{soporte.serial}</td></tr>
+                  <tr><th>Estado</th><td>{soporte.estado}</td></tr>
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+        </Col>
+        </Row>
+        <Row>
+        <Col xs={12}>
+          <Card className="mb-4">
+            <Card.Body>
+              <Card.Title><FaTools className="me-2" />Componentes</Card.Title>
+              <Table striped bordered hover>
+                <tbody>
+  <tr>
+    <th><FaCamera /> Cámara</th>
+    <td>{soporte.camara ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaBluetooth /> Bluetooth</th>
+    <td>{soporte.bluetooth ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaWifi /> Wifi</th>
+    <td>{soporte.wifi ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaKeyboard /> Teclado</th>
+    <td>{soporte.teclado ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaVolumeUp /> Parlantes</th>
+    <td>{soporte.parlantes ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaHeadphones /> Auricular</th>
+    <td>{soporte.auricular ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaPowerOff /> Botones</th>
+    <td>{soporte.botones ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaPlug /> Pin de Carga</th>
+    <td>{soporte.pinCarga ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaUsb /> Puertos</th>
+    <td>{soporte.puertos ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+  <tr>
+    <th><FaTv /> Pantalla</th>
+    <td>{soporte.pantalla ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+  </tr>
+</tbody>
+
+              </Table>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col xs={12}>
+        <Card className="mb-4">
+            <Card.Body>
+              <Card.Title><FaTools className="me-2" />Fechas y Garantía</Card.Title>
+              <Table striped bordered hover>
                 <tbody>
                   <tr>
-                    <th>ID</th>
-                    <td>{user.id}</td>
+                    <th>Fecha de Ingreso</th>
+                    <td>{new Date(soporte.createdAt).toLocaleDateString()}</td>
                   </tr>
                   <tr>
-                    <th>Nombre</th>
-                    <td>{user.firstName} {user.lastName}</td>
+                    <th>Fecha de Salida</th>
+                    <td>{soporte.fechaSalida ? new Date(soporte.fechaSalida).toLocaleDateString() : 'No disponible'}</td>
                   </tr>
                   <tr>
-                    <th>Documento</th>
-                    <td>{user.documentNumber}</td>
-                  </tr>
-                  <tr>
-                    <th>Teléfono</th>
-                    <td>{user.phoneNumber}</td>
-                  </tr>
-                  <tr>
-                    <th>Dirección</th>
-                    <td>{user.address}</td>
-                  </tr>
-                  <tr>
-                    <th>Ciudad</th>
-                    <td>{user.city}</td>
-                  </tr>
-                  <tr>
-                    <th>País</th>
-                    <td>{user.country}</td>
-                  </tr>
-                  <tr>
-                    <th>Código Postal</th>
-                    <td>{user.zipCode}</td>
-                  </tr>
-                  <tr>
-                    <th>Email</th>
-                    <td>{user.email}</td>
+                    <th>Garantía</th>
+                    <td>{soporte.garantia ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
                   </tr>
                 </tbody>
-              </table>
-            ) : (
-              <p>No hay información del usuario disponible.</p>
-            )}
-          </div>
-        </div>
+              </Table>
+            </Card.Body>
+          </Card>
+        </Col>
+        </Row>
+        <Row>
+        <Col xs={12}>
+          <Card className="mb-4">
+            <Card.Body>
+              <Card.Title><FaTools className="me-2" />Estado Físico</Card.Title>
+              <Table striped bordered hover>
+                <tbody>
+                  <tr>
+                    <th>Rayones</th>
+                    <td>{soporte.rayones ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th>Golpes</th>
+                    <td>{soporte.golpes ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th>Enciende</th>
+                    <td>{soporte.enciende ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-        <div className="card">
-          <div className="card-body">
-            <h3>Imágenes del Estado:</h3>
-            {soporte.ImageSoporteTecnicos && Array.isArray(soporte.ImageSoporteTecnicos) && soporte.ImageSoporteTecnicos.length > 0 ? (
-              <div className="d-flex flex-wrap">
-                {soporte.ImageSoporteTecnicos.map((imagen, index) => {
-                  const imageUrl = `https://backend-tienda-mac-production.up.railway.app${imagen.url}`;
-                  console.log('URL de la imagen:', imageUrl);
-                  return (
-                    <div key={index} className="m-2" style={{ position: 'relative', cursor: 'pointer' }}>
-                      <img 
-                        src={imageUrl} 
-                        alt={`Estado ${index + 1}`} 
-                        className="img-thumbnail" 
-                        style={{ width: '150px', height: '150px', objectFit: 'cover' }} 
-                        onClick={() => handleImageClick(imageUrl)} 
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p>No hay imágenes del estado disponibles.</p>
-            )}
-          </div>
-        </div>
+      {user && (
+        <Row>
+          <Col xs={12}>
+            <Card className="mb-4">
+              <Card.Body>
+                <Card.Title><FaUser className="me-2" />Información del Usuario</Card.Title>
+                <Table striped bordered hover>
+                  <tbody>
+                    <tr><th>ID</th><td>{user.id}</td></tr>
+                    <tr><th>Nombre</th><td>{user.firstName} {user.lastName}</td></tr>
+                    <tr><th>Documento</th><td>{user.documentNumber}</td></tr>
+                    <tr><th>Teléfono</th><td>{user.phoneNumber}</td></tr>
+                    <tr><th>Dirección</th><td>{user.address}</td></tr>
+                    <tr><th>Ciudad</th><td>{user.city}</td></tr>
+                    <tr><th>País</th><td>{user.country}</td></tr>
+                    <tr><th>Email</th><td>{user.email}</td></tr>
+                  </tbody>
+                </Table>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      )}
 
-        {/* Modal para mostrar imagen en grande */}
-        <Modal 
-          show={showModal} 
-          onHide={handleCloseModal} 
-          size="lg"
-          centered
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Imagen del Estado</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="d-flex justify-content-center align-items-center">
-            <img 
-              src={selectedImage} 
-              alt="Imagen Grande" 
-              className="img-fluid" 
-              style={{ maxHeight: '80vh', maxWidth: '100%', objectFit: 'contain' }} 
-            />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseModal}>
-              Cerrar
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    </div>
+      <Modal 
+        show={showModal} 
+        onHide={handleCloseModal} 
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Imagen del Estado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="text-center">
+          <img 
+            src={selectedImage} 
+            alt="Imagen Grande" 
+            className="img-fluid" 
+            style={{ maxHeight: '80vh', maxWidth: '100%', objectFit: 'contain' }} 
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
   );
 };
 
 export default SoporteTecnicoDetalle;
+
