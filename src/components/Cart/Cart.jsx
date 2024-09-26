@@ -50,9 +50,9 @@ const Cart = () => {
       try {
         const imageRequests = cartItems.map(async (item) => {
           try {
-            const response = await axios.get(`https://backend-tienda-mac-production.up.railway.appproducts/${item.id}/images`);
+            const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${item.id}/images`);
             const imageFileNames = response.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.appimages/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
             return { [item.id]: imageUrls };
           } catch (error) {
             console.error(`Error getting images for product ${item.id}:`, error);

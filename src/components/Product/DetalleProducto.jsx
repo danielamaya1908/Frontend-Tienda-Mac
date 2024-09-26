@@ -26,12 +26,12 @@ const DetalleProducto = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const productResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.appproduct/${id}`);
+        const productResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/product/${id}`);
         setProduct(productResponse.data);
 
-        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.appproducts/${id}/images`);
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${id}/images`);
         const imageFileNames = imageResponse.data;
-        const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.appimages/${fileName}`);
+        const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
         setImages(imageUrls);
 
         setMaxQuantity(productResponse.data.quantity || 1);

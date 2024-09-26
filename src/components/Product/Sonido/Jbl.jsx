@@ -12,17 +12,17 @@ const Jbl = () => {
     const fetchsonidoProducts = async () => {
       try {
         const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.appproducts/category/Accesorios%20de%20audio/subcategory/Auriculares%20intraaurales%20de%20cable'),
-          axios.get('https://backend-tienda-mac-production.up.railway.appproducts/category/Accesorios%20de%20audio/subcategory/Bocinas%20portátil'),
-          axios.get('https://backend-tienda-mac-production.up.railway.appproducts/category/Accesorios%20de%20audio/subcategory/Audífonos%20diademas')
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20audio/subcategory/Auriculares%20intraaurales%20de%20cable'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20audio/subcategory/Bocinas%20portátil'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20audio/subcategory/Audífonos%20diademas')
         ]);
         const products = responses.flatMap(response => response.data);
         setsonidoProducts(products);
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.appproducts/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.appimages/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);

@@ -23,7 +23,7 @@ const UserPurchases = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No se encontró el token en localStorage.');
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.appauth/purchases', {
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/auth/purchases', {
           headers: { 'x-auth-token': token },
         });
 
@@ -39,9 +39,9 @@ const UserPurchases = () => {
         const imageRequests = purchasesData.map(async (purchase) => {
           if (purchase.Product && purchase.Product.id) {
             try {
-              const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.appproducts/${purchase.Product.id}/images`);
+              const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${purchase.Product.id}/images`);
               const imageFileNames = imageResponse.data;
-              const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.appimages/${fileName}`);
+              const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
               return { [purchase.id]: imageUrls };
             } catch (error) {
               console.error(`Error getting images for product ${purchase.Product.id}:`, error);

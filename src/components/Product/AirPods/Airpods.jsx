@@ -12,15 +12,15 @@ const Airpods = () => {
     const fetchAirpodsProducts = async () => {
       try {
         const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.appproducts/category/Audifonos/subcategory/Auriculares')
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Audifonos/subcategory/Auriculares')
         ]);                                                                                          
         const products = responses.flatMap(response => response.data);
         setAirpodsProducts(products);
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.appproducts/${product.id}/images`);
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.appimages/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);

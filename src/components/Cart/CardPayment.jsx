@@ -66,13 +66,13 @@ const CardPayment = () => {
         productId: productId
       };
 
-      const response = await axios.post('https://backend-tienda-mac-production.up.railway.appapi/openpay/create-charge', paymentData);
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/create-charge', paymentData);
 
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data && response.data.payment_method && response.data.payment_method.url) {
         // Actualizar el stock en el backend
-        await axios.post('https://backend-tienda-mac-production.up.railway.appupdate-quantity', { items: cartItems });
+        await axios.post('https://backend-tienda-mac-production.up.railway.app/update-quantity', { items: cartItems });
 
         // Vaciar el carrito
         clearCart();
