@@ -29,7 +29,7 @@ const SoporteTecnicoDetalle = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:3005/soporte-tecnico/${id}`, {
+        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -40,7 +40,7 @@ const SoporteTecnicoDetalle = () => {
           }
 
           // Fetch ingreso images
-          const imagenesIngresoResponse = await axios.get(`http://localhost:3005/soporte-tecnico/${id}`, {
+          const imagenesIngresoResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
 
@@ -52,7 +52,7 @@ const SoporteTecnicoDetalle = () => {
           }
 
           // Fetch images for other states
-          const latestImageResponse = await axios.get(`http://localhost:3005/soporte-tecnico/${id}/latest-image`, {
+          const latestImageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/latest-image`, {
             headers: { Authorization: `Bearer ${token}` }
           });
 
@@ -154,9 +154,9 @@ const SoporteTecnicoDetalle = () => {
                   {imagenes.map((imagen, index) => (
                     <Col key={index}>
                       <Card.Img
-                        src={`http://localhost:3005${imagen.url}`}
+                        src={`https://backend-tienda-mac-production.up.railway.app${imagen.url}`}
                         alt={`Estado ${estado}`}
-                        onClick={() => handleImageClick(`http://localhost:3005${imagen.url}`)}
+                        onClick={() => handleImageClick(`https://backend-tienda-mac-production.up.railway.app${imagen.url}`)}
                         style={{ cursor: 'pointer', border: currentState === estado ? '2px solid #007bff' : 'none' }}
                       />
                     </Col>
