@@ -1,72 +1,58 @@
-/* Estilo base del menú lateral para pantallas grandes */
+/* MenuDashboard.css */
 .sidebar {
-    min-height: 100vh;
-    background-color: #343a40;
-    color: white;
+    min-height: 100vh; /* Altura mínima del viewport para ocupar toda la pantalla */
+    background-color: #343a40; /* Un color de fondo para el sidebar */
+    color: white; /* Color del texto */
     padding: 0;
 }
 
 .position-sticky {
     position: sticky;
-    top: 0;
+    top: 0; /* Se queda pegado en la parte superior al hacer scroll */
 }
 
 .nav-link {
-    color: white;
+    color: white; /* Color de los enlaces */
 }
 
 .nav-link:hover {
-    color: #ccc;
+    color: #ccc; /* Color de los enlaces al pasar el mouse */
 }
 
-/* Estilos para pantallas pequeñas (responsive) */
-@media (max-width: 992px) {
-    .sidebar {
-        position: fixed;
-        left: -250px;
-        transition: left 0.3s ease;
-        width: 250px;
-        z-index: 999;
-    }
-
-    .sidebar.active {
-        left: 0;
-    }
-
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 998;
-    }
-
-    .menu-toggle {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        font-size: 24px;
-        cursor: pointer;
-        z-index: 1000;
-        color: #fff;
-    }
+.container-fluid {
+    padding: 0;
+    margin: 0; /* Asegura que el contenedor principal también ocupe toda la altura */
 }
 
-/* Estilo base para pantallas grandes (desktop) */
-@media (min-width: 992px) {
-    .menu-toggle {
-        display: none; /* Ocultar el botón de menú hamburguesa en pantallas grandes */
-    }
-
-    .sidebar {
-        left: 0;
-        width: 250px;
-        position: relative;
-    }
-
-    .overlay {
-        display: none; /* No mostrar el overlay en pantallas grandes */
-    }
+html, body {
+    height: 100%; /* Asegura que la página completa ocupe toda la altura */
+    margin: 0;
+    padding: 0;
 }
+
+/* Ajusta los estilos específicos del menú lateral */
+#sidebar {
+    min-height: 100vh; /* Asegura que el sidebar ocupe toda la altura de la vista */
+    color: white; /* Establece el color del texto */
+    background-color: #343a40; /* Establece el color de fondo del sidebar */
+}
+
+#sidebar .nav-link {
+    margin-left: 20px; /* Aumenta el margen izquierdo de los enlaces */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+#sidebar .nav-link:hover {
+    color: #ffffff; /* Cambia el color del texto al pasar el mouse */
+}
+
+#sidebar .position-sticky {
+    position: sticky;
+    top: 0; /* Asegura que el menú se quede en la parte superior */
+}
+
+/* Estiliza el icono y texto para mejorar la presentación visual */
+#sidebar .nav-link .fa {
+    margin-right: 10px; /* Espacio entre el icono y el texto */
+}
+
