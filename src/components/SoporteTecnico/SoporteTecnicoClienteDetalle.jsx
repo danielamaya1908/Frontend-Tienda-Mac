@@ -136,7 +136,7 @@ const SoporteTecnicoClienteDetalle = () => {
           {estado === 'Pendiente' ? (
             <Card.Text>
               <FaExclamationTriangle className="text-warning me-2" />
-              Esperando confirmación del cliente
+              Esperando su confirmación
             </Card.Text>
           ) : (
             <>

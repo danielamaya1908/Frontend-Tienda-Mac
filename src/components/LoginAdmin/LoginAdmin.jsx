@@ -9,7 +9,7 @@ function LoginAdmin({ onLogin }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    fetch("https://backend-tienda-mac-production.up.railway.app/validateUserAdmin", {
+    fetch("http://localhost:3005/validateUserAdmin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,10 +34,10 @@ function LoginAdmin({ onLogin }) {
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
-        <div className="col-md-6">
+        <div className="col-lg-6 col-md-8 col-sm-10">
           <div className="card shadow login-container">
             <div className="card-body">
-              <h2 className="card-title text-center mb-4">Login Admin</h2>
+              <h2 className="card-title-admin text-center mb-4">Login Admin</h2>
               <form className="login-form" onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label login-form-label">

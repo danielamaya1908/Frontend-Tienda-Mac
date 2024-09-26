@@ -1,14 +1,49 @@
 .login-container {
-    background-color: rgba(63, 63, 63, 0.5);
-    border: 1px solid blue;
-    color: white;
+  background-color: rgba(63, 63, 63, 0.5);
+  border: 1px solid blue;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.login-form {
+  margin-top: 20px;
+}
+
+.login-form-label {
+  color: white;
+}
+
+/* Para hacer que los elementos sean responsivos */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 15px;
   }
   
   .login-form {
-    margin-top: 20px;
+    margin-top: 10px;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+}
+
+/* Ajustes para pantallas más pequeñas */
+@media (max-width: 576px) {
+  .login-container {
+    padding: 10px;
   }
   
-  .login-form-label {
-    color: white;
+  .btn-block {
+    width: 100%;
   }
-  
+
+  .form-control {
+    font-size: 14px;
+  }
+
+  .card-title-admin {
+    font-size: 1.5rem;
+  }
+}
