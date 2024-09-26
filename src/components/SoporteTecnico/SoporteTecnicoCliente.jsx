@@ -39,7 +39,7 @@ const SoporteTecnicoCliente = () => {
     }
 
     try {
-      const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/soportetecnicocliente', {
+      const response = await axios.get('http://localhost:3005/soportetecnicocliente', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSoportesTecnicos(response.data);
@@ -100,9 +100,9 @@ const SoporteTecnicoCliente = () => {
         return 'El próximo estado será Pendiente. Puede demorar de 1 a 3 días hábiles para su revisión y cambiar de estado.';
       case 'pendiente':
         return 'Esperando confirmación del cliente.';
-      case 'en reparacion':
+      case 'Reparando':
         return 'El equipo está siendo reparado.';
-      case 'listo-para-entrega':
+      case 'Reparado':
         return 'El equipo está listo para ser recogido.';
       case 'entregado':
         return 'Puede pasar a recoger en tienda.';
@@ -141,8 +141,8 @@ const SoporteTecnicoCliente = () => {
           <option value="ingreso">Ingreso</option>
           <option value="pendiente">Pendiente</option>
           <option value="diagnosticando">Diagnosticando</option>
-          <option value="en reparacion">En Reparación</option>
-          <option value="listo-para-entrega">Listo Para Entrega</option>
+          <option value="Reparando">Reparando</option>
+          <option value="Reparado">Reparado</option>
           <option value="entregado">Entregado</option>
         </select>
       </div>

@@ -11,7 +11,7 @@ import Navbar from '../NavBar/NavBar';
 import Footer from '../Footer/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const BASE_URL = 'https://backend-tienda-mac-production.up.railway.app';
+const BASE_URL = 'http://localhost:3005';
 
 const SoporteTecnicoClienteDetalle = () => {
   const { id } = useParams();
@@ -22,7 +22,7 @@ const SoporteTecnicoClienteDetalle = () => {
   const [imagenesIngreso, setImagenesIngreso] = useState([]);
   const navigate = useNavigate();
 
-  const estados = ['Ingreso', 'Diagnosticando', 'Pendiente', 'En-Reparacion', 'Listo-Para-Entrega', 'Entregado'];
+  const estados = ['Ingreso', 'Diagnosticando', 'Pendiente', 'Reparando', 'Reparado', 'Entregado'];
 
   useEffect(() => {
     const fetchSoporteTecnico = async () => {
@@ -60,12 +60,12 @@ const SoporteTecnicoClienteDetalle = () => {
             
             const newEstadoImages = {
               Diagnosticando: [],
-              'En-Reparacion': [],
-              'Listo-Para-Entrega': [],
+              'Reparando': [],
+              'Reparado': [],
               Entregado: []
             };
 
-            const estadosConImagenes = ['Diagnosticando', 'En-Reparacion', 'Listo-Para-Entrega', 'Entregado'];
+            const estadosConImagenes = ['Diagnosticando', 'Reparando', 'Reparado', 'Entregado'];
             let estadoIndex = 0;
 
             imagenes.forEach(imagen => {
@@ -100,8 +100,8 @@ const SoporteTecnicoClienteDetalle = () => {
       case 'Ingreso': return '#007bff';
       case 'Diagnosticando': return '#ffc107';
       case 'Pendiente': return '#dc3545';
-      case 'En-Reparacion': return '#17a2b8';
-      case 'Listo-Para-Entrega': return '#28a745';
+      case 'Reparando': return '#17a2b8';
+      case 'Reparado': return '#28a745';
       case 'Entregado': return '#28a745';
       default: return '#6c757d';
     }
@@ -136,11 +136,11 @@ const SoporteTecnicoClienteDetalle = () => {
           {estado === 'Pendiente' ? (
             <Card.Text>
               <FaExclamationTriangle className="text-warning me-2" />
-              Esperando su confirmación
+              Esperando su confirmación 
             </Card.Text>
           ) : (
             <>
-              {estado === 'Listo-Para-Entrega' && (
+              {estado === 'Reparado' && (
                 <Card.Text>
                   <FaCheckCircle className="text-success me-2" />
                   Su equipo está listo para ser recogido
@@ -183,8 +183,8 @@ const SoporteTecnicoClienteDetalle = () => {
     Ingreso: imagenesIngreso,
     Diagnosticando: estadoImages.Diagnosticando || [],
     Pendiente: [],
-    'En-Reparacion': estadoImages['En-Reparacion'] || [],
-    'Listo-Para-Entrega': estadoImages['Listo-Para-Entrega'] || [],
+    'Reparando': estadoImages['Reparando'] || [],
+    'Reparado': estadoImages['Reparado'] || [],
     Entregado: estadoImages.Entregado || []
   };
 

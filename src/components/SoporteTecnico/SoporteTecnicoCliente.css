@@ -106,8 +106,8 @@ table tbody tr:nth-child(odd) {
 .estado.ingreso { background-color: #007bff; }
 .estado.pendiente { background-color: #ff0707dc; }
 .estado.diagnosticando { background-color: #ffc107; }
-.estado.en-reparacion { background-color: #6c757d; }
-.estado.listo-para-entrega { background-color: #17a2b8; }
+.estado.reparando { background-color: #6c757d; }
+.estado.reparado { background-color: #17a2b8; }
 .estado.entregado { background-color: #28a745; }
 
 .btn-ver {

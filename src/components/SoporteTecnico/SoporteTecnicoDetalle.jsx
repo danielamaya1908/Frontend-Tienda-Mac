@@ -18,7 +18,7 @@ const SoporteTecnicoDetalle = () => {
   const [imagenesIngreso, setImagenesIngreso] = useState([]);
   const navigate = useNavigate();
 
-  const estados = ['Ingreso', 'Diagnosticando', 'Pendiente', 'En-Reparacion', 'Listo-Para-Entrega', 'Entregado'];
+  const estados = ['Ingreso', 'Diagnosticando', 'Pendiente', 'Reparando', 'Reparado', 'Entregado'];
 
   useEffect(() => {
     const fetchSoporteTecnico = async () => {
@@ -29,7 +29,7 @@ const SoporteTecnicoDetalle = () => {
           return;
         }
 
-        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`, {
+        const response = await axios.get(`http://localhost:3005/soporte-tecnico/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -40,7 +40,7 @@ const SoporteTecnicoDetalle = () => {
           }
 
           // Fetch ingreso images
-          const imagenesIngresoResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`, {
+          const imagenesIngresoResponse = await axios.get(`http://localhost:3005/soporte-tecnico/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
 
@@ -52,7 +52,7 @@ const SoporteTecnicoDetalle = () => {
           }
 
           // Fetch images for other states
-          const latestImageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/latest-image`, {
+          const latestImageResponse = await axios.get(`http://localhost:3005/soporte-tecnico/${id}/latest-image`, {
             headers: { Authorization: `Bearer ${token}` }
           });
 
@@ -63,12 +63,12 @@ const SoporteTecnicoDetalle = () => {
             
             const newEstadoImages = {
               Diagnosticando: [],
-              'En-Reparacion': [],
-              'Listo-Para-Entrega': [],
+              'Reparando': [],
+              'Reparado': [],
               Entregado: []
             };
 
-            const estadosConImagenes = ['Diagnosticando', 'En-Reparacion', 'Listo-Para-Entrega', 'Entregado'];
+            const estadosConImagenes = ['Diagnosticando', 'Reparando', 'Reparado', 'Entregado'];
             let estadoIndex = 0;
 
             imagenes.forEach(imagen => {
@@ -103,8 +103,8 @@ const SoporteTecnicoDetalle = () => {
       case 'Ingreso': return '#007bff';
       case 'Diagnosticando': return '#ffc107';
       case 'Pendiente': return '#dc3545';
-      case 'En-Reparacion': return '#17a2b8';
-      case 'Listo-Para-Entrega': return '#28a745';
+      case 'Reparando': return '#17a2b8';
+      case 'Reparado': return '#28a745';
       case 'Entregado': return '#28a745';
       default: return '#6c757d';
     }
@@ -143,7 +143,7 @@ const SoporteTecnicoDetalle = () => {
             </Card.Text>
           ) : (
             <>
-              {estado === 'Listo-Para-Entrega' && (
+              {estado === 'Reparado' && (
                 <Card.Text>
                   <FaCheckCircle className="text-success me-2" />
                   El equipo está listo para ser recogido por el cliente
@@ -154,9 +154,9 @@ const SoporteTecnicoDetalle = () => {
                   {imagenes.map((imagen, index) => (
                     <Col key={index}>
                       <Card.Img
-                        src={`https://backend-tienda-mac-production.up.railway.app${imagen.url}`}
+                        src={`http://localhost:3005${imagen.url}`}
                         alt={`Estado ${estado}`}
-                        onClick={() => handleImageClick(`https://backend-tienda-mac-production.up.railway.app${imagen.url}`)}
+                        onClick={() => handleImageClick(`http://localhost:3005${imagen.url}`)}
                         style={{ cursor: 'pointer', border: currentState === estado ? '2px solid #007bff' : 'none' }}
                       />
                     </Col>
@@ -182,8 +182,8 @@ const SoporteTecnicoDetalle = () => {
     Ingreso: imagenesIngreso,
     Diagnosticando: estadoImages.Diagnosticando || [],
     Pendiente: [],
-    'En-Reparacion': estadoImages['En-Reparacion'] || [],
-    'Listo-Para-Entrega': estadoImages['Listo-Para-Entrega'] || [],
+    'Reparando': estadoImages['Reparando'] || [],
+    'Reparado': estadoImages['Reparado'] || [],
     Entregado: estadoImages.Entregado || []
   };
 

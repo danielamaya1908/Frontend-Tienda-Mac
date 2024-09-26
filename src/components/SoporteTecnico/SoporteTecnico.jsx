@@ -15,7 +15,7 @@ const SoporteTecnico = () => {
   useEffect(() => {
     const fetchOrdenesServicio = async () => {
       try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/soporte-Tecnico');
+        const response = await axios.get('http://localhost:3005/soporte-Tecnico');
         setOrdenesServicio(response.data);
       } catch (error) {
         console.error('Error al obtener órdenes de servicio:', error);
@@ -48,7 +48,7 @@ const SoporteTecnico = () => {
     try {
       let data = { estado: newEstado };
 
-      const response = await axios.put(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/estado`, data);
+      const response = await axios.put(`http://localhost:3005/soporte-tecnico/${id}/estado`, data);
 
       setOrdenesServicio(ordenesServicio.map(orden => 
         orden.id === id ? { ...orden, estado: newEstado, fechaSalida: response.data.fechaSalida } : orden
@@ -84,7 +84,7 @@ const SoporteTecnico = () => {
     formData.append('imagen', imagenes[id].file);
 
     try {
-      await axios.post(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/subir-imagen`, formData, {
+      await axios.post(`http://localhost:3005/soporte-tecnico/${id}/subir-imagen`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert('Imagen subida con éxito');
@@ -102,9 +102,9 @@ const SoporteTecnico = () => {
         return 'El próximo estado será Pendiente. Puede demorar de 1 a 3 días hábiles para su revisión y cambiar de estado.';
       case 'Pendiente':
         return 'Esperando confirmación del cliente.';
-      case 'En-Reparacion':
+      case 'Reparando':
         return 'El equipo está siendo reparado.';
-      case 'Listo-Para-Entrega':
+      case 'Reparado':
         return 'El equipo está listo para ser recogido por el cliente.';
       case 'Entregado':
         return 'El equipo fue entregado al cliente con éxito.';
@@ -135,8 +135,8 @@ const SoporteTecnico = () => {
                 <option value="Ingreso">Ingreso</option>
                 <option value="Pendiente">Pendiente</option>
                 <option value="Diagnosticando">Diagnosticando</option>
-                <option value="En-Reparacion">En Reparación</option>
-                <option value="Listo-Para-Entrega">Listo Para Entrega</option>
+                <option value="Reparando">Reparando</option>
+                <option value="Reparado">Reparado</option>
                 <option value="Entregado">Entregado</option>
               </select>
               <button onClick={handleAgregarEquipo} className="btn-agregar">Agregar Nuevo Equipo</button>
@@ -170,8 +170,8 @@ const SoporteTecnico = () => {
                           <option value="Ingreso">Ingreso</option>
                           <option value="Diagnosticando">Diagnosticando</option>
                           <option value="Pendiente">Pendiente</option>
-                          <option value="En-Reparacion">En Reparación</option>
-                          <option value="Listo-Para-Entrega">Listo Para Entrega</option>
+                          <option value="Reparando">Reparando</option>
+                          <option value="Reparado">Reparado</option>
                           <option value="Entregado">Entregado</option>
                         </select>
                         <p className="status-description">{getStatusDescription(orden.estado)}</p>
