@@ -15,7 +15,7 @@ const SoporteTecnico = () => {
   useEffect(() => {
     const fetchOrdenesServicio = async () => {
       try {
-        const response = await axios.get('http://localhost:3005/soporte-Tecnico');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/soporte-Tecnico');
         setOrdenesServicio(response.data);
       } catch (error) {
         console.error('Error al obtener órdenes de servicio:', error);
@@ -48,7 +48,7 @@ const SoporteTecnico = () => {
     try {
       let data = { estado: newEstado };
 
-      const response = await axios.put(`http://localhost:3005/soporte-tecnico/${id}/estado`, data);
+      const response = await axios.put(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/estado`, data);
 
       setOrdenesServicio(ordenesServicio.map(orden => 
         orden.id === id ? { ...orden, estado: newEstado, fechaSalida: response.data.fechaSalida } : orden
@@ -84,7 +84,7 @@ const SoporteTecnico = () => {
     formData.append('imagen', imagenes[id].file);
 
     try {
-      await axios.post(`http://localhost:3005/soporte-tecnico/${id}/subir-imagen`, formData, {
+      await axios.post(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/subir-imagen`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert('Imagen subida con éxito');
