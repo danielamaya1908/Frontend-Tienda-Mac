@@ -39,7 +39,7 @@ const SoporteTecnicoCliente = () => {
     }
 
     try {
-      const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/soportetecnicocliente', {
+      const response = await axios.get('http://localhost:3005/soportetecnicocliente', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSoportesTecnicos(response.data);
@@ -102,6 +102,8 @@ const SoporteTecnicoCliente = () => {
         return 'Esperando confirmación del cliente.';
       case 'en reparacion':
         return 'El equipo está siendo reparado.';
+      case 'listo-para-entrega':
+        return 'El equipo está listo para ser recogido.';
       case 'entregado':
         return 'Puede pasar a recoger en tienda.';
       default:
@@ -140,6 +142,7 @@ const SoporteTecnicoCliente = () => {
           <option value="pendiente">Pendiente</option>
           <option value="diagnosticando">Diagnosticando</option>
           <option value="en reparacion">En Reparación</option>
+          <option value="listo-para-entrega">Listo Para Entrega</option>
           <option value="entregado">Entregado</option>
         </select>
       </div>
@@ -162,7 +165,7 @@ const SoporteTecnicoCliente = () => {
               <td>{soporte.id}</td>
               <td>
                 <div className="estado-container">
-                  <span className={`estado ${soporte.estado.toLowerCase()}`}>{soporte.estado}</span>
+                  <span className={`estado ${soporte.estado.toLowerCase().replace(/\s+/g, '-')}`}>{soporte.estado}</span>
                   <div className="estado-descripcion">{getStatusDescription(soporte.estado)}</div>
                 </div>
               </td>
