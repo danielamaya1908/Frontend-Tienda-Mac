@@ -9,7 +9,6 @@ import { Modal, Button } from 'react-bootstrap';
 
 const UserPurchases = () => {
   const [purchases, setPurchases] = useState([]);
-  const [productImages, setProductImages] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortOrder, setSortOrder] = useState('desc');
@@ -17,6 +16,7 @@ const UserPurchases = () => {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [selectedProductUrl, setSelectedProductUrl] = useState('');
 
   useEffect(() => {
     const fetchPurchases = async () => {
@@ -27,33 +27,19 @@ const UserPurchases = () => {
           headers: { 'x-auth-token': token },
         });
 
-        const purchasesData = response.data;
-        setPurchases(purchasesData.map(purchase => ({
-          ...purchase,
-          date: new Date(purchase.createdAt),
-          productName: purchase.Product ? purchase.Product.name : 'No hay producto relacionado',
-          productUrl: purchase.Product ? `/products/${purchase.Product.id}` : '#',
-        })));
-
-        // Fetch images for each product
-        const imageRequests = purchasesData.map(async (purchase) => {
-          if (purchase.Product && purchase.Product.id) {
-            try {
-              const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${purchase.Product.id}/images`);
-              const imageFileNames = imageResponse.data;
-              const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-              return { [purchase.id]: imageUrls };
-            } catch (error) {
-              console.error(`Error getting images for product ${purchase.Product.id}:`, error);
-              return { [purchase.id]: [] };
-            }
-          }
-          return { [purchase.id]: [] };
+        const purchasesWithImages = response.data.map(purchase => {
+          const product = purchase.Product;
+          const imagePath = product && product.Image ? product.Image.path.split('\\').pop() : null;
+          return {
+            ...purchase,
+            date: new Date(purchase.createdAt),
+            productName: product ? product.name : 'No hay producto relacionado',
+            imageUrl: imagePath ? `https://backend-tienda-mac-production.up.railway.app/images/${imagePath}` : null,
+            productUrl: product ? `/products/${product.id}` : '#', // URL del producto
+          };
         });
 
-        const images = await Promise.all(imageRequests);
-        const imagesMap = images.reduce((acc, imageObj) => ({ ...acc, ...imageObj }), {});
-        setProductImages(imagesMap);
+        setPurchases(purchasesWithImages);
       } catch (err) {
         console.error('Error fetching purchases:', err);
         setError('Error al obtener las compras.');
@@ -61,30 +47,133 @@ const UserPurchases = () => {
         setLoading(false);
       }
     };
-
     fetchPurchases();
   }, []);
 
-  // ... (resto de las funciones sin cambios)
+  const sortPurchases = (purchasesToSort) => {
+    return purchasesToSort.sort((a, b) => {
+      return sortOrder === 'desc' ? b.date - a.date : a.date - b.date;
+    });
+  };
+
+  const filterPurchases = (purchasesToFilter) => {
+    return purchasesToFilter.filter(purchase => {
+      const statusMatch = filterStatus === 'all' || purchase.status === filterStatus;
+      const dateMatch = 
+        (!dateRange.start || purchase.date >= new Date(dateRange.start)) &&
+        (!dateRange.end || purchase.date <= new Date(dateRange.end));
+      return statusMatch && dateMatch;
+    });
+  };
+
+  const handleSort = () => {
+    setSortOrder(prevOrder => prevOrder === 'desc' ? 'asc' : 'desc');
+  };
+
+  const handleFilterChange = (e) => {
+    setFilterStatus(e.target.value);
+  };
+
+  const handleDateChange = (e) => {
+    setDateRange({ ...dateRange, [e.target.name]: e.target.value });
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedImage('');
+  };
+
+  const handleBuyAgain = (productUrl) => {
+    if (productUrl) {
+      window.location.href = productUrl;
+    } else {
+      console.error('Product URL is not defined.');
+    }
+  };
+
+  const formatPrice = (amount) => {
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
+  if (loading) return <p className="loading">Cargando...</p>;
+  if (error) return <p className="error">{error}</p>;
+  if (purchases.length === 0) return <p className="no-purchases">No se encontraron compras.</p>;
+
+  const filteredAndSortedPurchases = sortPurchases(filterPurchases(purchases));
 
   return (
     <>
       <Navbar />
       <div className="user-purchases-container">
-        {/* ... (filtros y otros elementos sin cambios) */}
+        <h2 className="main-title">Mis Compras</h2>
+        <div className="filters">
+          <button onClick={handleSort} className="sort-button">
+            <FontAwesomeIcon icon={faSort} /> Ordenar por fecha ({sortOrder === 'desc' ? 'Más reciente' : 'Más antiguo'})
+          </button>
+          <select onChange={handleFilterChange} value={filterStatus} className="filter-select">
+            <option value="all">Todos los estados</option>
+            <option value="completed">Completado</option>
+            <option value="pending">Pendiente</option>
+            <option value="cancelled">Cancelado</option>
+          </select>
+          <div className="date-range">
+            <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
+            <input
+              type="date"
+              name="start"
+              value={dateRange.start}
+              onChange={handleDateChange}
+              className="date-input"
+            />
+            <span>a</span>
+            <input
+              type="date"
+              name="end"
+              value={dateRange.end}
+              onChange={handleDateChange}
+              className="date-input"
+            />
+          </div>
+        </div>
         {filteredAndSortedPurchases.map((purchase) => (
           <div className="purchase-card card" key={purchase.id}>
             <div className="row g-3">
               <div className="col-md-8">
-                {/* ... (detalles de la compra sin cambios) */}
+                <div className="purchase-header">
+                  <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
+                  <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
+                  <span className={`purchase-status ${purchase.status}`}>
+                    <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
+                  </span>
+                </div>
+                <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
+                <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
+                <p className="purchase-item">
+                  <FontAwesomeIcon icon={faDollarSign} className="icon" />
+                  <strong>Monto:</strong> {formatPrice(purchase.amount)} {purchase.currency}
+                </p>
+                <p className="purchase-item"><strong>Método de Pago:</strong> {purchase.payment_method}</p>
+                <p className="purchase-item"><strong>Referencia:</strong> {purchase.reference}</p>
+                <p className="purchase-item"><strong>ID de Cargo:</strong> {purchase.charge_id}</p>
+                {/* <Button 
+                  className="buy-again-button"
+                  onClick={() => handleBuyAgain(purchase.productUrl)}
+                >
+                  Volver a Comprar
+                </Button> */}
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
-                {productImages[purchase.id] && productImages[purchase.id][0] ? (
+                {purchase.imageUrl ? (
                   <img 
-                    src={productImages[purchase.id][0]} 
+                    src={purchase.imageUrl} 
                     alt={purchase.productName} 
                     className="product-image"
-                    onClick={() => handleImageClick(productImages[purchase.id][0])}
+                    onClick={() => handleImageClick(purchase.imageUrl)}
                   />
                 ) : (
                   <p className="purchase-item">No hay imagen disponible.</p>
