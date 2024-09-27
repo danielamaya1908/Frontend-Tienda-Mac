@@ -12,12 +12,12 @@ const AccesoriosParaWatch = () => {
     const fetchIphoneProducts = async () => {
       try {
         const responses = await Promise.all([
-        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Soporte%20de%20viaje%20para%20el%20cable%20de%20carga%20y%20el%20%20Apple%20Watch'),
-        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Base%20de%20carga%20para%20iPhone%20y%20apple%20watch'),
-        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20reloj/subcategory/Protector%20de%20pantalla%20para%20Apple%20Watch'),
-        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Bateria%20Portátil'),
-        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Base%20de%20carga%202%20en%201%20para%20iPhone%20y%20Apple%20Watch'),
-    ]);
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Soporte%20de%20viaje%20para%20el%20cable%20de%20carga%20y%20el%20%20Apple%20Watch'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Base%20de%20carga%20para%20iPhone%20y%20apple%20watch'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20reloj/subcategory/Protector%20de%20pantalla%20para%20Apple%20Watch'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Bateria%20Portátil'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Base%20de%20carga%202%20en%201%20para%20iPhone%20y%20Apple%20Watch'),
+        ]);
         const products = responses.flatMap(response => response.data);
         setIphoneProducts(products);
         products.forEach(async (product) => {
@@ -37,8 +37,6 @@ const AccesoriosParaWatch = () => {
     fetchIphoneProducts();
   }, []);
 
-
-
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
   };
@@ -53,16 +51,21 @@ const AccesoriosParaWatch = () => {
             <div className="col" key={product.id}>
               <a href={`/detalle-producto/${product.id}`} className="text-decoration-none">
                 <div className="card h-100 small-card">
-                  <div className="card-img-top ratio ratio-16x9 border border-secondary rounded-top">
+                  <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: '250px', padding: '10px' }}>
                     {productImages[product.id] && productImages[product.id][0] && (
-                      <img src={productImages[product.id][0]} alt={`Product ${product.name}`} className="img-fluid rounded-top" />
+                      <img 
+                        src={productImages[product.id][0]} 
+                        alt={`Product ${product.name}`} 
+                        className="img-fluid" 
+                        style={{ maxHeight: '230px', maxWidth: '100%', objectFit: 'contain' }}
+                      />
                     )}
                   </div>
                   <div className="card-body d-flex flex-column">
                     <h5 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h5>
-                    <p className="card-text fs-7 text-truncate">Almacenamiento Interno: <strong>{product.capacityName}</strong></p>
-                    <p className="card-text fs-7 text-truncate">Color: <strong>{product.colorName}</strong></p>
-                    <p className="card-text fs-7 text-truncate">Precio: <strong>{formatPrice(product.price)}</strong></p>
+                    <p className="card-text fs-7">Almacenamiento Interno: <strong>{product.capacityName}</strong></p>
+                    <p className="card-text fs-7">Color: <strong>{product.colorName}</strong></p>
+                    <p className="card-text fs-7">Precio: <strong>{formatPrice(product.price)}</strong></p>
                     <div className="mt-auto d-flex justify-content-between">
                       <span className="btn btn-primary btn-sm">Comprar</span>
                     </div>
@@ -79,5 +82,3 @@ const AccesoriosParaWatch = () => {
 };
 
 export default AccesoriosParaWatch;
-
-

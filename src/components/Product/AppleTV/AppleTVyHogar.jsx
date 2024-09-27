@@ -38,8 +38,7 @@ const AppleTVyHogar = () => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
   };
-
-
+  
   return (
     <div className="iphone-products">
       <Navbar />
