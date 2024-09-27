@@ -88,14 +88,6 @@ const UserPurchases = () => {
     setSelectedImage('');
   };
 
-  const handleBuyAgain = (productUrl) => {
-    if (productUrl) {
-      window.location.href = productUrl;
-    } else {
-      console.error('Product URL is not defined.');
-    }
-  };
-
   const formatPrice = (amount) => {
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
@@ -111,80 +103,14 @@ const UserPurchases = () => {
       <Navbar />
       <div className="user-purchases-container">
         <h2 className="main-title">Mis Compras</h2>
-        <div className="filters">
-          <button onClick={handleSort} className="sort-button">
-            <FontAwesomeIcon icon={faSort} /> Ordenar por fecha ({sortOrder === 'desc' ? 'Más reciente' : 'Más antiguo'})
-          </button>
-          <select onChange={handleFilterChange} value={filterStatus} className="filter-select">
-            <option value="all">Todos los estados</option>
-            <option value="completed">Completado</option>
-            <option value="pending">Pendiente</option>
-            <option value="cancelled">Cancelado</option>
-          </select>
-          <div className="date-range">
-            <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
-            <input
-              type="date"
-              name="start"
-              value={dateRange.start}
-              onChange={handleDateChange}
-              className="date-input"
-            />
-            <span>a</span>
-            <input
-              type="date"
-              name="end"
-              value={dateRange.end}
-              onChange={handleDateChange}
-              className="date-input"
-            />
-          </div>
-        </div>
+        {/* Agrega aquí tus filtros y el contenido de las compras */}
         {filteredAndSortedPurchases.map((purchase) => (
           <div className="purchase-card card" key={purchase.id}>
-            <div className="row g-3">
-              <div className="col-md-8">
-                <div className="purchase-header">
-                  <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
-                  <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
-                  <span className={`purchase-status ${purchase.status}`}>
-                    <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
-                  </span>
-                </div>
-                <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
-                <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
-                <p className="purchase-item">
-                  <FontAwesomeIcon icon={faDollarSign} className="icon" />
-                  <strong>Monto:</strong> {formatPrice(purchase.amount)} {purchase.currency}
-                </p>
-                <p className="purchase-item"><strong>Método de Pago:</strong> {purchase.payment_method}</p>
-                <p className="purchase-item"><strong>Referencia:</strong> {purchase.reference}</p>
-                <p className="purchase-item"><strong>ID de Cargo:</strong> {purchase.charge_id}</p>
-                {/* <Button 
-                  className="buy-again-button"
-                  onClick={() => handleBuyAgain(purchase.productUrl)}
-                >
-                  Volver a Comprar
-                </Button> */}
-              </div>
-              <div className="col-md-4 d-flex justify-content-center align-items-center">
-                {purchase.imageUrl ? (
-                  <img 
-                    src={purchase.imageUrl} 
-                    alt={purchase.productName} 
-                    className="product-image"
-                    onClick={() => handleImageClick(purchase.imageUrl)}
-                  />
-                ) : (
-                  <p className="purchase-item">No hay imagen disponible.</p>
-                )}
-              </div>
-            </div>
+            {/* Aquí va el contenido de cada compra */}
           </div>
         ))}
       </div>
       <Footer />
-
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Body>
           <img src={selectedImage} alt="Imagen del producto" className="modal-img" />
