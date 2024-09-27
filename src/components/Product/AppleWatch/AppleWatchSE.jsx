@@ -1,23 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import Navbar from '../../NavBar/NavBar';
 import Footer from '../../Footer/Footer'; 
 import { Link } from 'react-router-dom';
 
 const AppleWatchSE = () => {
-  const [AirpodsProducts, setAirpodsProducts] = useState([]);
+  const [appleWatchProducts, setAppleWatchProducts] = useState([]);
   const [productImages, setProductImages] = useState({});
 
   useEffect(() => {
-    const fetchAirpodsProducts = async () => {
+    const fetchAppleWatchProducts = async () => {
       try {
         const responses = await Promise.all([
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartwatches%20y%20accesorios/subcategory/Smartwatches/name/Apple%20Watch%20SE%202.ª%20generación'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/product/632'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/product/633'),
-        ]);                                                                                          
+        ]);
         const products = responses.flatMap(response => response.data);
-        setAirpodsProducts(products);
+        setAppleWatchProducts(products);
+
         products.forEach(async (product) => {
           try {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
@@ -29,46 +30,50 @@ const AppleWatchSE = () => {
           }
         });
       } catch (error) {
-        console.error('Error fetching Airpods products:', error);
+        console.error('Error fetching Apple Watch SE products:', error);
       }
     };
-    fetchAirpodsProducts();
+
+    fetchAppleWatchProducts();
   }, []);
-
-
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
   };
 
   return (
-    <div className="AppleWatch-products">
+    <div className="apple-watch-se-products">
       <Navbar />
       <div className="container py-5">
         <h1 className="text-center mb-4 fs-4">Apple Watch SE</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {AirpodsProducts.map((product) => (
+          {appleWatchProducts.map((product) => (
             <div className="col" key={product.id}>
-              <a href={`/detalle-producto/${product.id}`} className="text-decoration-none">
-                <div className="card h-100" style={{ width: '22rem' }}>
-                  <div className="card-img-top ratio ratio-16x9 border border-secondary rounded-top">
+              <Link to={`/detalle-producto/${product.id}`} className="text-decoration-none">
+                <div className="card h-100 small-card">
+                  <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: '250px', padding: '10px' }}>
                     {productImages[product.id] && productImages[product.id][0] && (
-                      <img src={productImages[product.id][0]} alt={`Product ${product.name}`} className="img-fluid rounded-top" />
+                      <img 
+                        src={productImages[product.id][0]} 
+                        alt={`Product ${product.name}`} 
+                        className="img-fluid" 
+                        style={{ maxHeight: '230px', maxWidth: '100%', objectFit: 'contain' }}
+                      />
                     )}
                   </div>
                   <div className="card-body d-flex flex-column">
                     <h5 className="text-lg font-semibold mb-2 line-clamp-2"><strong>{product.name}</strong></h5>
-                    <p className="card-text fs-7 text-truncate">Almacenamiento Interno: <strong>{product.capacityName}</strong></p>
-                    <p className="card-text fs-7 text-truncate">Color: <strong>{product.colorName}</strong></p>
-                    <p className="card-text fs-7 text-truncate">Precio: <strong>{formatPrice(product.price)}</strong></p>
+                    <p className="card-text fs-7">Almacenamiento Interno: <strong>{product.capacityName}</strong></p>
+                    <p className="card-text fs-7">Color: <strong>{product.colorName}</strong></p>
+                    <p className="card-text fs-7">Precio: <strong>{formatPrice(product.price)}</strong></p>
                     <div className="mt-auto d-flex justify-content-between">
-                      <a href={`/detalle-producto/${product.id}`} className="btn btn-primary btn-sm">
+                      <Link to={`/detalle-producto/${product.id}`} className="btn btn-primary btn-sm">
                         Comprar
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
@@ -79,4 +84,3 @@ const AppleWatchSE = () => {
 };
 
 export default AppleWatchSE;
-

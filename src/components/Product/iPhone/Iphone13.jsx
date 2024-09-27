@@ -13,7 +13,6 @@ const Iphone13 = () => {
       try {
         const responses = await Promise.all([
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2013'),
-         /*  axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2013%20Mini') */
         ]);
         const products = responses.flatMap(response => response.data);
         setIphoneProducts(products);
@@ -39,7 +38,7 @@ const Iphone13 = () => {
   };
 
   return (
-    <div className="AppleWatch-products">
+    <div className="iphone-products">
       <Navbar />
       <div className="container py-5">
         <h1 className="text-center mb-4 fs-4">iPhone 13</h1>
@@ -48,16 +47,21 @@ const Iphone13 = () => {
             <div className="col" key={product.id}>
               <a href={`/detalle-producto/${product.id}`} className="text-decoration-none">
                 <div className="card h-100 small-card">
-                  <div className="card-img-top ratio ratio-16x9 border border-secondary rounded-top">
+                  <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: '250px', padding: '10px' }}>
                     {productImages[product.id] && productImages[product.id][0] && (
-                      <img src={productImages[product.id][0]} alt={`Product ${product.name}`} className="img-fluid rounded-top" />
+                      <img 
+                        src={productImages[product.id][0]} 
+                        alt={`Product ${product.name}`} 
+                        className="img-fluid" 
+                        style={{ maxHeight: '230px', maxWidth: '100%', objectFit: 'contain' }}
+                      />
                     )}
                   </div>
                   <div className="card-body d-flex flex-column">
                     <h5 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h5>
-                    <p className="card-text fs-7 text-truncate">Almacenamiento Interno: <strong>{product.capacityName}</strong></p>
-                    <p className="card-text fs-7 text-truncate">Color: <strong>{product.colorName}</strong></p>
-                    <p className="card-text fs-7 text-truncate">Precio: <strong>{formatPrice(product.price)}</strong></p>
+                    <p className="card-text fs-7">Almacenamiento Interno: <strong>{product.capacityName}</strong></p>
+                    <p className="card-text fs-7">Color: <strong>{product.colorName}</strong></p>
+                    <p className="card-text fs-7">Precio: <strong>{formatPrice(product.price)}</strong></p>
                     <div className="mt-auto d-flex justify-content-between">
                       <span className="btn btn-primary btn-sm">Comprar</span>
                     </div>
