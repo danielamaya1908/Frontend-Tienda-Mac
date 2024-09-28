@@ -51,8 +51,8 @@ const DetalleProducto = () => {
     const fullText = product.description;
 
     // Busca las secciones usando índices
-    const characteristicsIndex = fullText.indexOf('Características:');
-    const contentsIndex = fullText.indexOf('Contenido de la caja:');
+    const characteristicsIndex = fullText.indexOf('Características');
+    const contentsIndex = fullText.indexOf('Contenido de la caja');
     const warrantyIndex = fullText.indexOf('Garantía');
 
     return {
