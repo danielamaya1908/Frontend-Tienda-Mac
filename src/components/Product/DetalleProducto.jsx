@@ -4,8 +4,9 @@ import axios from 'axios';
 import Navbar from '../NavBar/NavBar';
 import { useSwipeable } from 'react-swipeable';
 import Footer from '../Footer/Footer';
-import './DetalleProducto.css';
 import { useCart } from '../../context/CartContext';
+import { motion } from 'framer-motion';
+import './DetalleProducto.css';
 
 const DetalleProducto = () => {
   const { id } = useParams();
@@ -25,12 +26,12 @@ const DetalleProducto = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const productResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/product/${id}`);
+        const productResponse = await axios.get(`http://localhost:3005/product/${id}`);
         setProduct(productResponse.data);
 
-        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${id}/images`);
+        const imageResponse = await axios.get(`http://localhost:3005/products/${id}/images`);
         const imageFileNames = imageResponse.data;
-        const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+        const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
         setImages(imageUrls);
 
         setMaxQuantity(productResponse.data.quantity || 1);
@@ -50,7 +51,6 @@ const DetalleProducto = () => {
 
     const fullText = product.description;
 
-    // Busca las secciones usando índices
     const characteristicsIndex = fullText.indexOf('Características');
     const contentsIndex = fullText.indexOf('Contenido de la caja');
     const warrantyIndex = fullText.indexOf('Garantía');
@@ -68,7 +68,7 @@ const DetalleProducto = () => {
   };
 
   const handleAddToCart = () => {
-    addToCart(product, quantity);
+    addToCart({ ...product, quantity: maxQuantity }, quantity);
     navigate('/cart');
   };
 
@@ -98,7 +98,12 @@ const DetalleProducto = () => {
   return (
     <div className="detalle-producto">
       <Navbar />
-      <div className="container py-5 bg-light shadow-sm rounded position-relative">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container py-5 bg-light shadow-sm rounded position-relative"
+      >
         <button 
           className="btn btn-close position-absolute" 
           onClick={handleGoBack} 
@@ -107,13 +112,26 @@ const DetalleProducto = () => {
         ></button>
         <h1 className="product-name product-center mb-4">{product.name}</h1>
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-6 mb-4">
             {images.length > 0 ? (
-              <div id="productCarousel" className="carousel slide" data-bs-ride="carousel" {...handlers}>
+              <motion.div 
+                initial={{ scale: 0.9 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.3 }}
+                id="productCarousel" 
+                className="carousel slide" 
+                data-bs-ride="carousel" 
+                {...handlers}
+              >
                 <div className="carousel-inner">
                   {images.map((image, index) => (
                     <div className={`carousel-item ${index === currentImageIndex ? 'active' : ''}`} key={index}>
-                      <img src={image} className="d-block w-100 img-carousel" alt={`${product.name} - Imagen ${index + 1}`} />
+                      <img 
+                        src={image} 
+                        className="d-block w-100 img-carousel" 
+                        alt={`${product.name} - Imagen ${index + 1}`} 
+                        style={{ objectFit: 'contain', height: '400px' }}
+                      />
                     </div>
                   ))}
                 </div>
@@ -125,17 +143,24 @@ const DetalleProducto = () => {
                   <span className="carousel-control-next-icon" aria-hidden="true"></span>
                   <span className="visually-hidden">Siguiente</span>
                 </button>
-              </div>
+              </motion.div>
             ) : (
               <p className="product-text">No hay imágenes disponibles para este producto.</p>
             )}
           </div>
-          <div className="col-md-6">
-            <h2 className="product-heading">Especificaciones</h2>
-            <p className="product-specs"><strong>Almacenamiento Interno:</strong> {product.capacityName}</p>
-            <p className="product-specs"><strong>Color:</strong> {product.colorName}</p>
-            <p className="product-specs"><strong>Precio:</strong> {formatPrice(product.price)}</p>
-            <div className="mb-3">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="col-md-6"
+          >
+            <div className="product-info mb-4">
+              <h2 className="product-heading">Especificaciones</h2>
+              <p className="product-specs"><strong>Almacenamiento Interno:</strong> {product.capacityName}</p>
+              <p className="product-specs"><strong>Color:</strong> {product.colorName}</p>
+              <p className="product-specs"><strong>Precio:</strong> {formatPrice(product.price)}</p>
+            </div>
+            <div className="quantity-selector mb-3">
               <label htmlFor="quantity" className="product-label form-label">Cantidad:</label>
               <div className="input-group">
                 <button 
@@ -150,7 +175,14 @@ const DetalleProducto = () => {
                   className="form-control text-center cantidad-input" 
                   id="quantity" 
                   value={quantity} 
-                  readOnly 
+                  onChange={(e) => {
+                    const newQuantity = parseInt(e.target.value);
+                    if (!isNaN(newQuantity) && newQuantity >= 1 && newQuantity <= maxQuantity) {
+                      setQuantity(newQuantity);
+                    }
+                  }}
+                  min="1"
+                  max={maxQuantity}
                 />
                 <button 
                   className={`btn btn-outline-secondary ${quantity >= maxQuantity ? 'disabled' : ''}`} 
@@ -161,73 +193,78 @@ const DetalleProducto = () => {
                 </button>
               </div>
             </div>
+            <p className="product-text">Disponibles: {maxQuantity}</p>
             <p className="product-text"><strong>Subtotal:</strong> {formatPrice(product.price * quantity)}</p>
-            <div className="d-flex justify-content-between mt-3">
-              <button className="btn btn-primary btn-lg flex-grow-1 me-2" onClick={handleAddToCart}>Agregar al carrito</button>
+            <div className="d-grid gap-2">
+              <button className="btn btn-primary btn-lg" onClick={handleAddToCart}>Agregar al carrito</button>
             </div>
-            
-            {/* Sistema de pestañas para descripción, características, contenido de la caja y garantía */}
-            <div className="mt-4">
-              <ul className="nav nav-tabs">
-                <li className="nav-item">
-                  <button 
-                    className={`nav-link ${activeTab === 'description' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('description')}
-                  >
-                    Descripción
-                  </button>
-                </li>
-                <li className="nav-item">
-                  <button 
-                    className={`nav-link ${activeTab === 'specs' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('specs')}
-                  >
-                    Características
-                  </button>
-                </li>
-                <li className="nav-item">
-                  <button 
-                    className={`nav-link ${activeTab === 'boxContents' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('boxContents')}
-                  >
-                    Contenido de la caja
-                  </button>
-                </li>
-                <li className="nav-item">
-                  <button 
-                    className={`nav-link ${activeTab === 'warranty' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('warranty')}
-                  >
-                    Garantía
-                  </button>
-                </li>
-              </ul>
-              <div className="tab-content mt-3">
-                {activeTab === 'description' && (
-                  <div className="tab-pane fade show active">
-                    <p>{description}</p>
-                  </div>
-                )}
-                {activeTab === 'specs' && (
-                  <div className="tab-pane fade show active">
-                    <p>{technicalSpecs}</p>
-                  </div>
-                )}
-                {activeTab === 'boxContents' && (
-                  <div className="tab-pane fade show active">
-                    <p>{boxContents}</p>
-                  </div>
-                )}
-                {activeTab === 'warranty' && (
-                  <div className="tab-pane fade show active">
-                    <p>{warranty}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-4"
+        >
+          <ul className="nav nav-tabs">
+            <li className="nav-item">
+              <button 
+                className={`nav-link ${activeTab === 'description' ? 'active' : ''}`}
+                onClick={() => setActiveTab('description')}
+              >
+                Descripción
+              </button>
+            </li>
+            <li className="nav-item">
+              <button 
+                className={`nav-link ${activeTab === 'specs' ? 'active' : ''}`}
+                onClick={() => setActiveTab('specs')}
+              >
+                Características
+              </button>
+            </li>
+            <li className="nav-item">
+              <button 
+                className={`nav-link ${activeTab === 'boxContents' ? 'active' : ''}`}
+                onClick={() => setActiveTab('boxContents')}
+              >
+                Contenido de la caja
+              </button>
+            </li>
+            <li className="nav-item">
+              <button 
+                className={`nav-link ${activeTab === 'warranty' ? 'active' : ''}`}
+                onClick={() => setActiveTab('warranty')}
+              >
+                Garantía
+              </button>
+            </li>
+          </ul>
+          <div className="tab-content mt-3">
+            {activeTab === 'description' && (
+              <div className="tab-pane fade show active">
+                <p>{description}</p>
+              </div>
+            )}
+            {activeTab === 'specs' && (
+              <div className="tab-pane fade show active">
+                <p>{technicalSpecs}</p>
+              </div>
+            )}
+            {activeTab === 'boxContents' && (
+              <div className="tab-pane fade show active">
+                <p>{boxContents}</p>
+              </div>
+            )}
+            {activeTab === 'warranty' && (
+              <div className="tab-pane fade show active">
+                <p>{warranty}</p>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
       <Footer />
     </div>
   );

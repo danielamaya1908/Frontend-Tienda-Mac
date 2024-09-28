@@ -10,8 +10,9 @@ import LoginUser from '../Login/LoginUser';
 import styles from './Cart.module.css';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCart();
+  const { cartItems, removeFromCart, clearCart, increaseQuantity, decreaseQuantity, updateQuantity } = useCart();
   const [productImages, setProductImages] = useState({});
+  const [productQuantities, setProductQuantities] = useState({});
   const [showLoginUser, setShowLoginUser] = useState(false);
   const [user, setUser] = useState(null);
   const [redirectAfterLogin, setRedirectAfterLogin] = useState('/cart');
@@ -50,9 +51,9 @@ const Cart = () => {
       try {
         const imageRequests = cartItems.map(async (item) => {
           try {
-            const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${item.id}/images`);
+            const response = await axios.get(`http://localhost:3005/products/${item.id}/images`);
             const imageFileNames = response.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
             return { [item.id]: imageUrls };
           } catch (error) {
             console.error(`Error getting images for product ${item.id}:`, error);
@@ -72,11 +73,38 @@ const Cart = () => {
   }, [cartItems]);
 
   useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const detailsPromises = cartItems.map(item =>
+          axios.get(`http://localhost:3005/product/${item.id}`)
+        );
+        const responses = await Promise.all(detailsPromises);
+        const quantities = responses.reduce((acc, response) => {
+          acc[response.data.id] = response.data.quantity;
+          return acc;
+        }, {});
+        setProductQuantities(quantities);
+      } catch (error) {
+        console.error('Error fetching product details:', error);
+      }
+    };
+
+    fetchProductDetails();
+  }, [cartItems]);
+
+  useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+
+  const handleQuantityChange = (itemId, newQuantity) => {
+    const maxQuantity = productQuantities[itemId] || 1;
+    if (newQuantity >= 1 && newQuantity <= maxQuantity) {
+      updateQuantity(itemId, newQuantity);
+    }
+  };
 
   if (showLoginUser) {
     return (
@@ -136,14 +164,25 @@ const Cart = () => {
                     </Col>
                     <Col xs={12} md={2} className="my-3 my-md-0">
                       <div className="d-flex align-items-center justify-content-center">
-                        <Button variant="outline-secondary" size="sm" onClick={() => decreaseQuantity(item.id)}>
+                        <Button 
+                          variant="outline-secondary" 
+                          size="sm" 
+                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                          disabled={item.quantity <= 1}
+                        >
                           <Dash />
                         </Button>
                         <span className={`mx-3 ${styles.quantity}`}>{item.quantity}</span>
-                        <Button variant="outline-secondary" size="sm" onClick={() => increaseQuantity(item.id)}>
+                        <Button 
+                          variant="outline-secondary" 
+                          size="sm" 
+                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                          disabled={item.quantity >= (productQuantities[item.id] || 1)}
+                        >
                           <Plus />
                         </Button>
                       </div>
+                      <p className="text-muted mt-2 mb-0">Disponibles: {productQuantities[item.id] || 'Cargando...'}</p>
                     </Col>
                     <Col xs={6} md={2} className="text-right">
                       <h5 className="mb-0">{formatPrice(item.price * item.quantity)}</h5>

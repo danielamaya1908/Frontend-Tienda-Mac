@@ -87,6 +87,7 @@ import PaymentConfirmation from './components/Cart/PaymentConfirmation';
 import UserPurchases from './components/Login/UserPurchases.jsx';
 import DetallesCuenta from './components/Login/DetallesCuenta.jsx';
 import PurchaseAdmin from './components/UserAdmin/PurchaseAdmin.jsx';
+import SearchResults from './components/NavBar/Search.jsx';
 
 
 function ProtectedRoute({ element, isLoggedIn }) {
@@ -121,7 +122,8 @@ function App() {
               <Home />
             </>
           } 
-        />
+          />
+          <Route path="/search" element={<SearchResults />} />
         <Route 
           path="/7gP4mX!5vZwQj@n8rAe" 
           element={
