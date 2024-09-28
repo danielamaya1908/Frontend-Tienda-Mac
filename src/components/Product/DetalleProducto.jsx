@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../NavBar/NavBar';
@@ -18,20 +18,19 @@ const DetalleProducto = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [maxQuantity, setMaxQuantity] = useState(1);
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const maxDescriptionLength = 88; // Ajusta según sea necesario
+  const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
     const fetchProductDetails = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const productResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/product/${id}`);
+        const productResponse = await axios.get(`http://localhost:3005/product/${id}`);
         setProduct(productResponse.data);
 
-        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${id}/images`);
+        const imageResponse = await axios.get(`http://localhost:3005/products/${id}/images`);
         const imageFileNames = imageResponse.data;
-        const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+        const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
         setImages(imageUrls);
 
         setMaxQuantity(productResponse.data.quantity || 1);
@@ -45,6 +44,24 @@ const DetalleProducto = () => {
 
     fetchProductDetails();
   }, [id]);
+
+  const { description, technicalSpecs, warranty, boxContents } = useMemo(() => {
+    if (!product || !product.description) return { description: '', technicalSpecs: '', warranty: '', boxContents: '' };
+
+    const fullText = product.description;
+
+    // Busca las secciones usando índices
+    const characteristicsIndex = fullText.indexOf('Características:');
+    const contentsIndex = fullText.indexOf('Contenido de la caja:');
+    const warrantyIndex = fullText.indexOf('Garantía');
+
+    return {
+      description: fullText.slice(0, characteristicsIndex).trim(),
+      technicalSpecs: fullText.slice(characteristicsIndex, contentsIndex).trim(),
+      boxContents: fullText.slice(contentsIndex, warrantyIndex).trim(),
+      warranty: fullText.slice(warrantyIndex).trim(),
+    };
+  }, [product]);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
@@ -78,17 +95,16 @@ const DetalleProducto = () => {
   if (error) return <div className="error">{error}</div>;
   if (!product) return <div className="no-product">No se encontró el producto.</div>;
 
-  const handleToggleDescription = () => {
-    setIsDescriptionExpanded(prev => !prev);
-  };
-
-  const shortDescription = product.description.slice(0, maxDescriptionLength);
-  const isDescriptionLong = product.description.length > maxDescriptionLength;
-
   return (
     <div className="detalle-producto">
       <Navbar />
       <div className="container py-5 bg-light shadow-sm rounded position-relative">
+        <button 
+          className="btn btn-close position-absolute" 
+          onClick={handleGoBack} 
+          aria-label="Cerrar"
+          style={{ top: '15px', right: '15px' }}
+        ></button>
         <h1 className="product-name product-center mb-4">{product.name}</h1>
         <div className="row">
           <div className="col-md-6">
@@ -148,35 +164,69 @@ const DetalleProducto = () => {
             <p className="product-text"><strong>Subtotal:</strong> {formatPrice(product.price * quantity)}</p>
             <div className="d-flex justify-content-between mt-3">
               <button className="btn btn-primary btn-lg flex-grow-1 me-2" onClick={handleAddToCart}>Agregar al carrito</button>
-              {/* <a 
-                href={`https://api.whatsapp.com/send?phone=573173026445&text=¡Hola Tienda Mac! Me interesa comprar ${quantity} ${product.name} (${product.capacityName}, ${product.colorName}). ¿Podrían darme más información?`}
-                className="btn btn-success btn-lg flex-grow-1"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Comprar por WhatsApp
-              </a> */}
             </div>
-            <h3 className="product-heading mt-4">Descripción</h3>
-            <p className="product-description">
-              {isDescriptionExpanded ? product.description : shortDescription}
-              {isDescriptionLong && (
-                <button onClick={handleToggleDescription} className="btn btn-link">
-                  {isDescriptionExpanded ? 'Ver menos' : 'Ver más'}
-                </button>
-              )}
-            </p>
+            
+            {/* Sistema de pestañas para descripción, características, contenido de la caja y garantía */}
+            <div className="mt-4">
+              <ul className="nav nav-tabs">
+                <li className="nav-item">
+                  <button 
+                    className={`nav-link ${activeTab === 'description' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('description')}
+                  >
+                    Descripción
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button 
+                    className={`nav-link ${activeTab === 'specs' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('specs')}
+                  >
+                    Características
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button 
+                    className={`nav-link ${activeTab === 'boxContents' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('boxContents')}
+                  >
+                    Contenido de la caja
+                  </button>
+                </li>
+                <li className="nav-item">
+                  <button 
+                    className={`nav-link ${activeTab === 'warranty' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('warranty')}
+                  >
+                    Garantía
+                  </button>
+                </li>
+              </ul>
+              <div className="tab-content mt-3">
+                {activeTab === 'description' && (
+                  <div className="tab-pane fade show active">
+                    <p>{description}</p>
+                  </div>
+                )}
+                {activeTab === 'specs' && (
+                  <div className="tab-pane fade show active">
+                    <p>{technicalSpecs}</p>
+                  </div>
+                )}
+                {activeTab === 'boxContents' && (
+                  <div className="tab-pane fade show active">
+                    <p>{boxContents}</p>
+                  </div>
+                )}
+                {activeTab === 'warranty' && (
+                  <div className="tab-pane fade show active">
+                    <p>{warranty}</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-        <button 
-          onClick={handleGoBack}
-          className="btn btn-close-custom position-absolute top-0 end-0 m-3"
-          aria-label="Cerrar"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-x" viewBox="0 0 16 16">
-            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-          </svg>
-        </button>
       </div>
       <Footer />
     </div>
