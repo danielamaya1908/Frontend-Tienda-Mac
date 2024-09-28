@@ -34,15 +34,15 @@ const SearchComponent = ({ onClose }) => {
   // Manejar la búsqueda
   const handleSearch = async (signal) => {
     try {
-      const response = await axios.get(`http://localhost:3005/products/search?query=${searchTerm}`, { signal });
+      const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/search?query=${searchTerm}`, { signal });
       setSearchResults(response.data);
       setProductImages({});
 
       const imageRequests = response.data.map(async (product) => {
         try {
-          const imageResponse = await axios.get(`http://localhost:3005/products/${product.id}/images`, { signal });
+          const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`, { signal });
           const imageFileNames = imageResponse.data;
-          const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
+          const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
           return { id: product.id, urls: imageUrls };
         } catch (error) {
           if (error.name !== 'CanceledError') {
