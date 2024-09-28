@@ -9,6 +9,8 @@ import './NavBar.css';
 import logo from '../../img/Logo-letras-huecas-2-1536x985.png';
 import LoginUser from '../Login/LoginUser';
 import UserInfo from '../Login/UserInfo';
+import Search from './Search'; // Cambia la ruta según tu estructura de carpetas
+
 
 const Navbar = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -147,10 +149,17 @@ const Navbar = () => {
                 className="user-info-container"
               />
             )}
-          </div>
+           </div>
+           <div style={{ position: 'relative' }}>
             <span className="nav-link d-flex align-items-center me-2" style={{ color: '#f8f9fa' }} onClick={handleSearchClick}>
               <FontAwesomeIcon icon={faSearch} />
             </span>
+            {showSearch && (
+              <div ref={searchInputRef} className="search-container">
+                <Search onClose={() => setShowSearch(false)} />
+              </div>
+            )}
+          </div>
           </div>
           <BootstrapNavbar.Toggle aria-controls="responsive-navbar-nav" onClick={toggleMobileMenu} />
           <BootstrapNavbar.Collapse id="responsive-navbar-nav" className={showMobileMenu ? 'show' : ''}>
