@@ -107,7 +107,7 @@ const ProductForm = ({ onSubmit }) => {
 
   const fetchColors = async () => {
     try {
-      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/product/colors');
+      const response = await fetch('https://backend-tienda-mac-production.up.railway.app/colors');
       if (!response.ok) {
         throw new Error('Failed to fetch colors');
       }
