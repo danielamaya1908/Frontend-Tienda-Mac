@@ -31,7 +31,9 @@ const PurchaseAdmin = () => {
             ...purchase,
             date: new Date(purchase.createdAt),
             productName: product ? product.name : 'No hay producto relacionado',
-            imageUrl: imagePath ? `https://backend-tienda-mac-production.up.railway.app/images/${imagePath}` : null,
+            imageUrl: imagePath
+              ? `https://backend-tienda-mac-production.up.railway.app/images/${imagePath.replace(/^\//, '')}`
+              : null,
           };
         });
 
