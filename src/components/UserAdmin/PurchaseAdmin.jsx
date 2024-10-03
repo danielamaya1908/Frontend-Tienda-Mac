@@ -26,13 +26,13 @@ const PurchaseAdmin = () => {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/adminpurchases');
         const purchasesWithImages = response.data.map(purchase => {
           const product = purchase.Product;
-          const imagePath = product && product.Image ? product.Image.path : null;
+          const imageName = product && product.Image ? product.Image.path.split('/').pop() : null;
           return {
             ...purchase,
             date: new Date(purchase.createdAt),
             productName: product ? product.name : 'No hay producto relacionado',
-            imageUrl: imagePath
-              ? `https://backend-tienda-mac-production.up.railway.app/images/${imagePath.replace(/^\//, '')}`
+            imageUrl: imageName
+              ? `https://backend-tienda-mac-production.up.railway.app/images/${imageName}`
               : null,
           };
         });
