@@ -26,12 +26,12 @@ const DetalleProducto = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const productResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/product/${id}`);
+        const productResponse = await axios.get(`http://localhost:3005/product/${id}`);
         setProduct(productResponse.data);
 
-        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${id}/images`);
+        const imageResponse = await axios.get(`http://localhost:3005/products/${id}/images`);
         const imageFileNames = imageResponse.data;
-        const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+        const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
         setImages(imageUrls);
 
         setMaxQuantity(productResponse.data.quantity || 1);
@@ -98,15 +98,15 @@ const DetalleProducto = () => {
   return (
     <div className="detalle-producto">
       <Navbar />
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="container py-5 bg-light shadow-sm rounded position-relative"
       >
-        <button 
-          className="btn btn-close position-absolute" 
-          onClick={handleGoBack} 
+        <button
+          className="btn btn-close position-absolute"
+          onClick={handleGoBack}
           aria-label="Cerrar"
           style={{ top: '15px', right: '15px' }}
         ></button>
@@ -114,22 +114,22 @@ const DetalleProducto = () => {
         <div className="row">
           <div className="col-md-6 mb-4">
             {images.length > 0 ? (
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.3 }}
-                id="productCarousel" 
-                className="carousel slide" 
-                data-bs-ride="carousel" 
+                id="productCarousel"
+                className="carousel slide"
+                data-bs-ride="carousel"
                 {...handlers}
               >
                 <div className="carousel-inner">
                   {images.map((image, index) => (
                     <div className={`carousel-item ${index === currentImageIndex ? 'active' : ''}`} key={index}>
-                      <img 
-                        src={image} 
-                        className="d-block w-100 img-carousel" 
-                        alt={`${product.name} - Imagen ${index + 1}`} 
+                      <img
+                        src={image}
+                        className="d-block w-100 img-carousel"
+                        alt={`${product.name} - Imagen ${index + 1}`}
                         style={{ objectFit: 'contain', height: '400px' }}
                       />
                     </div>
@@ -148,7 +148,7 @@ const DetalleProducto = () => {
               <p className="product-text">No hay imágenes disponibles para este producto.</p>
             )}
           </div>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -163,18 +163,18 @@ const DetalleProducto = () => {
             <div className="quantity-selector mb-3">
               <label htmlFor="quantity" className="product-label form-label">Cantidad:</label>
               <div className="input-group">
-                <button 
-                  className={`btn btn-outline-secondary ${quantity <= 1 ? 'disabled' : ''}`} 
-                  type="button" 
+                <button
+                  className={`btn btn-outline-secondary ${quantity <= 1 ? 'disabled' : ''}`}
+                  type="button"
                   onClick={() => setQuantity(prev => Math.max(prev - 1, 1))}
                 >
                   -
                 </button>
-                <input 
-                  type="number" 
-                  className="form-control text-center cantidad-input" 
-                  id="quantity" 
-                  value={quantity} 
+                <input
+                  type="number"
+                  className="form-control text-center cantidad-input"
+                  id="quantity"
+                  value={quantity}
                   onChange={(e) => {
                     const newQuantity = parseInt(e.target.value);
                     if (!isNaN(newQuantity) && newQuantity >= 1 && newQuantity <= maxQuantity) {
@@ -184,9 +184,9 @@ const DetalleProducto = () => {
                   min="1"
                   max={maxQuantity}
                 />
-                <button 
-                  className={`btn btn-outline-secondary ${quantity >= maxQuantity ? 'disabled' : ''}`} 
-                  type="button" 
+                <button
+                  className={`btn btn-outline-secondary ${quantity >= maxQuantity ? 'disabled' : ''}`}
+                  type="button"
                   onClick={() => setQuantity(prev => Math.min(prev + 1, maxQuantity))}
                 >
                   +
@@ -200,8 +200,8 @@ const DetalleProducto = () => {
             </div>
           </motion.div>
         </div>
-        
-        <motion.div 
+
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
@@ -209,7 +209,7 @@ const DetalleProducto = () => {
         >
           <ul className="nav nav-tabs">
             <li className="nav-item">
-              <button 
+              <button
                 className={`nav-link ${activeTab === 'description' ? 'active' : ''}`}
                 onClick={() => setActiveTab('description')}
               >
@@ -217,7 +217,7 @@ const DetalleProducto = () => {
               </button>
             </li>
             <li className="nav-item">
-              <button 
+              <button
                 className={`nav-link ${activeTab === 'specs' ? 'active' : ''}`}
                 onClick={() => setActiveTab('specs')}
               >
@@ -225,7 +225,7 @@ const DetalleProducto = () => {
               </button>
             </li>
             <li className="nav-item">
-              <button 
+              <button
                 className={`nav-link ${activeTab === 'boxContents' ? 'active' : ''}`}
                 onClick={() => setActiveTab('boxContents')}
               >
@@ -233,7 +233,7 @@ const DetalleProducto = () => {
               </button>
             </li>
             <li className="nav-item">
-              <button 
+              <button
                 className={`nav-link ${activeTab === 'warranty' ? 'active' : ''}`}
                 onClick={() => setActiveTab('warranty')}
               >

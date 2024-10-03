@@ -2,90 +2,174 @@
 
 /* Contenedor principal del componente PurchaseAdmin */
 .purchase-admin-container {
-    padding: 20px;
-    background-color: #f4f4f4;
-    min-height: 100vh;
+  padding: 20px;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+}
+
+/* Encabezado del componente PurchaseAdmin */
+.purchase-admin-header {
+  background-color: #007bff;
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* Estilo para la tabla de compras */
+.purchase-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+  /* Permitir desplazamiento horizontal en pantallas pequeñas */
+}
+
+.main-title {
+  color: #ffffff;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.purchase-admin-table th,
+.purchase-admin-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+/* Estilo para encabezados de tabla */
+.purchase-admin-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Estilo para los botones */
+.purchase-admin-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  width: 100%;
+  /* Botones ocupan el 100% en pantallas pequeñas */
+}
+
+.purchase-admin-button:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo para formularios dentro de PurchaseAdmin */
+.purchase-admin-form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.purchase-admin-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.purchase-admin-form input,
+.purchase-admin-form select,
+.purchase-admin-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+/* Botón en el formulario */
+.purchase-admin-form button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  width: 100%;
+  /* Botones ocupan el 100% en pantallas pequeñas */
+}
+
+.purchase-admin-form button:hover {
+  background-color: #218838;
+}
+
+/* Nuevos estilos para el modal */
+.modal-backdrop.show {
+  opacity: 0 !important;
+}
+
+.modal-content {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.modal-body {
+  padding: 0;
+}
+
+.modal-footer {
+  border-top: none;
+  padding: 10px 0 0 0;
+  justify-content: center;
+}
+
+.modal-footer .btn-secondary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Asegurar que el modal esté encima de todo */
+.modal {
+  z-index: 1060 !important;
+}
+
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 768px) {
+  .purchase-admin-container {
+    padding: 10px;
+    /* Menos padding en pantallas pequeñas */
   }
-  
-  /* Encabezado del componente PurchaseAdmin */
+
   .purchase-admin-header {
-    background-color: #007bff;
-    color: white;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    font-size: 18px;
+    /* Tamaño de fuente más pequeño */
   }
-  
-  /* Estilo para la tabla de compras */
-  .purchase-admin-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
+
   .purchase-admin-table th,
   .purchase-admin-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
+    font-size: 14px;
+    /* Tamaño de fuente más pequeño */
   }
-  
-  .purchase-admin-table th {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  /* Estilo para los botones */
-  .purchase-admin-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
-  
-  .purchase-admin-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Estilo para formularios dentro de PurchaseAdmin */
-  .purchase-admin-form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  .purchase-admin-form label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
-  
-  .purchase-admin-form input,
-  .purchase-admin-form select,
-  .purchase-admin-form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 15px;
-  }
-  
+
+  .purchase-admin-button,
   .purchase-admin-form button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+    font-size: 14px;
+    /* Tamaño de fuente más pequeño */
+  }
+
+  /* Estilos solo en pantallas pequeñas para .date-input */
+  .date-input {
+    width: 100%;
+    max-width: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
   }
-  
-  .purchase-admin-form button:hover {
-    background-color: #218838;
-  }
-  
+}

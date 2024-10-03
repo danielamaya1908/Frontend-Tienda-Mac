@@ -16,10 +16,14 @@ const PurchaseAdmin = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [purchasesPerPage] = useState(10); // Adjust the number of purchases per page
+
   useEffect(() => {
     const fetchPurchases = async () => {
       try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/adminpurchases');
+        const response = await axios.get('http://localhost:3005/adminpurchases');
         const purchasesWithImages = response.data.map(purchase => {
           const product = purchase.Product;
           const imagePath = product && product.Image ? product.Image.path.split('\\').pop() : null;
@@ -27,7 +31,7 @@ const PurchaseAdmin = () => {
             ...purchase,
             date: new Date(purchase.createdAt),
             productName: product ? product.name : 'No hay producto relacionado',
-            imageUrl: imagePath ? `https://backend-tienda-mac-production.up.railway.app/images/${imagePath}` : null,
+            imageUrl: imagePath ? `http://localhost:3005/images/${imagePath}` : null,
           };
         });
 
@@ -51,7 +55,7 @@ const PurchaseAdmin = () => {
   const filterPurchases = (purchasesToFilter) => {
     return purchasesToFilter.filter(purchase => {
       const statusMatch = filterStatus === 'all' || purchase.status === filterStatus;
-      const dateMatch = 
+      const dateMatch =
         (!dateRange.start || purchase.date >= new Date(dateRange.start)) &&
         (!dateRange.end || purchase.date <= new Date(dateRange.end));
       return statusMatch && dateMatch;
@@ -90,6 +94,12 @@ const PurchaseAdmin = () => {
 
   const filteredAndSortedPurchases = sortPurchases(filterPurchases(purchases));
 
+  // Pagination logic
+  const indexOfLastPurchase = currentPage * purchasesPerPage;
+  const indexOfFirstPurchase = indexOfLastPurchase - purchasesPerPage;
+  const currentPurchases = filteredAndSortedPurchases.slice(indexOfFirstPurchase, indexOfLastPurchase);
+  const totalPages = Math.ceil(filteredAndSortedPurchases.length / purchasesPerPage);
+
   return (
     <>
       <div className="container-fluid">
@@ -97,7 +107,7 @@ const PurchaseAdmin = () => {
           <MenuDashboard />
           <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div className="container">
-              <h2 className="main-title">Compras Administrativas</h2>
+              <h2 className="main-title">Compras</h2>
               <div className="filters">
                 <button onClick={handleSort} className="sort-button">
                   <FontAwesomeIcon icon={faSort} /> Ordenar por fecha ({sortOrder === 'desc' ? 'Más reciente' : 'Más antiguo'})
@@ -127,7 +137,7 @@ const PurchaseAdmin = () => {
                   />
                 </div>
               </div>
-              {filteredAndSortedPurchases.map((purchase) => (
+              {currentPurchases.map((purchase) => (
                 <div className="purchase-card card" key={purchase.id}>
                   <div className="row g-3">
                     <div className="col-md-8">
@@ -150,9 +160,9 @@ const PurchaseAdmin = () => {
                     </div>
                     <div className="col-md-4 d-flex justify-content-center align-items-center">
                       {purchase.imageUrl ? (
-                        <img 
-                          src={purchase.imageUrl} 
-                          alt={purchase.productName} 
+                        <img
+                          src={purchase.imageUrl}
+                          alt={purchase.productName}
                           className="product-image"
                           onClick={() => handleImageClick(purchase.imageUrl)}
                         />
@@ -163,6 +173,23 @@ const PurchaseAdmin = () => {
                   </div>
                 </div>
               ))}
+              <nav aria-label="Page navigation">
+                <ul className="pagination">
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>Anterior</button>
+                  </li>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <li key={index + 1} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+                      <button className="page-link" onClick={() => setCurrentPage(index + 1)}>
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>Siguiente</button>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </main>
         </div>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import MenuDashboard from '../MenuDashboard/MenuDashboard';
 
 const Capacity = () => {
@@ -14,11 +13,13 @@ const Capacity = () => {
         categoryId: '',
     });
     const [showForm, setShowForm] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const capacitiesPerPage = 10;
 
     useEffect(() => {
         const fetchCapacities = async () => {
             try {
-                const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCapacities');
+                const response = await axios.get('http://localhost:3005/getAllCapacities');
                 setCapacities(response.data);
             } catch (error) {
                 console.error('Error fetching capacities:', error);
@@ -27,7 +28,7 @@ const Capacity = () => {
 
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
+                const response = await axios.get('http://localhost:3005/getAllCategories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -49,11 +50,11 @@ const Capacity = () => {
         e.preventDefault();
         try {
             if (formData.editingCapacityId) {
-                await axios.put(`https://backend-tienda-mac-production.up.railway.app/updateCapacities/${formData.editingCapacityId}`, formData);
+                await axios.put(`http://localhost:3005/updateCapacities/${formData.editingCapacityId}`, formData);
                 setCapacities(capacities.map(cap => (cap.id === formData.editingCapacityId ? formData : cap)));
                 alert('Capacidad actualizada con éxito');
             } else {
-                const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/createCapacities', formData);
+                const response = await axios.post('http://localhost:3005/createCapacities', formData);
                 setCapacities([...capacities, response.data]);
                 alert('Capacidad creada con éxito');
             }
@@ -79,7 +80,7 @@ const Capacity = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`https://backend-tienda-mac-production.up.railway.app/deleteCapacities/${id}`);
+            await axios.delete(`http://localhost:3005/deleteCapacities/${id}`);
             setCapacities(capacities.filter(cap => cap.id !== id));
             alert('Capacidad eliminada con éxito');
         } catch (error) {
@@ -87,73 +88,116 @@ const Capacity = () => {
         }
     };
 
+    // Lógica de Paginación
+    const indexOfLastCapacity = currentPage * capacitiesPerPage;
+    const indexOfFirstCapacity = indexOfLastCapacity - capacitiesPerPage;
+    const currentCapacities = capacities.slice(indexOfFirstCapacity, indexOfLastCapacity);
+    const totalPages = Math.ceil(capacities.length / capacitiesPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     return (
-        <div>
-            <div className="container-fluid">
-                <div className="row">
+        <div className="container-fluid">
+            <div className="row">
                 <MenuDashboard />
                 <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-3">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <button
-                                        className="btn btn-primary mt-3"
-                                        onClick={() => setShowForm(!showForm)}
-                                    >
-                                        <FontAwesomeIcon icon={faPlus} className="me-2" />
-                                        {showForm ? 'Cerrar Formulario' : 'Agregar Capacidad'}
-                                    </button>
-                                    {showForm && (
-                                        <div className="card mt-3">
-                                            <div className="card-body">
-                                                <h2>{formData.editingCapacityId ? 'Editar Capacidad' : 'Agregar Capacidad'}</h2>
-                                                <form onSubmit={handleSubmit}>
-                                                    <div className="mb-3">
-                                                        <label htmlFor="name" className="form-label">Nombre:</label>
-                                                        <input type="text" id="name" name="name" className="form-control" value={formData.name} onChange={handleChange} required />
-                                                    </div>
-                                                    <div className="mb-3">
-                                                        <label htmlFor="categoryId" className="form-label">Categoría:</label>
-                                                        <select id="categoryId" name="categoryId" className="form-control" value={formData.categoryId} onChange={handleChange} required>
-                                                            <option value="">Selecciona una categoría</option>
-                                                            {categories.map(category => (
-                                                                <option key={category.id} value={category.id}>{category.name}</option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-                                                    <button type="submit" className="btn btn-primary">{formData.editingCapacityId ? 'Actualizar Capacidad' : 'Agregar Capacidad'}</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div className="table-responsive mt-3">
-                                        <table className="table table-striped table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Categoría</th>
-                                                    <th>Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {capacities.map(capacity => (
-                                                    <tr key={capacity.id}>
-                                                        <td>{capacity.name}</td>
-                                                        <td>{capacity.Category && capacity.Category.name}</td>
-                                                        <td>
-                                                            <button className="btn btn-danger" onClick={() => handleDelete(capacity.id)}>Eliminar</button>
-                                                            <button className="btn btn-primary mx-2" onClick={() => handleEdit(capacity)}>Editar</button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                    <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 className="h2">Capacidades</h1>
+                        <button className="btn btn-success" onClick={() => setShowForm(!showForm)}>
+                            <FontAwesomeIcon icon={faPlus} /> {showForm ? 'Cerrar Formulario' : 'Agregar Capacidad'}
+                        </button>
+                    </div>
+                    {showForm && (
+                        <div className="card mb-3 shadow">
+                            <div className="card-body">
+                                <h5 className="card-title">{formData.editingCapacityId ? 'Editar Capacidad' : 'Agregar Capacidad'}</h5>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="mb-3">
+                                        <label htmlFor="name" className="form-label">Nombre:</label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            className="form-control border-dark"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="Ingresa el nombre"
+                                        />
                                     </div>
-                                </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="categoryId" className="form-label">Categoría:</label>
+                                        <select
+                                            id="categoryId"
+                                            name="categoryId"
+                                            className="form-control border-dark"
+                                            value={formData.categoryId}
+                                            onChange={handleChange}
+                                            required
+                                        >
+                                            <option value="">Selecciona una categoría</option>
+                                            {categories.map(category => (
+                                                <option key={category.id} value={category.id}>{category.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">
+                                        {formData.editingCapacityId ? 'Actualizar Capacidad' : 'Agregar Capacidad'}
+                                    </button>
+                                </form>
                             </div>
                         </div>
-                    </main>
-                </div>
+                    )}
+                    <div className="card shadow-sm">
+                        <div className="card-body p-0">
+                            <div className="table-responsive">
+                                <table className="table table-hover table-striped mb-0">
+                                    <thead className="table-dark">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Categoría</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentCapacities.map(capacity => (
+                                            <tr key={capacity.id}>
+                                                <td>{capacity.name}</td>
+                                                <td>{capacity.Category && capacity.Category.name}</td>
+                                                <td>
+                                                    <div className="btn-group" role="group">
+                                                        <button className="btn btn-outline-primary btn-sm" onClick={() => handleEdit(capacity)}>
+                                                            <FontAwesomeIcon icon={faEdit} />
+                                                        </button>
+                                                        <button className="btn btn-outline-danger btn-sm" onClick={() => handleDelete(capacity.id)}>
+                                                            <FontAwesomeIcon icon={faTrashAlt} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="card-footer bg-light">
+                            <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                                <small className="text-muted mb-2 mb-md-0">Página {currentPage} de {totalPages}</small>
+                                <nav aria-label="Capacity pagination">
+                                    <ul className="pagination pagination-sm m-0 justify-content-center">
+                                        {[...Array(totalPages).keys()].map(page => (
+                                            <li key={page} className={`page-item ${currentPage === page + 1 ? 'active' : ''}`}>
+                                                <button className="page-link" onClick={() => paginate(page + 1)}>
+                                                    {page + 1}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </main>
             </div>
         </div>
     );

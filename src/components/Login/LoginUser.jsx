@@ -33,12 +33,12 @@ const LoginUser = ({ onClose, onLoginSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-  
+
     if (!email || !password) {
       setError('Por favor, complete todos los campos.');
       return;
     }
-  
+
     try {
       const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/auth/LoginUser', {
         email,
