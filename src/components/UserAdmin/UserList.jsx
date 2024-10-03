@@ -9,7 +9,7 @@ const UsersList = () => {
     useEffect(() => {
         const getUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:3005/users');
+                const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/users');
                 // Acceder a la propiedad 'Users' del JSON
                 if (Array.isArray(response.data.Users)) {
                     setUsers(response.data.Users); // Establecer el array de usuarios

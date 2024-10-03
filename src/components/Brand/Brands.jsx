@@ -19,7 +19,7 @@ const Brands = () => {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const response = await axios.get('http://localhost:3005/getAllBrands');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllBrands');
         setBrands(response.data);
       } catch (error) {
         console.error('Error fetching brands:', error);
@@ -39,7 +39,7 @@ const Brands = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = isUpdateMode ? 'put' : 'post';
-    const url = isUpdateMode ? `http://localhost:3005/updateBrand/${formData.id}` : 'http://localhost:3005/createBrand';
+    const url = isUpdateMode ? `https://backend-tienda-mac-production.up.railway.app/updateBrand/${formData.id}` : 'https://backend-tienda-mac-production.up.railway.app/createBrand';
 
     try {
       const response = await axios[method](url, formData);
@@ -72,7 +72,7 @@ const Brands = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3005/deleteBrand/${id}`);
+      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/deleteBrand/${id}`);
       setBrands(brands.filter(brand => brand.id !== id));
     } catch (error) {
       console.error('Error deleting brand:', error);

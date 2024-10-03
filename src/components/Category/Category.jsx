@@ -18,7 +18,7 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:3005/getAllCategories');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllCategories');
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -39,11 +39,11 @@ const Categories = () => {
     e.preventDefault();
     try {
       if (formData.editingCategoryId) {
-        const response = await axios.put(`http://localhost:3005/updateCategory/${formData.editingCategoryId}`, formData);
+        const response = await axios.put(`https://backend-tienda-mac-production.up.railway.app/updateCategory/${formData.editingCategoryId}`, formData);
         setCategories(categories.map(cat => (cat.id === formData.editingCategoryId ? response.data : cat)));
         alert('Categoría actualizada con éxito');
       } else {
-        const response = await axios.post('http://localhost:3005/createCategory', formData);
+        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/createCategory', formData);
         setCategories([...categories, response.data]);
         alert('Categoría creada con éxito');
       }
@@ -70,7 +70,7 @@ const Categories = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3005/deleteCategory/${id}`);
+      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/deleteCategory/${id}`);
       setCategories(categories.filter(cat => cat.id !== id));
       alert('Categoría eliminada con éxito');
     } catch (error) {

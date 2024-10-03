@@ -16,7 +16,7 @@ const UserAdminManagement = () => {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3005/getAllUserAdmins');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/getAllUserAdmins');
         setUsers(response.data);
       } catch (error) {
         console.error('Error al obtener los usuarios administradores:', error);
@@ -37,7 +37,7 @@ const UserAdminManagement = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3005/deleteUserAdmin/${id}`);
+      await axios.delete(`https://backend-tienda-mac-production.up.railway.app/deleteUserAdmin/${id}`);
       setUsers(users.filter(user => user.id !== id));
     } catch (error) {
       console.error('Error al eliminar el usuario:', error);
@@ -47,9 +47,9 @@ const UserAdminManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isUpdateMode) {
-      await axios.put(`http://localhost:3005/updateUserAdmin/${formData.id}`, formData);
+      await axios.put(`https://backend-tienda-mac-production.up.railway.app/updateUserAdmin/${formData.id}`, formData);
     } else {
-      const response = await axios.post('http://localhost:3005/userAdmin', formData);
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/userAdmin', formData);
       setUsers([...users, response.data]);
     }
     setShowForm(false);
