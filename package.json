@@ -25,6 +25,7 @@
     "i18next": "^23.10.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
+    "lucide-react": "^0.447.0",
     "openpay": "^1.0.5",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.0-beta.1",
