@@ -35,7 +35,7 @@ const Footer = () => {
                         <p><a href="/PQRS" className="text-white">PQRS - Contacto</a></p>
                         <p><a href="/Ubicacion" className="text-white">Encuentra tu tienda</a></p>
                         <p><a href="warranty" className="text-white">Garantía Apple</a></p>
-                        <p><a href="#" className="text-white">Beneficios</a></p>
+                        {/* <p><a href="#" className="text-white">Beneficios</a></p> */}
                         <p><a href="faq" className="text-white">Preguntas Frecuentes</a></p>
                         <p><a href="/terms-and-conditions" className="text-white">Términos y condiciones</a></p>
                     </div>
@@ -46,19 +46,19 @@ const Footer = () => {
                         <p><a href="#" className="text-white">Mi cuenta</a></p>
                         <h5 className="mt-4 mb-3">Síguenos en:</h5>
                         <div className="d-flex">
-                        <a href="https://web.facebook.com/tiendamacdecolombia/?locale=es_LA&_rdc=1&_rdr">
-                        <img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/kjnl34vrdvcs6gpscoja.png" alt="Facebook" style={{width: '30px', marginRight: '10px'}} />
-                        </a>
-                        <a href="https://www.instagram.com/tiendamac.co/">
-                        <img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/kminotyxqfmmlltrexbd.png" alt="Instagram" style={{width: '30px', marginRight: '10px'}} />
-                        </a>
-                        <a href="https://twitter.com/i/flow/login?redirect_after_login=%2Fi%2Fflow%2Flogin">
-                        <img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/nvgipm06kfzgoma0ejdh.png" alt="Twitter" style={{width: '30px', marginRight: '10px'}} />
-                        </a>
+                            <a href="https://web.facebook.com/tiendamacdecolombia/?locale=es_LA&_rdc=1&_rdr">
+                                <img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/kjnl34vrdvcs6gpscoja.png" alt="Facebook" style={{ width: '30px', marginRight: '10px' }} />
+                            </a>
+                            <a href="https://www.instagram.com/tiendamac.co/">
+                                <img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/kminotyxqfmmlltrexbd.png" alt="Instagram" style={{ width: '30px', marginRight: '10px' }} />
+                            </a>
+                            <a href="https://twitter.com/i/flow/login?redirect_after_login=%2Fi%2Fflow%2Flogin">
+                                <img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1717265046/TiendaMac/nvgipm06kfzgoma0ejdh.png" alt="Twitter" style={{ width: '30px', marginRight: '10px' }} />
+                            </a>
                         </div>
                     </div>
-                    </div>
-               {/*  <div className="row mt-4">
+                </div>
+                {/*  <div className="row mt-4">
                     <div className="col-md-4 mb-4 mb-md-0">
                         <h5 className="mb-2">ENTÉRATE PRIMERO DE NUESTRAS OFERTAS Y PRODUCTOS EXCLUSIVOS</h5>
                         <form>
