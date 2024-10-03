@@ -18,7 +18,7 @@ const PurchaseAdmin = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [purchasesPerPage] = useState(10); // Adjust the number of purchases per page
+  const [purchasesPerPage] = useState(10);
 
   useEffect(() => {
     const fetchPurchases = async () => {
@@ -26,7 +26,7 @@ const PurchaseAdmin = () => {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/adminpurchases');
         const purchasesWithImages = response.data.map(purchase => {
           const product = purchase.Product;
-          const imagePath = product && product.Image ? product.Image.path.split('\\').pop() : null;
+          const imagePath = product && product.Image ? product.Image.path : null;
           return {
             ...purchase,
             date: new Date(purchase.createdAt),
