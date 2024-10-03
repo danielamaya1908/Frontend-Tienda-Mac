@@ -32,12 +32,14 @@ const UserPurchases = () => {
 
         const purchasesWithImages = response.data.map(purchase => {
           const product = purchase.Product;
-          const imagePath = product && product.Image ? product.Image.path.split('\\').pop() : null;
+          const imageName = product && product.Image ? product.Image.path.split('/').pop() : null;
           return {
             ...purchase,
             date: new Date(purchase.createdAt),
             productName: product ? product.name : 'No hay producto relacionado',
-            imageUrl: imagePath ? `https://backend-tienda-mac-production.up.railway.app/images/${imagePath}` : null,
+            imageUrl: imageName
+              ? `https://backend-tienda-mac-production.up.railway.app/images/${imageName}`
+              : null,
           };
         });
 
@@ -51,6 +53,7 @@ const UserPurchases = () => {
     };
     fetchPurchases();
   }, []);
+
 
   const sortPurchases = (purchasesToSort) => {
     return purchasesToSort.sort((a, b) => (sortOrder === 'desc' ? b.date - a.date : a.date - b.date));
