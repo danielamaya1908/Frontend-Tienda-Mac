@@ -15,10 +15,9 @@ const PurchaseAdmin = () => {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [purchasesPerPage] = useState(10);
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
 
   useEffect(() => {
     const fetchPurchases = async () => {
@@ -34,6 +33,14 @@ const PurchaseAdmin = () => {
             imageUrl: imageName
               ? `https://backend-tienda-mac-production.up.railway.app/images/${imageName}`
               : null,
+            customerName: purchase.customer_name,
+            customerEmail: purchase.customer_email,
+            customerPhone: purchase.customer_phone,
+            customerCity: purchase.customer_city,
+            customerDepartment: purchase.customer_department,
+            customerAddress: purchase.customer_address,
+            customerDocumentNumber: purchase.customer_document_number,
+            productDescription: product ? product.description : 'No hay descripción disponible'
           };
         });
 
@@ -65,7 +72,7 @@ const PurchaseAdmin = () => {
   };
 
   const handleSort = () => {
-    setSortOrder(prevOrder => prevOrder === 'desc' ? 'asc' : 'desc');
+    setSortOrder(prevOrder => (prevOrder === 'desc' ? 'asc' : 'desc'));
   };
 
   const handleFilterChange = (e) => {
@@ -90,13 +97,19 @@ const PurchaseAdmin = () => {
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
+  const toggleDescription = (purchaseId) => {
+    setExpandedDescriptions(prev => ({
+      ...prev,
+      [purchaseId]: !prev[purchaseId]
+    }));
+  };
+
   if (loading) return <p className="loading">Cargando...</p>;
   if (error) return <p className="error">{error}</p>;
   if (purchases.length === 0) return <p className="no-purchases">No se encontraron compras.</p>;
 
   const filteredAndSortedPurchases = sortPurchases(filterPurchases(purchases));
 
-  // Pagination logic
   const indexOfLastPurchase = currentPage * purchasesPerPage;
   const indexOfFirstPurchase = indexOfLastPurchase - purchasesPerPage;
   const currentPurchases = filteredAndSortedPurchases.slice(indexOfFirstPurchase, indexOfLastPurchase);
@@ -151,7 +164,13 @@ const PurchaseAdmin = () => {
                         </span>
                       </div>
                       <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
-                      <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
+                      <p className="purchase-item"><strong>Nombre del Cliente:</strong> {purchase.customerName}</p>
+                      <p className="purchase-item"><strong>Email del Cliente:</strong> {purchase.customerEmail}</p>
+                      <p className="purchase-item"><strong>Teléfono del Cliente:</strong> {purchase.customerPhone}</p>
+                      <p className="purchase-item"><strong>Ciudad del Cliente:</strong> {purchase.customerCity}</p>
+                      <p className="purchase-item"><strong>Departamento del Cliente:</strong> {purchase.customerDepartment}</p>
+                      <p className="purchase-item"><strong>Dirección del Cliente:</strong> {purchase.customerAddress}</p>
+                      <p className="purchase-item"><strong>Número de Documento:</strong> {purchase.customerDocumentNumber}</p>
                       <p className="purchase-item">
                         <FontAwesomeIcon icon={faDollarSign} className="icon" />
                         <strong>Monto:</strong> {formatPrice(purchase.amount)} {purchase.currency}
@@ -159,6 +178,18 @@ const PurchaseAdmin = () => {
                       <p className="purchase-item"><strong>Método de Pago:</strong> {purchase.payment_method}</p>
                       <p className="purchase-item"><strong>Referencia:</strong> {purchase.reference}</p>
                       <p className="purchase-item"><strong>ID de Cargo:</strong> {purchase.charge_id}</p>
+                      <p className="purchase-item">
+                        <strong>Descripción:</strong>
+                        {expandedDescriptions[purchase.id]
+                          ? purchase.productDescription
+                          : `${purchase.productDescription.slice(0, 100)}...`}
+                        <button
+                          onClick={() => toggleDescription(purchase.id)}
+                          className="btn btn-link"
+                        >
+                          {expandedDescriptions[purchase.id] ? 'Ver menos' : 'Ver más'}
+                        </button>
+                      </p>
                     </div>
                     <div className="col-md-4 d-flex justify-content-center align-items-center">
                       {purchase.imageUrl ? (
@@ -182,9 +213,7 @@ const PurchaseAdmin = () => {
                   </li>
                   {[...Array(totalPages)].map((_, index) => (
                     <li key={index + 1} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
-                      <button className="page-link" onClick={() => setCurrentPage(index + 1)}>
-                        {index + 1}
-                      </button>
+                      <button className="page-link" onClick={() => setCurrentPage(index + 1)}>{index + 1}</button>
                     </li>
                   ))}
                   <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
@@ -198,13 +227,14 @@ const PurchaseAdmin = () => {
       </div>
 
       <Modal show={showModal} onHide={handleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Imagen del Producto</Modal.Title>
+        </Modal.Header>
         <Modal.Body>
-          <img src={selectedImage} alt="Imagen del producto" className="modal-img" />
+          <img src={selectedImage} alt="Imagen del Producto" className="img-fluid" />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleModalClose}>
-            Cerrar
-          </Button>
+          <Button variant="secondary" onClick={handleModalClose}>Cerrar</Button>
         </Modal.Footer>
       </Modal>
     </>
