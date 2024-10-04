@@ -93,9 +93,9 @@ const UsersList = () => {
                 <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <h1 className="h2">Lista de Usuarios</h1>
-                        <button className="btn btn-success" onClick={() => setShowForm(!showForm)}>
+                        {/*  <button className="btn btn-success" onClick={() => setShowForm(!showForm)}>
                             {showForm ? 'Cerrar Formulario' : <><FontAwesomeIcon icon={faPlus} /> Agregar Usuario</>}
-                        </button>
+                        </button> */}
                     </div>
                     {showForm && (
                         <div className="card mb-3 shadow">
