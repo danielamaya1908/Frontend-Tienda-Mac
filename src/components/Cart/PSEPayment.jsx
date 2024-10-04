@@ -54,14 +54,25 @@ const PSEPayment = () => {
       }
 
       const paymentData = {
-        method: 'bank_account',
-        amount: totalAmount,
-        currency: 'COP',
-        description: 'Pago en Tienda Mac',
-        customer: customerData,
-        confirm: 'false',
-        send_email: 'true',
-        redirect_url: 'https://www.tiendamac.net/payment-confirmation',
+        charge: {
+          method: 'bank_account',
+          amount: totalAmount,
+          currency: 'COP',
+          description: 'Pago en Tienda Mac',
+          order_id: `order-${Date.now()}`,
+          iva: 0,
+          redirect_url: 'https://www.tiendamac.net/payment-confirmation'
+        },
+        customer: {
+          name: customerData.name,
+          last_name: customerData.last_name,
+          email: customerData.email,
+          phone_number: customerData.phone_number,
+          department: customerData.department,
+          city: customerData.city,
+          additional: customerData.additional,
+          document_number: customerData.document_number
+        },
         userId: userId,
         productId: productId
       };
@@ -213,6 +224,7 @@ const PSEPayment = () => {
           value={customerData.document_number}
           onChange={handleInputChange}
           className={styles.formControl}
+          required
         />
       </Form.Group>
       <div className={styles.buttonContainer}>
