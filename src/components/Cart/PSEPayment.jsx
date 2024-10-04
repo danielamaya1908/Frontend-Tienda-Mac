@@ -59,9 +59,10 @@ const PSEPayment = () => {
           amount: totalAmount,
           currency: 'COP',
           description: 'Pago en Tienda Mac',
-          order_id: `order-${Date.now()}`,
-          iva: 0,
-          redirect_url: 'https://www.tiendamac.net/payment-confirmation'
+          customer: customerData,
+          confirm: 'false',
+          send_email: 'true',
+          redirect_url: 'https://www.tiendamac.net/payment-confirmation',
         },
         customer: {
           name: customerData.name,
@@ -224,7 +225,6 @@ const PSEPayment = () => {
           value={customerData.document_number}
           onChange={handleInputChange}
           className={styles.formControl}
-          required
         />
       </Form.Group>
       <div className={styles.buttonContainer}>
