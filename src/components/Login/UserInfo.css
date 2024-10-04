@@ -1,6 +1,7 @@
 .user-info-overlay {
   position: absolute;
-  top: 60px; /* Ajusta esto según la altura de tu barra de navegación */
+  top: 200px;
+  /* Ajusta esto según la altura de tu barra de navegación */
   right: 20px;
   z-index: 1000;
 }
@@ -79,5 +80,6 @@
 }
 
 .icon {
-  margin-right: 8px; /* Espacio entre el icono y el texto */
+  margin-right: 8px;
+  /* Espacio entre el icono y el texto */
 }

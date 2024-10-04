@@ -54,7 +54,6 @@ const UserPurchases = () => {
     fetchPurchases();
   }, []);
 
-
   const sortPurchases = (purchasesToSort) => {
     return purchasesToSort.sort((a, b) => (sortOrder === 'desc' ? b.date - a.date : a.date - b.date));
   };
@@ -147,10 +146,6 @@ const UserPurchases = () => {
               <div className="col-md-8">
                 <div className="purchase-header">
                   <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
-                  {/* <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
-                  <span className={`purchase-status ${purchase.status}`}>
-                    <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
-                  </span> */}
                 </div>
                 <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
                 <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
@@ -161,6 +156,9 @@ const UserPurchases = () => {
                 <p className="purchase-item"><strong>Método de Pago:</strong> {purchase.payment_method}</p>
                 <p className="purchase-item"><strong>Referencia:</strong> {purchase.reference}</p>
                 <p className="purchase-item"><strong>ID de Cargo:</strong> {purchase.charge_id}</p>
+                {/* Dirección y Ciudad */}
+                <p className="purchase-item"><strong>Dirección:</strong> {purchase.address}</p>
+                <p className="purchase-item"><strong>Ciudad:</strong> {purchase.city}</p>
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
                 {purchase.imageUrl ? (
