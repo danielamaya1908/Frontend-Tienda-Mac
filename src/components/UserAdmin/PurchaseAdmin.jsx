@@ -145,10 +145,10 @@ const PurchaseAdmin = () => {
                     <div className="col-md-8">
                       <div className="purchase-header">
                         <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
-                        <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
+                        {/*  <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
                         <span className={`purchase-status ${purchase.status}`}>
                           <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
-                        </span>
+                        </span> */}
                       </div>
                       <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
                       <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
