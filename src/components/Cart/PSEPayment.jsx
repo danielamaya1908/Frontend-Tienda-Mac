@@ -78,7 +78,7 @@ const PSEPayment = () => {
         productId: productId
       };
 
-      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/create-charge', paymentData);
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/pse-payment', paymentData);
 
       console.log('Respuesta del servidor:', response.data);
 

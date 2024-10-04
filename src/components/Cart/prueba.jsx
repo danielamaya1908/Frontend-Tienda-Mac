@@ -1,4 +1,4 @@
-/* import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Col, Row, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import styles from './PSEPayment.module.css';
@@ -59,8 +59,9 @@ const PSEPayment = () => {
                     amount: totalAmount,
                     currency: 'COP',
                     description: 'Pago en Tienda Mac',
-                    order_id: `order-${Date.now()}`,
-                    iva: 0,
+                    customer: customerData,
+                    confirm: 'false',
+                    send_email: 'true',
                     redirect_url: 'http://localhost:5173/payment-confirmation'
                 },
                 customer: {
@@ -236,4 +237,4 @@ const PSEPayment = () => {
     );
 };
 
-export default PSEPayment; */
+export default PSEPayment;
