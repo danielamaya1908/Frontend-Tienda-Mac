@@ -89,6 +89,7 @@ import UserPurchases from './components/Login/UserPurchases.jsx';
 import DetallesCuenta from './components/Login/DetallesCuenta.jsx';
 import PurchaseAdmin from './components/UserAdmin/PurchaseAdmin.jsx';
 import SearchResults from './components/NavBar/Search.jsx';
+import WhatsAppButton from './WhatsAppButton.jsx';
 
 
 function ProtectedRoute({ element, isLoggedIn }) {
@@ -113,6 +114,7 @@ function App() {
   };
   return (
     <Router>
+      <WhatsAppButton />
       <CartProvider>
         <Routes>
           <Route
