@@ -132,12 +132,12 @@ const UserPurchases = () => {
           <button onClick={handleSort} className="sort-button">
             <FontAwesomeIcon icon={faSort} /> Ordenar por fecha ({sortOrder === 'desc' ? 'Más reciente' : 'Más antiguo'})
           </button>
-          <select onChange={handleFilterChange} value={filterStatus} className="filter-select">
+          {/*  <select onChange={handleFilterChange} value={filterStatus} className="filter-select">
             <option value="all">Todos los estados</option>
             <option value="charge_pending">Pendiente</option>
             <option value="completed">Completado</option>
             <option value="cancelled">Cancelado</option>
-          </select>
+          </select> */}
           <div className="date-range">
             <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
             <input
@@ -164,9 +164,9 @@ const UserPurchases = () => {
                 <div className="purchase-header">
                   <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
                   <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
-                  <span className={`purchase-status ${purchase.status}`}>
+                  {/*  <span className={`purchase-status ${purchase.status}`}>
                     <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
-                  </span>
+                  </span> */}
                 </div>
                 <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
                 <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
@@ -178,9 +178,12 @@ const UserPurchases = () => {
                 <p className="purchase-item"><strong>Referencia:</strong> {purchase.reference}</p>
                 <p className="purchase-item"><strong>ID de Cargo:</strong> {purchase.charge_id}</p>
 
-                {/* Mostrar la dirección y la ciudad del usuario dentro de la tarjeta de compra */}
+                {/* Mostrar la información del usuario dentro de la tarjeta de compra */}
                 {userInfo && (
                   <>
+                    <p className="purchase-item"><strong>Nombre:</strong> {userInfo.firstName} {userInfo.lastName}</p>
+                    <p className="purchase-item"><strong>Número de Documento:</strong> {userInfo.documentNumber}</p>
+                    <p className="purchase-item"><strong>Número de Teléfono:</strong> {userInfo.phoneNumber}</p>
                     <p className="purchase-item"><strong>Dirección:</strong> {userInfo.address}</p>
                     <p className="purchase-item"><strong>Ciudad:</strong> {userInfo.city}</p>
                   </>
