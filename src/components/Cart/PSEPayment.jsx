@@ -54,35 +54,24 @@ const PSEPayment = () => {
       }
 
       const paymentData = {
-        charge: {
-          method: 'bank_account',
-          amount: totalAmount,
-          currency: 'COP',
-          description: 'Pago en Tienda Mac',
-          order_id: `order-${Date.now()}`, // Genera un ID de orden único
-          iva: 0, // Ajusta según tus necesidades
-          redirect_url: 'http://localhost:5173/payment-confirmation'
-        },
-        customer: {
-          name: customerData.name,
-          last_name: customerData.last_name,
-          email: customerData.email,
-          phone_number: customerData.phone_number,
-          department: customerData.department,
-          city: customerData.city,
-          additional: customerData.additional,
-          document_number: customerData.document_number // Agregamos el número de documento
-        },
+        method: 'bank_account',
+        amount: totalAmount,
+        currency: 'COP',
+        description: 'Pago en Tienda Mac',
+        customer: customerData,
+        confirm: 'false',
+        send_email: 'true',
+        redirect_url: 'https://www.tiendamac.net/payment-confirmation',
         userId: userId,
         productId: productId
       };
 
-      const response = await axios.post('http://localhost:3005/api/openpay/pse-payment', paymentData);
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/create-charge', paymentData);
 
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data && response.data.payment_method && response.data.payment_method.url) {
-        await axios.post('http://localhost:3005/update-quantity', { items: cartItems });
+        await axios.post('https://backend-tienda-mac-production.up.railway.app/update-quantity', { items: cartItems });
         clearCart();
         window.location.href = response.data.payment_method.url;
       } else {
@@ -224,7 +213,6 @@ const PSEPayment = () => {
           value={customerData.document_number}
           onChange={handleInputChange}
           className={styles.formControl}
-          required
         />
       </Form.Group>
       <div className={styles.buttonContainer}>

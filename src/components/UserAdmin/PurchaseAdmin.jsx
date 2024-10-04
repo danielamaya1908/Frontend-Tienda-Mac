@@ -34,14 +34,6 @@ const PurchaseAdmin = () => {
             imageUrl: imageName
               ? `https://backend-tienda-mac-production.up.railway.app/images/${imageName}`
               : null,
-            customerName: purchase.customer_name,
-            customerEmail: purchase.customer_email,
-            customerPhone: purchase.customer_phone,
-            customerCity: purchase.customer_city,
-            customerDepartment: purchase.customer_department,
-            customerAddress: purchase.customer_address,
-            customerDocumentNumber: purchase.customer_document_number,
-            productDescription: product ? product.description : 'No hay descripción disponible'
           };
         });
 
@@ -73,7 +65,7 @@ const PurchaseAdmin = () => {
   };
 
   const handleSort = () => {
-    setSortOrder(prevOrder => (prevOrder === 'desc' ? 'asc' : 'desc'));
+    setSortOrder(prevOrder => prevOrder === 'desc' ? 'asc' : 'desc');
   };
 
   const handleFilterChange = (e) => {
@@ -159,14 +151,7 @@ const PurchaseAdmin = () => {
                         </span>
                       </div>
                       <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
-                      <p className="purchase-item"><strong>Descripción:</strong> {purchase.productDescription}</p>
-                      <p className="purchase-item"><strong>Nombre del Cliente:</strong> {purchase.customerName}</p>
-                      <p className="purchase-item"><strong>Email del Cliente:</strong> {purchase.customerEmail}</p>
-                      <p className="purchase-item"><strong>Teléfono del Cliente:</strong> {purchase.customerPhone}</p>
-                      <p className="purchase-item"><strong>Ciudad del Cliente:</strong> {purchase.customerCity}</p>
-                      <p className="purchase-item"><strong>Departamento del Cliente:</strong> {purchase.customerDepartment}</p>
-                      <p className="purchase-item"><strong>Dirección del Cliente:</strong> {purchase.customerAddress}</p>
-                      <p className="purchase-item"><strong>Número de Documento:</strong> {purchase.customerDocumentNumber}</p>
+                      <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
                       <p className="purchase-item">
                         <FontAwesomeIcon icon={faDollarSign} className="icon" />
                         <strong>Monto:</strong> {formatPrice(purchase.amount)} {purchase.currency}

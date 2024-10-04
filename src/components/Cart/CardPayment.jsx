@@ -4,24 +4,26 @@ import axios from 'axios';
 import styles from './CardPayment.module.css';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkedAlt, FaIdCard } from 'react-icons/fa';
 import { useLocation } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../../context/CartContext'; // Importar el contexto del carrito
 
 const CardPayment = () => {
   const location = useLocation();
-  const { clearCart, cartItems } = useCart();
-  const [totalAmount, setTotalAmount] = useState(500);
+  const { clearCart, cartItems } = useCart(); // Obtener la función clearCart y los items del carrito del contexto
+  const [totalAmount, setTotalAmount] = useState(500); // Valor por defecto
   const [userId, setUserId] = useState(null);
   const [error, setError] = useState(null);
   const [customerData, setCustomerData] = useState({
     name: '',
     last_name: '',
-    customer_email: '',
-    customer_phone: '',
-    customer_department: '',
-    customer_city: '',
-    customer_address: '',
-    customer_document_number: '',
+    email: '',
+    phone_number: '',
+    department: '',
+    city: '',
+    additional: '',
+    document_number: '',
+    quantity: 1 // Añadir el campo quantity con un valor por defecto de 1
   });
+
 
   useEffect(() => {
     if (location.state) {
@@ -56,40 +58,31 @@ const CardPayment = () => {
         amount: totalAmount,
         currency: 'COP',
         description: 'Pago en Tienda Mac',
-        customer: {
-          name: customerData.name,
-          last_name: customerData.last_name,
-          email: customerData.customer_email,
-          phone_number: customerData.customer_phone,
-          customer_address: {
-            department: customerData.customer_department,
-            city: customerData.customer_city,
-            additional: customerData.customer_address,
-          },
-          document_number: customerData.customer_document_number,
-        },
+        customer: customerData,
         confirm: 'false',
         send_email: 'true',
-        redirect_url: `${window.location.origin}/payment-confirmation`,
+        redirect_url: `${window.location.origin}/payment-confirmation`, // URL relativa a la aplicación
         userId: userId,
         productId: productId
       };
 
-      const response = await axios.post('http://localhost:3005/api/openpay/create-charge', paymentData);
+      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/api/openpay/create-charge', paymentData);
 
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data && response.data.payment_method && response.data.payment_method.url) {
-        await axios.post('http://localhost:3005/update-quantity', { items: cartItems });
+        // Actualizar el stock en el backend
+        await axios.post('https://backend-tienda-mac-production.up.railway.app/update-quantity', { items: cartItems });
+
+        // Vaciar el carrito
         clearCart();
+        // Redirigir al usuario
         window.location.href = response.data.payment_method.url;
       } else {
         console.error('No se recibió una URL de redirección válida');
-        setError('Error en la respuesta del servidor. Por favor, intente nuevamente.');
       }
     } catch (error) {
       console.error('Error al procesar el pago:', error);
-      setError('Error al procesar el pago. Por favor, intente nuevamente.');
     }
   };
 
@@ -139,8 +132,8 @@ const CardPayment = () => {
             <Form.Control
               type="email"
               placeholder="Email"
-              name="customer_email"
-              value={customerData.customer_email}
+              name="email"
+              value={customerData.email}
               onChange={handleInputChange}
               className={styles.formControl}
               required
@@ -155,8 +148,8 @@ const CardPayment = () => {
             <Form.Control
               type="tel"
               placeholder="Teléfono"
-              name="customer_phone"
-              value={customerData.customer_phone}
+              name="phone_number"
+              value={customerData.phone_number}
               onChange={handleInputChange}
               className={styles.formControl}
               required
@@ -173,8 +166,8 @@ const CardPayment = () => {
             <Form.Control
               type="text"
               placeholder="Departamento"
-              name="customer_department"
-              value={customerData.customer_department}
+              name="department"
+              value={customerData.department}
               onChange={handleInputChange}
               className={styles.formControl}
               required
@@ -189,8 +182,8 @@ const CardPayment = () => {
             <Form.Control
               type="text"
               placeholder="Ciudad"
-              name="customer_city"
-              value={customerData.customer_city}
+              name="city"
+              value={customerData.city}
               onChange={handleInputChange}
               className={styles.formControl}
               required
@@ -205,11 +198,10 @@ const CardPayment = () => {
         <Form.Control
           type="text"
           placeholder="Dirección Adicional"
-          name="customer_address"
-          value={customerData.customer_address}
+          name="additional"
+          value={customerData.additional}
           onChange={handleInputChange}
           className={styles.formControl}
-          required
         />
       </Form.Group>
       <Form.Group controlId="formBasicDocument" className={styles.formGroup}>
@@ -219,14 +211,12 @@ const CardPayment = () => {
         <Form.Control
           type="text"
           placeholder="Número de Documento"
-          name="customer_document_number"
-          value={customerData.customer_document_number}
+          name="document_number"
+          value={customerData.document_number}
           onChange={handleInputChange}
           className={styles.formControl}
-          required
         />
       </Form.Group>
-      {error && <p className={styles.errorMessage}>{error}</p>}
       <div className={styles.buttonContainer}>
         <Button variant="primary" type="submit" className={styles.submitButton}>
           Procesar Pago
