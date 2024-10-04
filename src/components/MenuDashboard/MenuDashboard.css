@@ -4,7 +4,7 @@
     background-color: #343a40;
     color: white;
     padding: 0;
-    width: 200px; /* Reduce the width from 250px to 200px */
+    width: 200px;
 }
 
 .position-sticky {
@@ -24,9 +24,9 @@
 @media (max-width: 992px) {
     .sidebar {
         position: fixed;
-        left: -200px; /* Adjusted to match the reduced width */
+        left: -200px;
         transition: left 0.3s ease;
-        width: 200px; /* Reduced width for mobile as well */
+        width: 200px;
         z-index: 999;
     }
 
@@ -53,21 +53,32 @@
         z-index: 1000;
         color: #fff;
     }
+
+    /* Añadir espacio arriba del contenido en modo responsive */
+    body {
+        padding-top: 60px;
+        /* Ajusta este valor según sea necesario */
+    }
 }
 
 /* Estilo base para pantallas grandes (desktop) */
 @media (min-width: 992px) {
     .menu-toggle {
-        display: none; /* Ocultar el botón de menú hamburguesa en pantallas grandes */
+        display: none;
     }
 
     .sidebar {
         left: 0;
-        width: 200px; /* Adjusted width for desktop */
+        width: 200px;
         position: relative;
     }
 
     .overlay {
-        display: none; /* No mostrar el overlay en pantallas grandes */
+        display: none;
+    }
+
+    /* Eliminar el espacio adicional en la versión de escritorio */
+    body {
+        padding-top: 0;
     }
 }
