@@ -159,7 +159,7 @@
   .user-info-container {
     position: absolute;
     /* Posiciona absolutamente con respecto al contenedor padre */
-    margin-top: -50px;
+    top: -10px;
     /* Coloca el contenedor justo debajo del icono de usuario */
     right: -100px;
     /* Alinea el contenedor a la derecha */

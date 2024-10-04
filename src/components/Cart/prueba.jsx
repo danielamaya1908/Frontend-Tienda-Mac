@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Col, Row, Alert } from 'react-bootstrap';
+import { Form, Button, Col, Row } from 'react-bootstrap';
 import axios from 'axios';
-import styles from './PSEPayment.module.css';
+import styles from './CardPayment.module.css';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkedAlt, FaIdCard } from 'react-icons/fa';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 
-const PSEPayment = () => {
+const CardPayment = () => {
     const location = useLocation();
-    const navigate = useNavigate();
     const { clearCart, cartItems } = useCart();
     const [totalAmount, setTotalAmount] = useState(500);
     const [userId, setUserId] = useState(null);
@@ -16,12 +15,12 @@ const PSEPayment = () => {
     const [customerData, setCustomerData] = useState({
         name: '',
         last_name: '',
-        email: '',
-        phone_number: '',
-        department: '',
-        city: '',
-        additional: '',
-        document_number: ''
+        customer_email: '',
+        customer_phone: '',
+        customer_department: '',
+        customer_city: '',
+        customer_address: '',
+        customer_document_number: '',
     });
 
     useEffect(() => {
@@ -52,33 +51,31 @@ const PSEPayment = () => {
             if (!productId) {
                 throw new Error('No se encontró ningún producto en el carrito');
             }
-
             const paymentData = {
-                charge: {
-                    method: 'bank_account',
-                    amount: totalAmount,
-                    currency: 'COP',
-                    description: 'Pago en Tienda Mac',
-                    customer: customerData,
-                    confirm: 'false',
-                    send_email: 'true',
-                    redirect_url: 'http://localhost:5173/payment-confirmation'
-                },
+                method: 'card',
+                amount: totalAmount,
+                currency: 'COP',
+                description: 'Pago en Tienda Mac',
                 customer: {
                     name: customerData.name,
                     last_name: customerData.last_name,
-                    email: customerData.email,
-                    phone_number: customerData.phone_number,
-                    department: customerData.department,
-                    city: customerData.city,
-                    additional: customerData.additional,
-                    document_number: customerData.document_number
+                    email: customerData.customer_email,
+                    phone_number: customerData.customer_phone,
+                    customer_address: {
+                        department: customerData.customer_department,
+                        city: customerData.customer_city,
+                        additional: customerData.customer_address,
+                    },
+                    document_number: customerData.customer_document_number,
                 },
+                confirm: 'false',
+                send_email: 'true',
+                redirect_url: `${window.location.origin}/payment-confirmation`,
                 userId: userId,
                 productId: productId
             };
 
-            const response = await axios.post('http://localhost:3005/api/openpay/pse-payment', paymentData);
+            const response = await axios.post('http://localhost:3005/api/openpay/create-charge', paymentData);
 
             console.log('Respuesta del servidor:', response.data);
 
@@ -87,18 +84,18 @@ const PSEPayment = () => {
                 clearCart();
                 window.location.href = response.data.payment_method.url;
             } else {
-                throw new Error('No se recibió una URL de redirección válida');
+                console.error('No se recibió una URL de redirección válida');
+                setError('Error en la respuesta del servidor. Por favor, intente nuevamente.');
             }
         } catch (error) {
             console.error('Error al procesar el pago:', error);
-            setError(error.response?.data?.error || error.message || 'Ocurrió un error al procesar el pago');
+            setError('Error al procesar el pago. Por favor, intente nuevamente.');
         }
     };
 
     return (
-        <Form onSubmit={handleSubmit} className={styles.psePaymentForm}>
-            <h2 className={styles.formTitle}>Pago PSE</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSubmit} className={styles.cardPaymentForm}>
+            <h2 className={styles.formTitle}>Pago con Tarjeta</h2>
             <Row>
                 <Col md={6}>
                     <Form.Group controlId="formBasicName" className={styles.formGroup}>
@@ -142,8 +139,8 @@ const PSEPayment = () => {
                         <Form.Control
                             type="email"
                             placeholder="Email"
-                            name="email"
-                            value={customerData.email}
+                            name="customer_email"
+                            value={customerData.customer_email}
                             onChange={handleInputChange}
                             className={styles.formControl}
                             required
@@ -158,8 +155,8 @@ const PSEPayment = () => {
                         <Form.Control
                             type="tel"
                             placeholder="Teléfono"
-                            name="phone_number"
-                            value={customerData.phone_number}
+                            name="customer_phone"
+                            value={customerData.customer_phone}
                             onChange={handleInputChange}
                             className={styles.formControl}
                             required
@@ -176,8 +173,8 @@ const PSEPayment = () => {
                         <Form.Control
                             type="text"
                             placeholder="Departamento"
-                            name="department"
-                            value={customerData.department}
+                            name="customer_department"
+                            value={customerData.customer_department}
                             onChange={handleInputChange}
                             className={styles.formControl}
                             required
@@ -192,8 +189,8 @@ const PSEPayment = () => {
                         <Form.Control
                             type="text"
                             placeholder="Ciudad"
-                            name="city"
-                            value={customerData.city}
+                            name="customer_city"
+                            value={customerData.customer_city}
                             onChange={handleInputChange}
                             className={styles.formControl}
                             required
@@ -208,10 +205,11 @@ const PSEPayment = () => {
                 <Form.Control
                     type="text"
                     placeholder="Dirección Adicional"
-                    name="additional"
-                    value={customerData.additional}
+                    name="customer_address"
+                    value={customerData.customer_address}
                     onChange={handleInputChange}
                     className={styles.formControl}
+                    required
                 />
             </Form.Group>
             <Form.Group controlId="formBasicDocument" className={styles.formGroup}>
@@ -221,13 +219,14 @@ const PSEPayment = () => {
                 <Form.Control
                     type="text"
                     placeholder="Número de Documento"
-                    name="document_number"
-                    value={customerData.document_number}
+                    name="customer_document_number"
+                    value={customerData.customer_document_number}
                     onChange={handleInputChange}
                     className={styles.formControl}
                     required
                 />
             </Form.Group>
+            {error && <p className={styles.errorMessage}>{error}</p>}
             <div className={styles.buttonContainer}>
                 <Button variant="primary" type="submit" className={styles.submitButton}>
                     Procesar Pago
@@ -237,4 +236,4 @@ const PSEPayment = () => {
     );
 };
 
-export default PSEPayment;
+export default CardPayment;
