@@ -9,7 +9,7 @@ import LoginUser from './components/Login/LoginUser';
 import RegisterForm from './components/Login/RegisterForm';
 import Product from './components/Product/Product';
 import UserAdmin from './components/UserAdmin/UserAdmin';
-import Client from './components/UserAdmin/UsersList.jsx';
+import Client from './components/UserAdmin/UserList.jsx';
 import BrandManagement from './components/Brand/Brands';
 import Categories from './components/Category/Category';
 import SubCategories from './components/SubCategories/SubCategories';
