@@ -1,25 +1,14 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faUsers,
-    faShoppingBasket,
-    faTicketAlt,
-    faTrademark,
-    faListAlt,
-    faPalette,
-    faCubes,
-    faCheckSquare,
-    faShoppingCart,
-    faTools,
-    faBars,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faShoppingBasket, faTicketAlt, faTrademark, faListAlt, faPalette, faCubes, faCheckSquare, faShoppingCart, faTools, faBars } from '@fortawesome/free-solid-svg-icons';
 import { NavDropdown } from 'react-bootstrap';
 import './MenuDashboard.css'; // Asegúrate de que este archivo CSS esté correctamente referenciado.
 
 const MenuDashboard = () => {
     const [isSidebarActive, setIsSidebarActive] = useState(false);
 
+    // Función para alternar el menú lateral en pantallas pequeñas
     const toggleSidebar = () => {
         setIsSidebarActive(!isSidebarActive);
     };
@@ -35,45 +24,70 @@ const MenuDashboard = () => {
             <nav id="sidebar" className={`sidebar ${isSidebarActive ? 'active' : ''}`}>
                 <div className="position-sticky">
                     <ul className="nav flex-column">
-                        {[
-                            { to: '/admin/purchases', icon: faShoppingCart, label: 'Compras' },
-                            { to: '/soporte-tecnico', icon: faTools, label: 'Soporte Técnico' },
-                            {
-                                to: '/useradmin',
-                                icon: faUsers,
-                                label: 'Administradores',
-                                dropdown: true,
-                            },
-                            {
-                                to: '/client',
-                                icon: faUsers,
-                                label: 'Clientes',
-                                dropdown: true,
-                            },
-                            { to: '/product', icon: faShoppingBasket, label: 'Productos' },
-                            { to: '/categories', icon: faTicketAlt, label: 'Categorías' },
-                            { to: '/subcategories', icon: faListAlt, label: 'Subcategorías' },
-                            { to: '/colors', icon: faPalette, label: 'Colores' },
-                            { to: '/conditions', icon: faCheckSquare, label: 'Condiciones' },
-                            { to: '/capacities', icon: faCubes, label: 'Capacidades' },
-                            { to: '/brands', icon: faTrademark, label: 'Marcas' },
-                        ].map(({ to, icon, label, dropdown }) => (
-                            <li className="nav-item" key={label}>
-                                {dropdown ? (
-                                    <NavDropdown title={<><FontAwesomeIcon icon={icon} className="me-2" />{label}</>} id={`${label}-nav-dropdown`}>
-                                        <NavDropdown.Item as={NavLink} to={to} className="text-dark">
-                                            <FontAwesomeIcon icon={icon} className="me-2" />
-                                            {label}
-                                        </NavDropdown.Item>
-                                    </NavDropdown>
-                                ) : (
-                                    <NavLink to={to} className="nav-link text-white">
-                                        <FontAwesomeIcon icon={icon} className="me-2" />
-                                        {label}
-                                    </NavLink>
-                                )}
-                            </li>
-                        ))}
+                        <li className="nav-item">
+                            <NavLink to="/admin/purchases" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faShoppingCart} className="me-2" />
+                                Compras
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/soporte-tecnico" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faTools} className="me-2" />
+                                Soporte Técnico
+                            </NavLink>
+                        </li>
+                        <NavDropdown title={<><FontAwesomeIcon icon={faUsers} className="me-2" />Usuarios</>} id="basic-nav-dropdown">
+                            <NavDropdown.Item as={NavLink} to="/useradmin" className="text-dark">
+                                <FontAwesomeIcon icon={faUsers} className="me-2" />
+                                Administradores
+                            </NavDropdown.Item>
+                            <NavDropdown.Item as={NavLink} to="/client" className="text-dark">
+                                <FontAwesomeIcon icon={faUsers} className="me-2" />
+                                Clientes
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                        <li className="nav-item">
+                            <NavLink to="/product" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faShoppingBasket} className="me-2" />
+                                Productos
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/categories" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faTicketAlt} className="me-2" />
+                                Categorías
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/subcategories" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faListAlt} className="me-2" />
+                                Subcategorías
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/colors" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faPalette} className="me-2" />
+                                Colores
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/conditions" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faCheckSquare} className="me-2" />
+                                Condiciones
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/capacities" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faCubes} className="me-2" />
+                                Capacidades
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/brands" className="nav-link text-white">
+                                <FontAwesomeIcon icon={faTrademark} className="me-2" />
+                                Marcas
+                            </NavLink>
+                        </li>
                     </ul>
                 </div>
             </nav>
