@@ -16,10 +16,11 @@ const UserPurchases = () => {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [showModal, setShowModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const [userInfo, setUserInfo] = useState(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust this number to change items per page
+  const [itemsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchPurchases = async () => {
@@ -51,7 +52,23 @@ const UserPurchases = () => {
         setLoading(false);
       }
     };
+
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/auth/me', {
+          headers: { 'x-auth-token': token },
+        });
+
+        setUserInfo(response.data);
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        setError('Error al obtener los datos del usuario.');
+      }
+    };
+
     fetchPurchases();
+    fetchUserData();
   }, []);
 
   const sortPurchases = (purchasesToSort) => {
@@ -146,6 +163,10 @@ const UserPurchases = () => {
               <div className="col-md-8">
                 <div className="purchase-header">
                   <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
+                  <span className="purchase-date">{purchase.date.toLocaleDateString()}</span>
+                  <span className={`purchase-status ${purchase.status}`}>
+                    <FontAwesomeIcon icon={faCheckCircle} /> {purchase.status}
+                  </span>
                 </div>
                 <p className="purchase-item"><strong>Producto:</strong> {purchase.productName}</p>
                 <p className="purchase-item"><strong>Descripción:</strong> {purchase.description}</p>
@@ -156,9 +177,14 @@ const UserPurchases = () => {
                 <p className="purchase-item"><strong>Método de Pago:</strong> {purchase.payment_method}</p>
                 <p className="purchase-item"><strong>Referencia:</strong> {purchase.reference}</p>
                 <p className="purchase-item"><strong>ID de Cargo:</strong> {purchase.charge_id}</p>
-                {/* Dirección y Ciudad */}
-                <p className="purchase-item"><strong>Dirección:</strong> {purchase.address}</p>
-                <p className="purchase-item"><strong>Ciudad:</strong> {purchase.city}</p>
+
+                {/* Mostrar la dirección y la ciudad del usuario dentro de la tarjeta de compra */}
+                {userInfo && (
+                  <>
+                    <p className="purchase-item"><strong>Dirección:</strong> {userInfo.address}</p>
+                    <p className="purchase-item"><strong>Ciudad:</strong> {userInfo.city}</p>
+                  </>
+                )}
               </div>
               <div className="col-md-4 d-flex justify-content-center align-items-center">
                 {purchase.imageUrl ? (
