@@ -2,19 +2,20 @@
   max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
+  margin-top: 100px;
   background-color: white;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1); /* Sombra sutil para dar profundidad */
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
 }
 
 .main-title {
   font-size: 2.5rem;
   margin-bottom: 2rem;
-  color: #333; /* Color oscuro para el título */
+  color: #333;
 }
 
 .user-info-card {
-  background: #ecebeb; /* Un gris muy claro para el fondo de la tarjeta */
+  background: #ecebeb;
   border-radius: 10px;
   padding: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -23,70 +24,91 @@
 .info-item {
   margin-bottom: 1rem;
   font-size: 1.1rem;
-  color: #333; /* Color oscuro para el texto */
+  color: #333;
 }
 
-.info-item strong {
-  margin-right: 0.5rem;
-  color: #4a90e2; /* Mantener el color de acento para los labels */
-}
-
-.info-item svg {
-  margin-right: 0.5rem;
-  color: #4a90e2;
-}
-
-.btn.edit {
-  background-color: #4a90e2;
-  color: white;
-  transition: all 0.3s ease;
-}
-
-.btn.edit:hover {
-  background-color: #3a7bc8;
-  box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
-}
-
+.btn.edit,
 .btn.save {
   background-color: #4a90e2;
   color: white;
   transition: all 0.3s ease;
 }
 
+.btn.edit:hover,
 .btn.save:hover {
   background-color: #3a7bc8;
   box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
 }
 
-/* Ajustes para el modo de edición */
-.detalles-form .form-group {
-  margin-bottom: 1rem;
+/* Responsividad */
+@media (max-width: 768px) {
+  .detalles-cuenta-container {
+    padding: 1rem;
+    margin: 1rem;
+    max-width: 100%;
+  }
+
+  .main-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .user-info-card {
+    padding: 1rem;
+  }
+
+  .info-item {
+    font-size: 1rem;
+  }
+
+  .btn.edit,
+  .btn.save {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .detalles-form .form-group {
+    margin-bottom: 0.75rem;
+  }
+
+  .detalles-form input {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
 }
 
-.detalles-form label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
+@media (max-width: 480px) {
+  .detalles-cuenta-container {
+    margin-top: 50px;
+    padding: 1rem;
+  }
 
-.detalles-form input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
-  color: #333;
-}
+  .main-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
 
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-}
+  .info-item {
+    font-size: 0.9rem;
+  }
 
-.loading, .error, .no-user {
-  text-align: center;
-  font-size: 1.2rem;
-  margin-top: 2rem;
-  color: #333;
+  .btn.edit,
+  .btn.save {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  .detalles-form input {
+    font-size: 0.9rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
 }

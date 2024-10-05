@@ -1,6 +1,6 @@
 .user-info-overlay {
   position: absolute;
-  top: 200px;
+  top: 60px;
   /* Ajusta esto según la altura de tu barra de navegación */
   right: 20px;
   z-index: 1000;
