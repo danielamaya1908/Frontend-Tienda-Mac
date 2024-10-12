@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from '../../NavBar/NavBar'; 
-import Footer from '../../Footer/Footer'; 
-import { Link } from 'react-router-dom'; 
+import Navbar from '../../NavBar/NavBar';
+import Footer from '../../Footer/Footer';
+import { Link } from 'react-router-dom';
 import './IphoneProducts.css';
 
 const IphoneSE = () => {
@@ -42,7 +42,7 @@ const IphoneSE = () => {
     <div className="iphone-products">
       <Navbar />
       <div className="container py-5">
-        <h1 className="text-center mb-4 fs-4">iPhone SE</h1>
+        <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>iPhone SE</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {iphoneProducts.map((product) => (
             <div className="col" key={product.id}>
@@ -50,10 +50,10 @@ const IphoneSE = () => {
                 <div className="card h-100 small-card">
                   <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: '250px', padding: '10px' }}>
                     {productImages[product.id] && productImages[product.id][0] && (
-                      <img 
-                        src={productImages[product.id][0]} 
-                        alt={`Product ${product.name}`} 
-                        className="img-fluid" 
+                      <img
+                        src={productImages[product.id][0]}
+                        alt={`Product ${product.name}`}
+                        className="img-fluid"
                         style={{ maxHeight: '230px', maxWidth: '100%', objectFit: 'contain' }}
                       />
                     )}
@@ -74,7 +74,7 @@ const IphoneSE = () => {
       </div>
       <Footer />
     </div>
-  );  
+  );
 };
 
 export default IphoneSE;

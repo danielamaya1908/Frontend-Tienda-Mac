@@ -1,6 +1,18 @@
 /* Estilos generales del navbar */
-.navbar-dark {
-  background-color: rgba(0, 0, 0, 0.7) !important;
+.navbar-custom {
+  transition: background-color 0.3s ease;
+}
+
+.navbar-custom.navbar-at-top {
+  background-color: white !important;
+}
+
+.navbar-custom.navbar-scrolled {
+  background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.navbar-custom .dropdown-menu {
+  background-color: rgba(255, 255, 255, 0.9);
 }
 
 .navbar-dark .navbar-brand,
@@ -106,7 +118,7 @@
 .user-info-container {
   position: absolute;
   /* Posiciona absolutamente con respecto al contenedor padre */
-  top: -10px;
+  top: -19px;
   /* Coloca el contenedor justo debajo del icono de usuario */
   right: -15px;
   /* Alinea el contenedor a la derecha */
@@ -159,7 +171,7 @@
   .user-info-container {
     position: absolute;
     /* Posiciona absolutamente con respecto al contenedor padre */
-    top: -10px;
+    top: -19px;
     /* Coloca el contenedor justo debajo del icono de usuario */
     right: -100px;
     /* Alinea el contenedor a la derecha */
@@ -248,4 +260,9 @@
     max-height: 90px;
     /* Altura menor en pantallas muy pequeñas */
   }
+}
+
+.navbar-custom .navbar-nav .nav-link,
+.navbar-custom .navbar-nav .dropdown-toggle {
+  color: black !important;
 }

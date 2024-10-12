@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../../NavBar/NavBar';
-import Footer from '../../Footer/Footer'; 
+import Footer from '../../Footer/Footer';
 import { Link } from 'react-router-dom';
 
 const AppleTV4k = () => {
@@ -12,7 +12,7 @@ const AppleTV4k = () => {
     const fetchIphoneProducts = async () => {
       try {
         const responses = await Promise.all([
-          
+
         ]);
         const products = responses.flatMap(response => response.data);
         setIphoneProducts(products);
@@ -43,7 +43,7 @@ const AppleTV4k = () => {
     <div className="iphone-products">
       <Navbar />
       <div className="container py-5">
-        <h1 className="text-center mb-4 fs-4">Apple TV 4k</h1>
+        <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>Apple TV 4k</h1>
         <h2 className="text-center mb-4 fs-5">Productos no disponibles en el momento</h2>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {iphoneProducts.map((product) => (
@@ -72,7 +72,7 @@ const AppleTV4k = () => {
       </div>
       <Footer />
     </div>
-  );  
+  );
 };
 
 export default AppleTV4k;

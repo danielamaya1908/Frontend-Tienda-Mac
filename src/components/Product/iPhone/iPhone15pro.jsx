@@ -42,19 +42,19 @@ const Iphone15pro = () => {
     <div className="iphone-products">
       <Navbar />
       <div className="container py-5">
-        <h1 className="text-center mb-4 fs-4">iPhone 15 Pro</h1>
+        <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>iPhone 15 Pro</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {iphoneProducts.map((product) => (
             <div className="col" key={product.id}>
               <div className="card h-100 small-card">
-              <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: '250px', padding: '10px' }}>
+                <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: '250px', padding: '10px' }}>
                   {productImages[product.id] && productImages[product.id][0] && (
-                  <img 
-                  src={productImages[product.id][0]} 
-                  alt={`Product ${product.name}`} 
-                  className="img-fluid"
-                  style={{ maxHeight: '230px', maxWidth: '100%', objectFit: 'contain' }}
-                />
+                    <img
+                      src={productImages[product.id][0]}
+                      alt={`Product ${product.name}`}
+                      className="img-fluid"
+                      style={{ maxHeight: '230px', maxWidth: '100%', objectFit: 'contain' }}
+                    />
                   )}
                 </div>
                 <div className="card-body d-flex flex-column">

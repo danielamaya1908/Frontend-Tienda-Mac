@@ -32,9 +32,9 @@ const Slideshow = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide(prevSlide => (prevSlide + 1) % images.length);
-    }, 3000); // Cambia la imagen cada 3 segundos
+    }, 3000);
 
-    return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
+    return () => clearInterval(interval);
   }, [images.length]);
 
   const handleDoubleClick = () => {
@@ -50,16 +50,16 @@ const Slideshow = () => {
     autoplay: true,
     autoplaySpeed: 3000,
     beforeChange: (current, next) => setCurrentSlide(next),
-    arrows: false, // Hide navigation arrows
-    customPaging: function(i) {
+    arrows: false,
+    customPaging: function (i) {
       return (
         <div
           style={{
             width: "14px",
             height: "14px",
-            border: "2px solid #fff",
+            border: "2px solid #000", // Borde negro
             borderRadius: "50%",
-            backgroundColor: i === currentSlide ? "#fff" : "transparent",
+            backgroundColor: i === currentSlide ? "#000" : "transparent", // Fondo negro para el círculo activo
             display: "inline-block",
             margin: "0 6px",
             cursor: "pointer",

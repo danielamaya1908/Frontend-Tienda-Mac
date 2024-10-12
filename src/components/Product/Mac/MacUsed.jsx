@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../../NavBar/NavBar'; // Asegúrate de que la ruta sea correcta
 import { Link } from 'react-router-dom'; // Importa Link desde react-router-dom
-import Footer from '../../Footer/Footer'; 
+import Footer from '../../Footer/Footer';
 
 const MacUsed = () => {
   const [MacProducts, setMacProducts] = useState([]);

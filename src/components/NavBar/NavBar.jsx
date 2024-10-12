@@ -6,7 +6,7 @@ import { faShoppingBag, faUser, faSearch } from '@fortawesome/free-solid-svg-ico
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './NavBar.css';
-import logo from '../../img/Logo-letras-huecas-2-1536x985.png';
+import logo from '../../img/Logo 2.1.png';
 import LoginUser from '../Login/LoginUser';
 import UserInfo from '../Login/UserInfo';
 import Search from './Search'; // Cambia la ruta según tu estructura de carpetas
@@ -34,6 +34,7 @@ const Navbar = () => {
   const [showContactMenu, setShowContactMenu] = useState(false);
   const [showSoundMenu, setShowSoundMenu] = useState(false);
   const [showOferMenu, setShowOferMenu] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
 
   const navigate = useNavigate();
 
@@ -113,10 +114,30 @@ const Navbar = () => {
     setUser(null);
     setShowUserInfo(false);
   };
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY < 10) {
+        setIsAtTop(true);
+      } else {
+        setIsAtTop(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
-      <BootstrapNavbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" className="navbar-custom">
+      <BootstrapNavbar
+        collapseOnSelect
+        expand="lg"
+        variant="dark"
+        fixed="top"
+        className={`navbar-custom ${isAtTop ? 'navbar-at-top' : 'navbar-scrolled'}`}
+      >
         <Container fluid className="container-fluid-custom navbar-container-fluid">
           <BootstrapNavbar.Brand href="/">
             <img
@@ -131,35 +152,35 @@ const Navbar = () => {
               <FontAwesomeIcon
                 icon={faShoppingBag}
                 onClick={handleCartClick}
-                style={{ cursor: 'pointer', color: '#f8f9fa' }}
+                style={{ cursor: 'pointer', color: 'black' }}
               />
             </div>
             <div className="d-flex align-items-center me-2" style={{ position: 'relative' }}>
-            <FontAwesomeIcon
-              icon={faUser}
-              onClick={handleUserClick}
-              style={{ cursor: 'pointer', color: '#f8f9fa' }}
-            />
-            {showLoginForm && <LoginUser onClose={() => setShowLoginForm(false)} onLoginSuccess={handleLoginSuccess} />}
-            {showUserInfo && user && (
-              <UserInfo
-                user={user}
-                onLogout={handleLogout}
-                onClose={() => setShowUserInfo(false)}
-                className="user-info-container"
+              <FontAwesomeIcon
+                icon={faUser}
+                onClick={handleUserClick}
+                style={{ cursor: 'pointer', color: 'black' }}
               />
-            )}
-           </div>
-           <div style={{ position: 'relative' }}>
-            <span className="nav-link d-flex align-items-center me-2" style={{ color: '#f8f9fa' }} onClick={handleSearchClick}>
-              <FontAwesomeIcon icon={faSearch} />
-            </span>
-            {showSearch && (
-              <div ref={searchInputRef} className="search-container">
-                <Search onClose={() => setShowSearch(false)} />
-              </div>
-            )}
-          </div>
+              {showLoginForm && <LoginUser onClose={() => setShowLoginForm(false)} onLoginSuccess={handleLoginSuccess} />}
+              {showUserInfo && user && (
+                <UserInfo
+                  user={user}
+                  onLogout={handleLogout}
+                  onClose={() => setShowUserInfo(false)}
+                  className="user-info-container"
+                />
+              )}
+            </div>
+            <div style={{ position: 'relative' }}>
+              <span className="nav-link d-flex align-items-center me-2" style={{ color: 'black' }} onClick={handleSearchClick}>
+                <FontAwesomeIcon icon={faSearch} />
+              </span>
+              {showSearch && (
+                <div ref={searchInputRef} className="search-container">
+                  <Search onClose={() => setShowSearch(false)} />
+                </div>
+              )}
+            </div>
           </div>
           <BootstrapNavbar.Toggle aria-controls="responsive-navbar-nav" onClick={toggleMobileMenu} />
           <BootstrapNavbar.Collapse id="responsive-navbar-nav" className={showMobileMenu ? 'show' : ''}>
@@ -222,7 +243,7 @@ const Navbar = () => {
                 <NavDropdown.Item href="AccesoriosParaiPhone">Accesorios para iPhone</NavDropdown.Item>
                 <NavDropdown.Item href="iPhoneUsed">iPhone Usados</NavDropdown.Item>
               </NavDropdown>
-              
+
               <NavDropdown
                 title="Apple Watch"
                 id="applewatch-dropdown"
@@ -232,15 +253,15 @@ const Navbar = () => {
                 onMouseEnter={() => handleDropdownMouseEnter('applewatch')}
                 onMouseLeave={handleDropdownMouseLeave}
               >
-              <NavDropdown.Item href="AppleWatchAll">Watchs</NavDropdown.Item>
-              <NavDropdown.Item href="AppleWatchUltra2">Apple Watch Ultra 2</NavDropdown.Item>
-              <NavDropdown.Item href="AppleWatchUltra">Apple Watch Ultra</NavDropdown.Item>
-              <NavDropdown.Item href="AppleWatchSeries9">Apple Watch Series 9</NavDropdown.Item>
-              <NavDropdown.Item href="AppleWatchSeries8">Apple Watch Series 8</NavDropdown.Item>
-              <NavDropdown.Item href="AppleWatchSeries7">Apple Watch Series 7</NavDropdown.Item>
-              <NavDropdown.Item href="AppleWatchSE">Apple Watch SE</NavDropdown.Item>
-              <NavDropdown.Item href="AccesoriosParaWatch">Accesorios para Apple Watch</NavDropdown.Item>
-              <NavDropdown.Item href="AppleWatchUsed">Apple Watch Usados</NavDropdown.Item>
+                <NavDropdown.Item href="AppleWatchAll">Watchs</NavDropdown.Item>
+                <NavDropdown.Item href="AppleWatchUltra2">Apple Watch Ultra 2</NavDropdown.Item>
+                <NavDropdown.Item href="AppleWatchUltra">Apple Watch Ultra</NavDropdown.Item>
+                <NavDropdown.Item href="AppleWatchSeries9">Apple Watch Series 9</NavDropdown.Item>
+                <NavDropdown.Item href="AppleWatchSeries8">Apple Watch Series 8</NavDropdown.Item>
+                <NavDropdown.Item href="AppleWatchSeries7">Apple Watch Series 7</NavDropdown.Item>
+                <NavDropdown.Item href="AppleWatchSE">Apple Watch SE</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaWatch">Accesorios para Apple Watch</NavDropdown.Item>
+                <NavDropdown.Item href="AppleWatchUsed">Apple Watch Usados</NavDropdown.Item>
 
               </NavDropdown>
               <NavDropdown
@@ -271,9 +292,9 @@ const Navbar = () => {
                 onMouseEnter={() => handleDropdownMouseEnter('appletv')}
                 onMouseLeave={handleDropdownMouseLeave}
               >
-               <NavDropdown.Item href="AppleTVyHogar">Apple TV & Hogar</NavDropdown.Item>
-              <NavDropdown.Item href="AppleTV4k">Apple TV 4K</NavDropdown.Item>
-              <NavDropdown.Item href="AccesoriosParaTVyHogar">Accesorios para Apple TV & Hogar</NavDropdown.Item>
+                <NavDropdown.Item href="AppleTVyHogar">Apple TV & Hogar</NavDropdown.Item>
+                <NavDropdown.Item href="AppleTV4k">Apple TV 4K</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaTVyHogar">Accesorios para Apple TV & Hogar</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown
                 title="Sonido"
@@ -298,59 +319,59 @@ const Navbar = () => {
                 onMouseEnter={() => handleDropdownMouseEnter('accesorios')}
                 onMouseLeave={handleDropdownMouseLeave}
               >
-               <NavDropdown.Item href="AccesoriosAll">Todos los Accesorios</NavDropdown.Item>
-              <NavDropdown.Item href="AccesoriosParaMac">Accesorios para Mac</NavDropdown.Item>
-              <NavDropdown.Item href="AccesoriosParaiPad">Accesorios para iPad</NavDropdown.Item>
-              <NavDropdown.Item href="AccesoriosParaiPhone">Accesorios para iPhone</NavDropdown.Item>
-              <NavDropdown.Item href="AccesoriosParaWatch">Accesorios para Watch</NavDropdown.Item>
-              <NavDropdown.Item href="AccesoriosParaAirpods">Accesorios para AirPods</NavDropdown.Item>
-              <NavDropdown.Item href="AccesoriosParaTVyHogar">Accesorios para TV & Hogar</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosAll">Todos los Accesorios</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaMac">Accesorios para Mac</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaiPad">Accesorios para iPad</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaiPhone">Accesorios para iPhone</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaWatch">Accesorios para Watch</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaAirpods">Accesorios para AirPods</NavDropdown.Item>
+                <NavDropdown.Item href="AccesoriosParaTVyHogar">Accesorios para TV & Hogar</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown
-              title="Ofertas"
-              id="ofertas-dropdown"
-              className="no-caret"
-              show={activeDropdown === 'ofertas'}
-              onClick={() => toggleDropdown('ofertas')}
-              onMouseEnter={() => handleDropdownMouseEnter('ofertas')}
-              onMouseLeave={handleDropdownMouseLeave}
+                title="Ofertas"
+                id="ofertas-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'ofertas'}
+                onClick={() => toggleDropdown('ofertas')}
+                onMouseEnter={() => handleDropdownMouseEnter('ofertas')}
+                onMouseLeave={handleDropdownMouseLeave}
               >
-              <NavDropdown.Item href="#">Ofertas Especiales</NavDropdown.Item>
-              <NavDropdown.Item href="#">Ofertas del Mes</NavDropdown.Item>
+                <NavDropdown.Item href="#">Ofertas Especiales</NavDropdown.Item>
+                <NavDropdown.Item href="#">Ofertas del Mes</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown
-              title="Crédito"
-              id="credito-dropdown"
-              className="no-caret"
-              show={activeDropdown === 'credito'}
-              onClick={() => toggleDropdown('credito')}
-              onMouseEnter={() => handleDropdownMouseEnter('credito')}
-              onMouseLeave={handleDropdownMouseLeave}
+                title="Crédito"
+                id="credito-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'credito'}
+                onClick={() => toggleDropdown('credito')}
+                onMouseEnter={() => handleDropdownMouseEnter('credito')}
+                onMouseLeave={handleDropdownMouseLeave}
               >
-              <NavDropdown.Item href="#">Sistecredito</NavDropdown.Item>
+                <NavDropdown.Item href="#">Sistecredito</NavDropdown.Item>
               </NavDropdown>
               <NavDropdown
-  title="Contáctanos"
-  id="contactanos-dropdown"
-  className="no-caret"
-  show={activeDropdown === 'contactanos'}
-  onClick={() => toggleDropdown('contactanos')}
-  onMouseEnter={() => handleDropdownMouseEnter('contactanos')}
-  onMouseLeave={handleDropdownMouseLeave}
->
-  <NavDropdown.Item
-    href="https://api.whatsapp.com/send?phone=573173026445&text=%C2%A1Hola%20Tienda%20Mac!%20Me%20interesa%20comprar%201%20Parlante%20Aura%20studio%203%20(15W%20RMS-%20100W%20RMS,%20Negro).%20%C2%BFPodr%C3%ADas%20darme%20informaci%C3%B3n%20adicional%3F%20Gracias!"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    Whatsapp
-  </NavDropdown.Item>
-  <NavDropdown.Item
-    href="https://mail.google.com/mail/?view=cm&fs=1&to=info@tiendapc.com.co&su=Consulta%20de%20producto&body=%C2%A1Hola%20Tienda%20Mac!%20Me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20:"
-  >
-    Correo electrónico
-  </NavDropdown.Item>
-</NavDropdown>
+                title="Contáctanos"
+                id="contactanos-dropdown"
+                className="no-caret"
+                show={activeDropdown === 'contactanos'}
+                onClick={() => toggleDropdown('contactanos')}
+                onMouseEnter={() => handleDropdownMouseEnter('contactanos')}
+                onMouseLeave={handleDropdownMouseLeave}
+              >
+                <NavDropdown.Item
+                  href="https://api.whatsapp.com/send?phone=573173026445&text=%C2%A1Hola%20Tienda%20Mac!%20Me%20interesa%20comprar%201%20Parlante%20Aura%20studio%203%20(15W%20RMS-%20100W%20RMS,%20Negro).%20%C2%BFPodr%C3%ADas%20darme%20informaci%C3%B3n%20adicional%3F%20Gracias!"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Whatsapp
+                </NavDropdown.Item>
+                <NavDropdown.Item
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=info@tiendapc.com.co&su=Consulta%20de%20producto&body=%C2%A1Hola%20Tienda%20Mac!%20Me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20:"
+                >
+                  Correo electrónico
+                </NavDropdown.Item>
+              </NavDropdown>
 
               <Nav.Link href="#" onClick={handleSupportClick}>Soporte</Nav.Link>
             </Nav>

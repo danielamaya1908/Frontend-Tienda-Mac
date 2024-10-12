@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../../NavBar/NavBar'; // Asegúrate de que la ruta sea correcta
-import Footer from '../../Footer/Footer'; 
+import Footer from '../../Footer/Footer';
 
 const IpadUsed = () => {
   const [IpadProducts, setIpadProducts] = useState([]);
@@ -42,7 +42,7 @@ const IpadUsed = () => {
     <div className="AppleWatch-products">
       <Navbar />
       <div className="container py-5">
-        <h1 className="text-center mb-4 fs-4">iPad Usados</h1>
+        <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>iPad Usados</h1>
         <h2 className="text-center mb-4 fs-6">Productos no disponibles en el momento</h2>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {/* Ejemplo de producto */}
@@ -69,7 +69,7 @@ const IpadUsed = () => {
       </div>
       <Footer />
     </div>
-  );  
+  );
 };
 
 export default IpadUsed;
