@@ -76,7 +76,6 @@ const Home = () => {
         const products = responses.flatMap(response => response.data);
         setHomeProducts(products);
 
-
         products.forEach(async (product) => {
           try {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
@@ -120,7 +119,6 @@ const Home = () => {
     fetchNewProducts();
   }, []);
 
-
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
@@ -161,7 +159,7 @@ const Home = () => {
   };
 
   const renderProductCard = (product, images) => (
-    <div className="card h-100 border-0 bg-light shadow-sm d-flex flex-column" style={{ maxWidth: '300px', margin: '0 auto' }}>
+    <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
       <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
         <img src={images[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
       </div>
