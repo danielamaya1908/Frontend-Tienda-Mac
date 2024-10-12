@@ -26,12 +26,12 @@ const DetalleProducto = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const productResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/product/${id}`);
+        const productResponse = await axios.get(`http://localhost:3005/product/${id}`);
         setProduct(productResponse.data);
 
-        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${id}/images`);
+        const imageResponse = await axios.get(`http://localhost:3005/products/${id}/images`);
         const imageFileNames = imageResponse.data;
-        const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+        const imageUrls = imageFileNames.map(fileName => `http://localhost:3005/images/${fileName}`);
         setImages(imageUrls);
 
         setMaxQuantity(productResponse.data.quantity || 1);
@@ -102,7 +102,8 @@ const DetalleProducto = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="container py-5 bg-light shadow-sm rounded position-relative"
+        className="container py-5 shadow-sm rounded position-relative"
+        style={{ backgroundColor: 'white' }}
       >
         <button
           className="btn btn-close position-absolute"
@@ -161,7 +162,9 @@ const DetalleProducto = () => {
               <p className="product-specs"><strong>Precio:</strong> {formatPrice(product.price)}</p>
             </div>
             <div className="quantity-selector mb-3">
-              <label htmlFor="quantity" className="product-label form-label">Cantidad:</label>
+              <label htmlFor="quantity" className="product-label form-label" style={{ color: "black" }}>
+                Cantidad:
+              </label>
               <div className="input-group">
                 <button
                   className={`btn btn-outline-secondary ${quantity <= 1 ? 'disabled' : ''}`}
@@ -183,7 +186,9 @@ const DetalleProducto = () => {
                   }}
                   min="1"
                   max={maxQuantity}
+                  style={{ color: "black" }} // Cambiar el color del texto del input a negro
                 />
+
                 <button
                   className={`btn btn-outline-secondary ${quantity >= maxQuantity ? 'disabled' : ''}`}
                   type="button"
