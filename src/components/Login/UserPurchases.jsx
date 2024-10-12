@@ -127,7 +127,7 @@ const UserPurchases = () => {
     <>
       <Navbar />
       <div className="container">
-        <h2 className="main-title">Mis Compras</h2>
+        <h2 className="main-title" style={{ color: 'black' }}>Mis Compras</h2>
         <div className="filters">
           <button onClick={handleSort} className="sort-button">
             <FontAwesomeIcon icon={faSort} /> Ordenar por fecha ({sortOrder === 'desc' ? 'Más reciente' : 'Más antiguo'})

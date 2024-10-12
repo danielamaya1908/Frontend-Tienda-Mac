@@ -15,10 +15,12 @@
 }
 
 .user-info-card {
-  background: #ecebeb;
+  background: white;
+  /* Cambiado a blanco */
   border-radius: 10px;
   padding: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Mantener el mismo estilo de sombra */
 }
 
 .info-item {

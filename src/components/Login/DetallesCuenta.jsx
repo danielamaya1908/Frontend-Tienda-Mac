@@ -74,7 +74,9 @@ const DetallesCuenta = () => {
     <>
       <Navbar />
       <div className="detalles-cuenta-container">
-        <h1 className="main-title"><FontAwesomeIcon icon={faUserCog} /> Detalles de la Cuenta</h1>
+        <h1 className="main-title" style={{ color: "black" }}>
+          <FontAwesomeIcon icon={faUserCog} /> Detalles de la Cuenta
+        </h1>
         <div className="user-info-card">
           {editing ? (
             <div className="detalles-form">
