@@ -1,42 +1,49 @@
+/* UserInfo.css */
+
 .user-info-overlay {
   position: absolute;
-  top: 60px;
+  top: 90px;
   /* Ajusta esto según la altura de tu barra de navegación */
   right: 20px;
   z-index: 1000;
 }
 
 .user-info-container {
-  background-color: rgba(30, 30, 30, 0.9);
-  color: white;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  padding: 25px;
-  width: 280px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #ffffff;
+  /* Blanco sólido para coincidir con el navbar */
+  color: black;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 300px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.user-info-container:hover {
+  transform: scale(1.03);
 }
 
 .user-info-container h2 {
-  color: white;
-  font-size: 1.2rem;
+  color: black;
+  font-size: 1.5rem;
   margin-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-bottom: 10px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 1px;
   text-align: center;
 }
 
 .user-details p {
-  margin: 12px 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+  margin: 15px 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 1rem;
 }
 
 .user-details strong {
-  color: white;
-  font-weight: 500;
+  color: black;
+  font-weight: 600;
 }
 
 .user-actions {
@@ -47,26 +54,28 @@
   background: none;
   border: none;
   color: #007bff;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  margin: 5px 0;
+  margin: 10px 0;
+  transition: color 0.3s ease;
 }
 
 .user-action-button:hover {
+  color: #0056b3;
   text-decoration: underline;
 }
 
 .logout-button {
-  background-color: #0056b3;
+  background-color: #dc3545;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   padding: 12px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,10 +85,11 @@
 }
 
 .logout-button:hover {
-  background-color: #3b3d3f;
+  background-color: #c82333;
+  transform: translateY(-2px);
 }
 
 .icon {
-  margin-right: 8px;
-  /* Espacio entre el icono y el texto */
+  margin-right: 10px;
+  font-size: 1.2rem;
 }
