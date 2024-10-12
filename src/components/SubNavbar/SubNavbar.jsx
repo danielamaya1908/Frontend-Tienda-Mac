@@ -3,7 +3,7 @@ import './SubNavbar.css';
 
 const SubNavbar = () => {
   return (
-    <nav className="sub-navbar navbar navbar-expand-lg navbar-dark">
+    <nav className="sub-navbar">
       <div className="container-fluid">
         <ul className="sub-navbar-nav">
           <li className="nav-item">
