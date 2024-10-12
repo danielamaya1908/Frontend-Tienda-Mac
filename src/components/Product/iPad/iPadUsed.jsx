@@ -43,7 +43,7 @@ const IpadUsed = () => {
       <Navbar />
       <div className="container py-5">
         <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>iPad Usados</h1>
-        <h2 className="text-center mb-4 fs-6">Productos no disponibles en el momento</h2>
+        <h2 className="text-center mb-4 fs-4" style={{ color: 'black' }}>Productos no disponibles en el momento</h2>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {/* Ejemplo de producto */}
           {/* <div className="col">

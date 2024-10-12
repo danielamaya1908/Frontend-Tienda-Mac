@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../../NavBar/NavBar'; // Asegúrate de que la ruta sea correcta
-import Footer from '../../Footer/Footer'; 
+import Footer from '../../Footer/Footer';
 import { Link } from 'react-router-dom'; // Importa Link desde react-router-dom
 
 const AppleWatchUsed = () => {
@@ -44,7 +44,7 @@ const AppleWatchUsed = () => {
       <Navbar />
       <div className="container py-5">
         <h1 className="text-center mb-4 fs-4">Apple Watch Usados</h1>
-        <h2 className="text-center mb-4 fs-5">Productos no disponibles en el momento</h2>
+        <h2 className="text-center mb-4 fs-4" style={{ color: 'black' }}>Productos no disponibles en el momento</h2>
         {/* Sección comentada para productos no disponibles */}
         {/* <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {AppleWatchProducts.map((product) => (
@@ -74,7 +74,7 @@ const AppleWatchUsed = () => {
       <Footer />
     </div>
   );
-  };
-  
-  export default AppleWatchUsed;
-  
+};
+
+export default AppleWatchUsed;
+

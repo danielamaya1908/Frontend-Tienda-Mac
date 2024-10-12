@@ -44,7 +44,7 @@ const AirpodsUsed = () => {
       <Navbar />
       <div className="container py-5">
         <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>Airpods Usados</h1>
-        <h2 className="text-center mb-4 fs-5">Productos no disponibles en el momento</h2>
+        <h2 className="text-center mb-4 fs-4" style={{ color: 'black' }}>Productos no disponibles en el momento</h2>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {AirpodsProducts.map((product) => (
             <div className="col" key={product.id}>

@@ -44,7 +44,7 @@ const MacUsed = () => {
       <Navbar />
       <div className="container py-5">
         <h1 className="text-center mb-4">Mac Usadas</h1>
-        <h2 className="text-center mb-4">Productos no dispnibles en el momento</h2>
+        <h2 className="text-center mb-4 fs-4" style={{ color: 'black' }}>Productos no dispnibles en el momento</h2>
         {/* <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {MacProducts.map((product) => (
             <div className="col" key={product.id}>
