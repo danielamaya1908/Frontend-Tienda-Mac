@@ -56,7 +56,7 @@
 
     /* Añadir espacio arriba del contenido en modo responsive */
     body {
-        padding-top: 60px;
+        /* padding-top: 60px; */
         /* Ajusta este valor según sea necesario */
     }
 }
