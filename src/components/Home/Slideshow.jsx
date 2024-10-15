@@ -4,25 +4,29 @@ import { useNavigate } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import iphone15_1 from '../../img/publicidad1.png';
-import iphone15_2 from '../../img/iphone15.png';
-import iphone15_3 from '../../img/iphone15_2.png';
-import iphone15_4 from '../../img/tiendamac.png';
-import iphone15_5 from '../../img/iphone15_3.png';
+import slidesShow1 from '../../img/slidesShow/iPhone.jpg'; // Primera imagen
+import slidesShow2 from '../../img/slidesShow/Producto_VIP_3.jpg'; // Segunda imagen
+import slidesShow3 from '../../img/slidesShow/Producto_VIP_2.jpg'; // Tercera imagen
+import slidesShow4 from '../../img/slidesShow/Sonido.jpg'; // Cuarta imagen
+import slidesShow5 from '../../img/slidesShow/Accesorios.jpg'; // Quinta imagen
+import slidesShow6 from '../../img/slidesShow/Servicio_Tecnico.jpg'; // Sexta imagen
+import slidesShow7 from '../../img/slidesShow/Delivery.jpg'; // Séptima imagen
 
 const Slideshow = () => {
   const [images, setImages] = useState([]);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0); // Mantiene el índice del slide actual
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchImages = async () => {
       const loadedImages = [
-        iphone15_1,
-        iphone15_2,
-        iphone15_3,
-        iphone15_4,
-        iphone15_5
+        slidesShow1,
+        slidesShow2,
+        slidesShow3,
+        slidesShow4,
+        slidesShow5,
+        slidesShow6,
+        slidesShow7,
       ];
       setImages(loadedImages);
     };
@@ -31,14 +35,54 @@ const Slideshow = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide(prevSlide => (prevSlide + 1) % images.length);
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % images.length);
     }, 3000);
 
     return () => clearInterval(interval);
   }, [images.length]);
 
-  const handleDoubleClick = () => {
-    navigate('/iphone15pro');
+  // Redirigir a diferentes rutas según el clic en el iPhone
+  const handleClick = (event, index) => {
+    const { clientX } = event; // Posición X del clic
+    const slideElement = event.currentTarget;
+    const { left, width } = slideElement.getBoundingClientRect(); // Obtener posición y dimensiones del slide
+
+    const clickPosition = clientX - left; // Posición del clic relativa al slide
+    const middle = width / 2; // Dividir el slide en dos mitades
+
+    if (index === 0) {
+      // Solo para la imagen del iPhone
+      if (clickPosition < middle) {
+        navigate('/iphoneAll'); // Clic en la parte izquierda
+      } else {
+        navigate('/iphoneAll'); // Clic en la parte derecha
+      }
+    } else {
+      // Lógica existente para otras imágenes
+      switch (index) {
+        case 1:
+          navigate('/AppleWatchAll'); // Segunda imagen redirige a Apple Watch
+          break;
+        case 2:
+          navigate('/airpods'); // Tercera imagen redirige a Airpods
+          break;
+        case 3:
+          navigate('/sonidoAll'); // Cuarta imagen redirige a categoría de sonido
+          break;
+        case 4:
+          navigate('/AccesoriosAll'); // Quinta imagen redirige a Accesorios
+          break;
+        case 5:
+          window.open('https://api.whatsapp.com/send?phone=573173026445&text=Hola,%20quisiera%20obtener%20información%20sobre%20el%20servicio%20de%20soporte%20técnico.%20Tengo%20un%20equipo%20que%20necesita%20revisión%20y%20me%20gustaría%20conocer%20los%20detalles%20del%20proceso,%20costos,%20y%20tiempos%20de%20reparación.%20Agradezco%20su%20respuesta.', '_blank');
+          break;
+        case 6:
+          navigate('/delivery'); // Séptima imagen redirige a servicio de delivery
+          break;
+        default:
+          navigate('/'); // Si no coincide, redirige a la página principal
+          break;
+      }
+    }
   };
 
   const settings = {
@@ -49,21 +93,21 @@ const Slideshow = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
-    beforeChange: (current, next) => setCurrentSlide(next),
+    beforeChange: (current, next) => setCurrentSlide(next), // Actualiza el índice del slide actual
     arrows: false,
     customPaging: function (i) {
       return (
         <div
           style={{
-            width: "14px",
-            height: "14px",
-            border: "2px solid #000", // Borde negro
-            borderRadius: "50%",
-            backgroundColor: i === currentSlide ? "#000" : "transparent", // Fondo negro para el círculo activo
-            display: "inline-block",
-            margin: "0 6px",
-            cursor: "pointer",
-            transition: "background-color 0.3s",
+            width: '14px',
+            height: '14px',
+            border: '2px solid #000', // Borde negro
+            borderRadius: '50%',
+            backgroundColor: i === currentSlide ? '#000' : 'transparent', // Fondo negro para el círculo activo
+            display: 'inline-block',
+            margin: '0 6px',
+            cursor: 'pointer',
+            transition: 'background-color 0.3s',
           }}
         />
       );
@@ -74,7 +118,7 @@ const Slideshow = () => {
     <div className="slideshowContainer">
       <Slider {...settings}>
         {images.map((image, index) => (
-          <div key={index} className="slide" onDoubleClick={handleDoubleClick}>
+          <div key={index} className="slide" onClick={(event) => handleClick(event, index)}>
             <img className="d-block w-100" src={image} alt={`Slide ${index}`} />
           </div>
         ))}
