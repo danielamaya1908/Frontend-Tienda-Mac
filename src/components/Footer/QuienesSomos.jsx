@@ -10,7 +10,7 @@ const QuienesSomos = () => {
       <div className="quienes-somos-container">
         <div className="quienes-somos-content">
           <div className="quienes-somos-image">
-            <img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1721972268/TiendaMac/xr4rlo9sccl1q5yc7d5c.jpg" alt="Quiénes Somos" /> {/* Reemplaza con la ruta de tu imagen */}
+            <img src="https://res.cloudinary.com/dn6k2fnhj/image/upload/v1729142657/TiendaMac/ne8qnlebsb2lpxdrsi87.jpg" alt="Quiénes Somos" /> {/* Reemplaza con la ruta de tu imagen */}
           </div>
           <div className="quienes-somos-info">
             <h1 className="fade-in">¿Quiénes somos?</h1>
