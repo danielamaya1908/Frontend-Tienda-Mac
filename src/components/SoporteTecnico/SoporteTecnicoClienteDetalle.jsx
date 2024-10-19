@@ -205,8 +205,10 @@ const SoporteTecnicoClienteDetalle = () => {
       <Navbar />
       <Container className="mt-5">
         <h1 className="text-center mb-4">
-          <FaMobileAlt className="me-2" />
-          Soporte Técnico #{soporte.id}
+          <div style={{ marginTop: '60px', display: 'flex', alignItems: 'center' }}>
+            <FaMobileAlt className="me-2" />
+            <h2> Soporte Técnico #{soporte.id}</h2>
+          </div> 
         </h1>
         <Button variant="primary" className="mb-4" onClick={() => navigate(-1)}>
           <FaArrowLeft className="me-2" />
