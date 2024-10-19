@@ -1,8 +1,8 @@
-/* Estilo base del menú lateral para pantallas grandes */
+/* Estilo base del menú lateral */
 .sidebar {
     min-height: 100vh;
-    background-color: #343a40;
-    color: white;
+    background-color: white;
+    color: black;
     padding: 0;
     width: 200px;
 }
@@ -13,11 +13,11 @@
 }
 
 .nav-link {
-    color: white;
+    color: black;
 }
 
 .nav-link:hover {
-    color: #ccc;
+    color: #555;
 }
 
 /* Estilos para pantallas pequeñas (responsive) */
@@ -51,18 +51,26 @@
         font-size: 24px;
         cursor: pointer;
         z-index: 1000;
-        color: #fff;
+        color: #0a0a0a;
+        background-color: transparent;
+        border: none;
+        padding: 5px;
     }
 
-    /* Añadir espacio arriba del contenido en modo responsive */
+    /* Espacio para el menú fijo */
     body {
-        /* padding-top: 60px; */
-        /* Ajusta este valor según sea necesario */
+        padding-left: 60px;
+        /* Ancho suficiente para el ícono del menú */
+    }
+
+    /* Margen superior al contenido del menú en móvil */
+    .sidebar .nav {
+        margin-top: 60px;
     }
 }
 
 /* Estilo base para pantallas grandes (desktop) */
-@media (min-width: 992px) {
+@media (min-width: 993px) {
     .menu-toggle {
         display: none;
     }
@@ -77,8 +85,11 @@
         display: none;
     }
 
-    /* Eliminar el espacio adicional en la versión de escritorio */
     body {
-        padding-top: 0;
+        padding-left: 0;
+    }
+
+    .sidebar .nav {
+        margin-top: 0;
     }
 }
