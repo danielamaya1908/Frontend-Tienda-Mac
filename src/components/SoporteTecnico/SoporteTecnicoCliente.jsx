@@ -128,7 +128,7 @@ const SoporteTecnicoCliente = () => {
   return (
     <div className="soporte-tecnico">
       <Navbar />
-      <h1>Mis Soportes Técnicos</h1>
+      <h1 className="text-center fw-bold">Mis Soportes Técnicos</h1>
       <div className="controls">
         <input
           type="text"

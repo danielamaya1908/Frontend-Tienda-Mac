@@ -138,7 +138,7 @@ const SoporteTecnico = () => {
         <MenuDashboard />
         <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
           <div className="soporte-tecnico">
-            <h1>Orden de Servicio</h1>
+             <h1 className="text-center fw-bold">Orden de Servicio</h1>
             <div className="controls">
               <input
                 type="text"
