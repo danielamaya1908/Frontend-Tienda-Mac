@@ -11,12 +11,19 @@ const SoporteTecnico = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('Todos los Estados');
   const [imagenes, setImagenes] = useState({}); // State to handle uploaded images
+  const [diagnosticoDescripcion, setDiagnosticoDescripcion] = useState({});
 
   useEffect(() => {
     const fetchOrdenesServicio = async () => {
       try {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/soporte-Tecnico');
         setOrdenesServicio(response.data);
+        // Initialize diagnosticoDescripcion state with values from the response
+        const initialDiagnosticos = {};
+        response.data.forEach(orden => {
+          initialDiagnosticos[orden.id] = orden.diagnosticoDescripcion || '';
+        });
+        setDiagnosticoDescripcion(initialDiagnosticos);
       } catch (error) {
         console.error('Error al obtener órdenes de servicio:', error);
       }
@@ -27,10 +34,10 @@ const SoporteTecnico = () => {
 
   const filteredOrdenes = ordenesServicio.filter(orden => {
     const matchesSearch = orden.id.toString().includes(searchTerm) ||
-                          (orden.User && (orden.User.firstName + ' ' + orden.User.lastName).toLowerCase().includes(searchTerm.toLowerCase())) ||
-                          orden.modelo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          orden.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          orden.serial.toLowerCase().includes(searchTerm.toLowerCase());
+      (orden.User && (orden.User.firstName + ' ' + orden.User.lastName).toLowerCase().includes(searchTerm.toLowerCase())) ||
+      orden.modelo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      orden.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      orden.serial.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = selectedStatus === 'Todos los Estados' || orden.estado.toLowerCase() === selectedStatus.toLowerCase();
 
     return matchesSearch && matchesStatus;
@@ -46,15 +53,27 @@ const SoporteTecnico = () => {
 
   const handleEstadoChange = async (id, newEstado) => {
     try {
-      let data = { estado: newEstado };
+      let diagnostico = diagnosticoDescripcion[id] || '';
+
+      if (newEstado === 'Diagnosticando') {
+        diagnostico = prompt("Por favor, ingrese la descripción del diagnóstico:", diagnostico);
+        if (diagnostico === null) return; // User cancelled the prompt
+      }
+
+      let data = {
+        estado: newEstado,
+        diagnosticoDescripcion: diagnostico
+      };
 
       const response = await axios.put(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/estado`, data);
 
-      setOrdenesServicio(ordenesServicio.map(orden => 
-        orden.id === id ? { ...orden, estado: newEstado, fechaSalida: response.data.fechaSalida } : orden
+      setOrdenesServicio(ordenesServicio.map(orden =>
+        orden.id === id ? { ...orden, estado: newEstado, fechaSalida: response.data.fechaSalida, diagnosticoDescripcion: diagnostico } : orden
       ));
 
-      // Pide actualizar la imagen cuando cambia el estado
+      setDiagnosticoDescripcion(prev => ({...prev, [id]: diagnostico}));
+
+      // Ask to update the image when the state changes
       if (imagenes[id]) {
         alert('Por favor, actualice la imagen para este estado.');
       }
@@ -153,6 +172,7 @@ const SoporteTecnico = () => {
                   <th>Serial</th>
                   <th>Ingreso</th>
                   <th>Entrega</th>
+                  <th>Diagnóstico</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -216,6 +236,7 @@ const SoporteTecnico = () => {
                     <td>{orden.serial || 'Información no disponible'}</td>
                     <td>{orden.fechaIngreso ? new Date(orden.fechaIngreso).toLocaleDateString() : '-'}</td>
                     <td>{orden.fechaSalida ? new Date(orden.fechaSalida).toLocaleDateString() : '-'}</td>
+                    <td>{diagnosticoDescripcion[orden.id] || '-'}</td>
                     <td><button onClick={() => handleVerDetalles(orden.id)} className="btn-ver">Ver Detalles</button></td>
                   </tr>
                 ))}

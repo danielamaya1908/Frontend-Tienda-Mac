@@ -5,9 +5,11 @@ import { Container, Row, Col, Card, Button, ProgressBar, Modal, Table, Badge } f
 import { 
   FaArrowLeft, FaMobileAlt, FaTools, FaUser, FaCheckCircle, 
   FaTimesCircle, FaCamera, FaBluetooth, FaWifi, FaKeyboard, FaVolumeUp, 
-  FaHeadphones, FaPowerOff, FaPlug, FaUsb, FaTv, FaExclamationTriangle
+  FaHeadphones, FaPowerOff, FaPlug, FaUsb, FaTv, FaExclamationTriangle,
+  FaLaptopCode
 } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 const SoporteTecnicoDetalle = () => {
   const { id } = useParams();
   const [soporte, setSoporte] = useState(null);
@@ -110,7 +112,7 @@ const SoporteTecnicoDetalle = () => {
     }
   };
 
-  const TimelineItem = ({ estado, imagenes, currentState, index, currentStateIndex }) => {
+  const TimelineItem = ({ estado, imagenes, currentState, index, currentStateIndex, diagnosticoDescripcion }) => {
     const getProgressBarVariant = (index, currentStateIndex) => {
       if (index < currentStateIndex) return "success";
       if (index === currentStateIndex) return "primary";
@@ -120,7 +122,7 @@ const SoporteTecnicoDetalle = () => {
     return (
       <Card className={`mb-3 ${currentState === estado ? 'border-primary border-5' : ''}`}>
         <Card.Body>
-        <div className="d-flex flex-column mb-2">
+          <div className="d-flex flex-column mb-2">
             <Card.Title className={currentState === estado ? 'text-primary font-weight-bold' : ''}>
               {estado}
             </Card.Title>
@@ -143,6 +145,14 @@ const SoporteTecnicoDetalle = () => {
             </Card.Text>
           ) : (
             <>
+              {estado === 'Diagnosticando' && (
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Card.Title><FaLaptopCode className="me-2" />Descripción del Diagnóstico</Card.Title>
+                    <Card.Text>{diagnosticoDescripcion || 'No hay descripción del diagnóstico disponible.'}</Card.Text>
+                  </Card.Body>
+                </Card>
+              )}
               {estado === 'Reparado' && (
                 <Card.Text>
                   <FaCheckCircle className="text-success me-2" />
@@ -204,7 +214,7 @@ const SoporteTecnicoDetalle = () => {
       <Card className="mb-4 border-primary">
         <Card.Body>
           <Card.Title className="text-center mb-4">
-          <h2>
+            <h2>
               <Badge bg="primary" style={{fontSize: '1.5rem', padding: '10px 20px', display: 'block'}}>
                 <div>Estado Actual:</div>
                 <br/>
@@ -227,6 +237,7 @@ const SoporteTecnicoDetalle = () => {
               currentState={soporte.estado}
               index={index}
               currentStateIndex={estadoIndex}
+              diagnosticoDescripcion={soporte.diagnosticoDescripcion}
             />
           ))}
         </Card.Body>
@@ -234,7 +245,7 @@ const SoporteTecnicoDetalle = () => {
 
       <Row>
         <Col xs={12}>
-        <Card className="mb-4">
+          <Card className="mb-4">
             <Card.Body>
               <Card.Title><FaMobileAlt className="me-2" />Detalles del Dispositivo</Card.Title>
               <Table striped bordered hover>
@@ -248,56 +259,56 @@ const SoporteTecnicoDetalle = () => {
             </Card.Body>
           </Card>
         </Col>
-        </Row>
-        <Row>
+      </Row>
+
+      <Row>
         <Col xs={12}>
           <Card className="mb-4">
             <Card.Body>
               <Card.Title><FaTools className="me-2" />Componentes</Card.Title>
               <Table striped bordered hover>
                 <tbody>
-  <tr>
-    <th><FaCamera /> Cámara</th>
-    <td>{soporte.camara ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaBluetooth /> Bluetooth</th>
-    <td>{soporte.bluetooth ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaWifi /> Wifi</th>
-    <td>{soporte.wifi ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaKeyboard /> Teclado</th>
-    <td>{soporte.teclado ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaVolumeUp /> Parlantes</th>
-    <td>{soporte.parlantes ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaHeadphones /> Auricular</th>
-    <td>{soporte.auricular ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaPowerOff /> Botones</th>
-    <td>{soporte.botones ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaPlug /> Pin de Carga</th>
-    <td>{soporte.pinCarga ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaUsb /> Puertos</th>
-    <td>{soporte.puertos ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-  <tr>
-    <th><FaTv /> Pantalla</th>
-    <td>{soporte.pantalla ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-  </tr>
-</tbody>
-
+                  <tr>
+                    <th><FaCamera /> Cámara</th>
+                    <td>{soporte.camara ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaBluetooth /> Bluetooth</th>
+                    <td>{soporte.bluetooth ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaWifi /> Wifi</th>
+                    <td>{soporte.wifi ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaKeyboard /> Teclado</th>
+                    <td>{soporte.teclado ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaVolumeUp /> Parlantes</th>
+                    <td>{soporte.parlantes ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaHeadphones /> Auricular</th>
+                    <td>{soporte.auricular ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaPowerOff /> Botones</th>
+                    <td>{soporte.botones ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaPlug /> Pin de Carga</th>
+                    <td>{soporte.pinCarga ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaUsb /> Puertos</th>
+                    <td>{soporte.puertos ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                  <tr>
+                    <th><FaTv /> Pantalla</th>
+                    <td>{soporte.pantalla ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                  </tr>
+                </tbody>
               </Table>
             </Card.Body>
           </Card>

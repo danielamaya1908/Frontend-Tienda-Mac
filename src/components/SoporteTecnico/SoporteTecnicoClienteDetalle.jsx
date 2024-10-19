@@ -5,7 +5,8 @@ import { Container, Row, Col, Card, Button, ProgressBar, Modal, Table, Badge } f
 import { 
   FaArrowLeft, FaMobileAlt, FaTools, FaUser, FaCheckCircle, 
   FaTimesCircle, FaCamera, FaBluetooth, FaWifi, FaKeyboard, FaVolumeUp, 
-  FaHeadphones, FaPowerOff, FaPlug, FaUsb, FaTv, FaExclamationTriangle
+  FaHeadphones, FaPowerOff, FaPlug, FaUsb, FaTv, FaExclamationTriangle,
+  FaLaptopCode
 } from 'react-icons/fa';
 import Navbar from '../NavBar/NavBar';
 import Footer from '../Footer/Footer';
@@ -107,7 +108,7 @@ const SoporteTecnicoClienteDetalle = () => {
     }
   };
 
-  const TimelineItem = ({ estado, imagenes, currentState, index, currentStateIndex }) => {
+  const TimelineItem = ({ estado, imagenes, currentState, index, currentStateIndex, diagnosticoDescripcion }) => {
     const getProgressBarVariant = (index, currentStateIndex) => {
       if (index < currentStateIndex) return "success";
       if (index === currentStateIndex) return "primary";
@@ -140,6 +141,14 @@ const SoporteTecnicoClienteDetalle = () => {
             </Card.Text>
           ) : (
             <>
+              {estado === 'Diagnosticando' && (
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Card.Title><FaLaptopCode className="me-2" />Descripción del Diagnóstico</Card.Title>
+                    <Card.Text>{diagnosticoDescripcion || 'No hay descripción del diagnóstico disponible.'}</Card.Text>
+                  </Card.Body>
+                </Card>
+              )}
               {estado === 'Reparado' && (
                 <Card.Text>
                   <FaCheckCircle className="text-success me-2" />
@@ -230,6 +239,7 @@ const SoporteTecnicoClienteDetalle = () => {
                 currentState={soporte.estado}
                 index={index}
                 currentStateIndex={estadoIndex}
+                diagnosticoDescripcion={soporte.diagnosticoDescripcion}
               />
             ))}
           </Card.Body>
@@ -308,32 +318,6 @@ const SoporteTecnicoClienteDetalle = () => {
         <Row>
           <Col xs={12}>
             <Card className="mb-4">
-              <Card.Body>
-                <Card.Title><FaTools className="me-2" />Fechas y Garantía</Card.Title>
-                <Table striped bordered hover>
-                  <tbody>
-                    <tr>
-                      <th>Fecha de Ingreso</th>
-                      <td>{new Date(soporte.createdAt).toLocaleDateString()}</td>
-                    </tr>
-                    <tr>
-                      <th>Fecha de Salida</th>
-                      <td>{soporte.fechaSalida ? new Date(soporte.fechaSalida).toLocaleDateString() : 'No disponible'}</td>
-                    </tr>
-                    <tr>
-                      <th>Garantía</th>
-                      <td>{soporte.garantia ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col xs={12}>
-          <Card className="mb-4">
               <Card.Body>
                 <Card.Title><FaTools className="me-2" />Fechas y Garantía</Card.Title>
                 <Table striped bordered hover>
