@@ -59,7 +59,7 @@
 
     /* Espacio para el menú fijo */
     body {
-        padding-left: 60px;
+        /* padding-left: 60px; */
         /* Ancho suficiente para el ícono del menú */
     }
 
