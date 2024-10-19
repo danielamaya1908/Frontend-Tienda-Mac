@@ -172,7 +172,7 @@ const SoporteTecnico = () => {
                   <th>Serial</th>
                   <th>Ingreso</th>
                   <th>Entrega</th>
-                  <th>Diagnóstico</th>
+                  {/* <th>Diagnóstico</th> */}
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -236,7 +236,7 @@ const SoporteTecnico = () => {
                     <td>{orden.serial || 'Información no disponible'}</td>
                     <td>{orden.fechaIngreso ? new Date(orden.fechaIngreso).toLocaleDateString() : '-'}</td>
                     <td>{orden.fechaSalida ? new Date(orden.fechaSalida).toLocaleDateString() : '-'}</td>
-                    <td>{diagnosticoDescripcion[orden.id] || '-'}</td>
+                    {/* <td>{diagnosticoDescripcion[orden.id] || '-'}</td> */}
                     <td><button onClick={() => handleVerDetalles(orden.id)} className="btn-ver">Ver Detalles</button></td>
                   </tr>
                 ))}
