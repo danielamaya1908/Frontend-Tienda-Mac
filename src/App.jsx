@@ -90,7 +90,31 @@ import DetallesCuenta from './components/Login/DetallesCuenta.jsx';
 import PurchaseAdmin from './components/UserAdmin/PurchaseAdmin.jsx';
 import SearchResults from './components/NavBar/Search.jsx';
 import WhatsAppButton from './WhatsAppButton.jsx';
+// Guardar las funciones originales
+const originalWarn = console.warn;
+const originalError = console.error;
 
+// Sobrescribir console.warn
+console.warn = function(...args) {
+    if (typeof args[0] === 'string' && !args[0].includes('Chrome is moving towards a new experience')) {
+        originalWarn.apply(console, args);
+    }
+};
+
+// Sobrescribir console.error
+console.error = function(...args) {
+    if (typeof args[0] === 'string' && !args[0].includes('Chrome is moving towards a new experience')) {
+        originalError.apply(console, args);
+    }
+};
+
+// Sobrescribir console.log para capturar mensajes similares
+const originalLog = console.log;
+console.log = function(...args) {
+    if (typeof args[0] === 'string' && !args[0].includes('Chrome is moving towards a new experience')) {
+        originalLog.apply(console, args);
+    }
+};
 
 function ProtectedRoute({ element, isLoggedIn }) {
   return isLoggedIn ? element : <Navigate to="/login" />;
@@ -112,23 +136,6 @@ function App() {
   const closeLoginUser = () => {
     setShowLoginUser(false);
   };
-
-const originalWarn = console.warn;
-const originalError = console.error;
-
-// Reemplazar console.warn y console.error con versiones filtradas
-console.warn = function(...args) {
-    if (!args[0].includes("Chrome is moving towards a new experience")) {
-        originalWarn.apply(console, args);
-    }
-};
-
-console.error = function(...args) {
-    if (!args[0].includes("Chrome is moving towards a new experience")) {
-        originalError.apply(console, args);
-    }
-};
-
   return (
     <Router>
       <WhatsAppButton />
