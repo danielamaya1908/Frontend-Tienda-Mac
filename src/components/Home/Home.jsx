@@ -18,6 +18,26 @@ const Home = () => {
   const [newProductImages, setNewProductImages] = useState({});
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
+const originalWarn = console.warn;
+const originalError = console.error;
+const originalLog = console.log;
+
+function filterConsoleMessage(args, originalFn) {
+    if (typeof args[0] === 'string' && 
+        (args[0].includes('Chrome is moving towards a new experience') ||
+         args[0].includes('third-party cookie') ||
+         args[0].includes('github.com') ||
+         args[0].includes('raw.githubusercontent.com'))) {
+        // Suprimimos estos mensajes específicos
+        return;
+    }
+    originalFn.apply(console, args);
+}
+
+console.warn = function(...args) { filterConsoleMessage(args, originalWarn); };
+console.error = function(...args) { filterConsoleMessage(args, originalError); };
+console.log = function(...args) { filterConsoleMessage(args, originalLog); };
+
   useEffect(() => {
     const fetchHomeProducts = async () => {
       try {
