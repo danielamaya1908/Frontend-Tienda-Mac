@@ -112,6 +112,23 @@ function App() {
   const closeLoginUser = () => {
     setShowLoginUser(false);
   };
+
+const originalWarn = console.warn;
+const originalError = console.error;
+
+// Reemplazar console.warn y console.error con versiones filtradas
+console.warn = function(...args) {
+    if (!args[0].includes("Chrome is moving towards a new experience")) {
+        originalWarn.apply(console, args);
+    }
+};
+
+console.error = function(...args) {
+    if (!args[0].includes("Chrome is moving towards a new experience")) {
+        originalError.apply(console, args);
+    }
+};
+
   return (
     <Router>
       <WhatsAppButton />
