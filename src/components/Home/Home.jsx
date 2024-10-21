@@ -18,31 +18,57 @@ const Home = () => {
   const [newProductImages, setNewProductImages] = useState({});
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
-const originalWarn = console.warn;
-const originalError = console.error;
-const originalLog = console.log;
+ // Helper function to suppress console warnings for specific messages
+const originalConsoleError = console.error;
+console.error = (...args) => {
+  const suppressedWarnings = [
+    'Chrome is moving towards',
+    'third-party cookies',
+    '.jpg:1'
+  ];
+  
+  if (!suppressedWarnings.some(warning => 
+    args.some(arg => 
+      typeof arg === 'string' && arg.includes(warning)
+    )
+  )) {
+    originalConsoleError.apply(console, args);
+  }
+};
 
-function filterConsoleMessage(args, originalFn) {
-    if (typeof args[0] === 'string' && 
-        (args[0].includes('Chrome is moving towards a new experience') ||
-         args[0].includes('third-party cookie') ||
-         args[0].includes('github.com') ||
-         args[0].includes('raw.githubusercontent.com'))) {
-        // Suprimimos estos mensajes específicos
-        return;
-    }
-    originalFn.apply(console, args);
-}
+// Helper function to fetch images safely
+const fetchProductImages = async (product, setImageState) => {
+  try {
+    const imageResponse = await axios.get(
+      `https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`,
+      { 
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        }
+      }
+    );
+    const imageFileNames = imageResponse.data;
+    const imageUrls = imageFileNames.map(fileName => 
+      `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`
+    );
+    setImageState(prevState => ({ ...prevState, [product.id]: imageUrls }));
+  } catch (error) {
+    // Silently handle image fetch errors
+    setImageState(prevState => ({ 
+      ...prevState, 
+      [product.id]: ['/placeholder-image.jpg'] 
+    }));
+  }
+};
 
-console.warn = function(...args) { filterConsoleMessage(args, originalWarn); };
-console.error = function(...args) { filterConsoleMessage(args, originalError); };
-console.log = function(...args) { filterConsoleMessage(args, originalLog); };
-
-  useEffect(() => {
-    const fetchHomeProducts = async () => {
-      try {
-        const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
+useEffect(() => {
+  const fetchHomeProducts = async () => {
+    try {
+      const responses = await Promise.all([
+        // All your existing axios.get calls remain the same
+       axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Audífonos/subcategory/Audífonos%20de%20cable'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Adaptadores/subcategory/Adaptador%20VGA'),
@@ -91,78 +117,61 @@ console.log = function(...args) { filterConsoleMessage(args, originalLog); };
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Llavero%20con%20puerto%20lightning%20a%20USB'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Cable%20Lightning%20a%20USB-C'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Cable%20USB-C%20a%20Lightning')
-        ]);
+      ]);
 
-        const products = responses.flatMap(response => response.data);
-        setHomeProducts(products);
+      const products = responses.flatMap(response => response.data);
+      setHomeProducts(products);
 
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
+      // Use Promise.all to fetch all images concurrently
+      await Promise.all(
+        products.map(product => fetchProductImages(product, setProductImages))
+      );
+    } catch (error) {
+      // Silently handle product fetch errors
+      setHomeProducts([]);
+    }
+  };
 
-    fetchHomeProducts();
-  }, []);
+  fetchHomeProducts();
+}, []);
 
-  useEffect(() => {
-    const fetchNewProducts = async () => {
-      try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
-        const newProducts = response.data;
-        setNewProducts(newProducts);
+useEffect(() => {
+  const fetchNewProducts = async () => {
+    try {
+      const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
+      const newProducts = response.data;
+      setNewProducts(newProducts);
 
-        newProducts.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setNewProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for new product ${product.id}:`, error);
-          }
-        });
-      } catch (error) {
-        console.error('Error fetching new products:', error);
-      }
-    };
+      await Promise.all(
+        newProducts.map(product => fetchProductImages(product, setNewProductImages))
+      );
+    } catch (error) {
+      // Silently handle new products fetch errors
+      setNewProducts([]);
+    }
+  };
 
-    fetchNewProducts();
-  }, []);
+  fetchNewProducts();
+}, []);
 
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
-        const products = response.data;
-        setFeaturedProducts(products);
+useEffect(() => {
+  const fetchFeaturedProducts = async () => {
+    try {
+      const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
+      const products = response.data;
+      setFeaturedProducts(products);
 
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setFeaturedProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for featured product ${product.id}:`, error);
-          }
-        });
-      } catch (error) {
-        console.error('Error fetching featured products:', error);
-      }
-    };
+      await Promise.all(
+        products.map(product => fetchProductImages(product, setFeaturedProductImages))
+      );
+    } catch (error) {
+      // Silently handle featured products fetch errors
+      setFeaturedProducts([]);
+    }
+  };
 
-    fetchFeaturedProducts();
-  }, []);
+  fetchFeaturedProducts();
+}, []);
 
   const swiperParams = {
     modules: [Navigation, Autoplay],
