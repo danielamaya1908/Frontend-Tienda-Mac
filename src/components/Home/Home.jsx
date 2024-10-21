@@ -10,6 +10,26 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
+axios.defaults.withCredentials = false;
+axios.defaults.headers.common['Cache-Control'] = 'no-store';
+axios.defaults.headers.common['Pragma'] = 'no-cache';
+
+// Override console warnings and errors
+const originalConsoleWarn = console.warn;
+const originalConsoleError = console.error;
+
+console.warn = (...args) => {
+  if (!args[0]?.includes?.('Chrome is moving')) {
+    originalConsoleWarn.apply(console, args);
+  }
+};
+
+console.error = (...args) => {
+  if (!args[0]?.includes?.('Chrome is moving')) {
+    originalConsoleError.apply(console, args);
+  }
+};
+
 const Home = () => {
   const [homeProducts, setHomeProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
@@ -18,57 +38,59 @@ const Home = () => {
   const [newProductImages, setNewProductImages] = useState({});
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
- // Helper function to suppress console warnings for specific messages
-const originalConsoleError = console.error;
-console.error = (...args) => {
-  const suppressedWarnings = [
-    'Chrome is moving towards',
-    'third-party cookies',
-    '.jpg:1'
-  ];
-  
-  if (!suppressedWarnings.some(warning => 
-    args.some(arg => 
-      typeof arg === 'string' && arg.includes(warning)
-    )
-  )) {
-    originalConsoleError.apply(console, args);
-  }
-};
+  // Función helper para precargar imágenes
+  const preloadImage = useCallback(async (url) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(url);
+      img.onerror = () => resolve('/placeholder-image.jpg');
+      img.src = url;
+    });
+  }, []);
 
-// Helper function to fetch images safely
-const fetchProductImages = async (product, setImageState) => {
-  try {
-    const imageResponse = await axios.get(
-      `https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`,
-      { 
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-        }
-      }
-    );
-    const imageFileNames = imageResponse.data;
-    const imageUrls = imageFileNames.map(fileName => 
-      `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`
-    );
-    setImageState(prevState => ({ ...prevState, [product.id]: imageUrls }));
-  } catch (error) {
-    // Silently handle image fetch errors
-    setImageState(prevState => ({ 
-      ...prevState, 
-      [product.id]: ['/placeholder-image.jpg'] 
-    }));
-  }
-};
-
-useEffect(() => {
-  const fetchHomeProducts = async () => {
+  // Función helper para obtener imágenes
+  const fetchProductImages = useCallback(async (product, setImageState) => {
     try {
-      const responses = await Promise.all([
-        // All your existing axios.get calls remain the same
-       axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
+      const response = await axios.get(
+        `https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Cache-Control': 'no-store',
+            'Pragma': 'no-cache',
+          },
+        }
+      );
+
+      const imageFileNames = response.data;
+      const imageUrls = imageFileNames.map(fileName => 
+        `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`
+      );
+
+      // Precarga las imágenes antes de actualizar el estado
+      const preloadedUrls = await Promise.all(
+        imageUrls.map(url => preloadImage(url))
+      );
+
+      setImageState(prev => ({
+        ...prev,
+        [product.id]: preloadedUrls
+      }));
+    } catch (error) {
+      setImageState(prev => ({
+        ...prev,
+        [product.id]: ['/placeholder-image.jpg']
+      }));
+    }
+  }, [preloadImage]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchHomeProducts = async () => {
+      try {
+        const responses = await Promise.all([
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Audífonos/subcategory/Audífonos%20de%20cable'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Adaptadores/subcategory/Adaptador%20VGA'),
@@ -117,61 +139,110 @@ useEffect(() => {
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Llavero%20con%20puerto%20lightning%20a%20USB'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Cable%20Lightning%20a%20USB-C'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Cable%20USB-C%20a%20Lightning')
-      ]);
+        ].map(request => 
+          request.catch(error => ({ data: [] }))
+        ));
 
-      const products = responses.flatMap(response => response.data);
-      setHomeProducts(products);
+        if (!isMounted) return;
 
-      // Use Promise.all to fetch all images concurrently
-      await Promise.all(
-        products.map(product => fetchProductImages(product, setProductImages))
-      );
-    } catch (error) {
-      // Silently handle product fetch errors
-      setHomeProducts([]);
-    }
-  };
+        const products = responses.flatMap(response => response.data);
+        setHomeProducts(products);
 
-  fetchHomeProducts();
-}, []);
+        // Procesa las imágenes en chunks para evitar sobrecarga
+        const chunkSize = 5;
+        for (let i = 0; i < products.length; i += chunkSize) {
+          const chunk = products.slice(i, i + chunkSize);
+          await Promise.all(
+            chunk.map(product => fetchProductImages(product, setProductImages))
+          );
+        }
+      } catch (error) {
+        if (isMounted) {
+          setHomeProducts([]);
+        }
+      }
+    };
 
-useEffect(() => {
-  const fetchNewProducts = async () => {
-    try {
-      const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
-      const newProducts = response.data;
-      setNewProducts(newProducts);
+    fetchHomeProducts();
 
-      await Promise.all(
-        newProducts.map(product => fetchProductImages(product, setNewProductImages))
-      );
-    } catch (error) {
-      // Silently handle new products fetch errors
-      setNewProducts([]);
-    }
-  };
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchProductImages]);
 
-  fetchNewProducts();
-}, []);
+  useEffect(() => {
+    let isMounted = true;
 
-useEffect(() => {
-  const fetchFeaturedProducts = async () => {
-    try {
-      const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
-      const products = response.data;
-      setFeaturedProducts(products);
+    const fetchNewProducts = async () => {
+      try {
+        const response = await axios.get(
+          'https://backend-tienda-mac-production.up.railway.app/products/recent',
+          {
+            headers: {
+              'Cache-Control': 'no-store',
+              'Pragma': 'no-cache',
+            }
+          }
+        );
 
-      await Promise.all(
-        products.map(product => fetchProductImages(product, setFeaturedProductImages))
-      );
-    } catch (error) {
-      // Silently handle featured products fetch errors
-      setFeaturedProducts([]);
-    }
-  };
+        if (!isMounted) return;
 
-  fetchFeaturedProducts();
-}, []);
+        const products = response.data;
+        setNewProducts(products);
+
+        await Promise.all(
+          products.map(product => fetchProductImages(product, setNewProductImages))
+        );
+      } catch (error) {
+        if (isMounted) {
+          setNewProducts([]);
+        }
+      }
+    };
+
+    fetchNewProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchProductImages]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchFeaturedProducts = async () => {
+      try {
+        const response = await axios.get(
+          'https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone',
+          {
+            headers: {
+              'Cache-Control': 'no-store',
+              'Pragma': 'no-cache',
+            }
+          }
+        );
+
+        if (!isMounted) return;
+
+        const products = response.data;
+        setFeaturedProducts(products);
+
+        await Promise.all(
+          products.map(product => fetchProductImages(product, setFeaturedProductImages))
+        );
+      } catch (error) {
+        if (isMounted) {
+          setFeaturedProducts([]);
+        }
+      }
+    };
+
+    fetchFeaturedProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchProductImages]);
 
   const swiperParams = {
     modules: [Navigation, Autoplay],
