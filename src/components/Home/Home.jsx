@@ -9,26 +9,66 @@ import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
-// Configuración global de axios
+
+// Guardar las funciones originales de la consola
+const originalConsole = {
+  log: console.log,
+  warn: console.warn,
+  error: console.error,
+  info: console.info,
+  debug: console.debug
+};
+
+// Lista de patrones de mensajes a filtrar
+const messagePatterns = [
+  /Chrome is moving/i,
+  /third-party cookies/i,
+  /informed choice/i,
+  /MLPH3LZ-A/i,
+  /MDAM3BE-A/i,
+  /MJFN3BE-A/i,
+  /backend-tienda-mac/i
+];
+
+// Función helper para verificar si el mensaje debe ser filtrado
+const shouldFilter = (args) => {
+  if (!args || args.length === 0) return false;
+  
+  const message = args[0]?.toString() || '';
+  return messagePatterns.some(pattern => pattern.test(message));
+};
+
+// Sobreescribir todas las funciones de consola
+Object.keys(originalConsole).forEach(method => {
+  console[method] = (...args) => {
+    if (!shouldFilter(args)) {
+      originalConsole[method].apply(console, args);
+    }
+  };
+});
+
+// Interceptar también errores no capturados
+window.addEventListener('error', (event) => {
+  if (shouldFilter([event.message])) {
+    event.preventDefault();
+    return true;
+  }
+  return false;
+}, true);
+
+// Interceptar rechazos de promesas no manejados
+window.addEventListener('unhandledrejection', (event) => {
+  if (shouldFilter([event.reason?.message])) {
+    event.preventDefault();
+    return true;
+  }
+  return false;
+}, true);
+
+// Configuración específica para axios
 axios.defaults.withCredentials = false;
 axios.defaults.headers.common['Cache-Control'] = 'no-store';
 axios.defaults.headers.common['Pragma'] = 'no-cache';
-
-// Suprimir advertencias de consola
-const originalConsoleWarn = console.warn;
-const originalConsoleError = console.error;
-
-console.warn = (...args) => {
-  if (!args[0]?.includes?.('Chrome is moving')) {
-    originalConsoleWarn.apply(console, args);
-  }
-};
-
-console.error = (...args) => {
-  if (!args[0]?.includes?.('Chrome is moving')) {
-    originalConsoleError.apply(console, args);
-  }
-};
 
 const Home = () => {
   const [homeProducts, setHomeProducts] = useState([]);
@@ -182,7 +222,7 @@ const Home = () => {
       isMounted = false;
     };
   }, []);
-  
+
   const swiperParams = {
     modules: [Navigation, Autoplay],
     spaceBetween: 30,
