@@ -231,10 +231,10 @@ const Navbar = () => {
                 onMouseLeave={handleDropdownMouseLeave}
               >
                 <NavDropdown.Item href="iphoneAll">iPhones</NavDropdown.Item>
-                <NavDropdown.Item href="iphone15pro">iPhone 15 Pro</NavDropdown.Item>
-                <NavDropdown.Item href="iphone15">iPhone 15</NavDropdown.Item>
                 <NavDropdown.Item href="iphone16pro">iPhone 16 Pro</NavDropdown.Item>
                 <NavDropdown.Item href="iphone16">iPhone 16</NavDropdown.Item>
+                <NavDropdown.Item href="iphone15pro">iPhone 15 Pro</NavDropdown.Item>
+                <NavDropdown.Item href="iphone15">iPhone 15</NavDropdown.Item>
                 <NavDropdown.Item href="iphone14pro">iPhone 14 Pro</NavDropdown.Item>
                 <NavDropdown.Item href="iphone14">iPhone 14</NavDropdown.Item>
                 <NavDropdown.Item href="iphone13pro">iPhone 13 Pro</NavDropdown.Item>
