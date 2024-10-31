@@ -23,6 +23,7 @@ import Iphone13 from './components/Product/iPhone/Iphone13';
 import Iphone14 from './components/Product/iPhone/iPhone14';
 import Iphone14pro from './components/Product/iPhone/iPhone14pro';
 import Iphone15pro from './components/Product/iPhone/iPhone15pro';
+import Iphone15 from './components/Product/iPhone/iPhone15.jsx';
 import Iphone16 from './components/Product/iPhone/iPhone16.jsx';
 import Iphone16pro from './components/Product/iPhone/iPhone16pro.jsx';
 import IphoneSE from './components/Product/iPhone/iPhoneSE';
