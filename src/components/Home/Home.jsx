@@ -11,6 +11,16 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 import Cookies from 'js-cookie';
 
+// Crear una instancia de axios con configuración personalizada
+const api = axios.create({
+  baseURL: 'https://backend-tienda-mac-production.up.railway.app',
+  withCredentials: false, // Cambiado a false para evitar el envío de credenciales
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+});
+
 const Home = () => {
   const [homeProducts, setHomeProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
@@ -19,7 +29,7 @@ const Home = () => {
   const [newProductImages, setNewProductImages] = useState({});
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
-  // Initialize cookie consent
+  // Initialize cookies
   useEffect(() => {
     const initializeCookies = () => {
       // Set cookie consent if not already set
@@ -36,9 +46,6 @@ const Home = () => {
         sameSite: 'Lax',
         secure: window.location.protocol === 'https:'
       });
-
-      // Configure axios defaults
-      axios.defaults.withCredentials = true;
     };
 
     initializeCookies();
@@ -49,20 +56,19 @@ const Home = () => {
     const fetchHomeProducts = async () => {
       try {
         const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
-          // ... rest of your axios.get calls ...
+          api.get('/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
+          // ... rest of your api.get calls ...
         ]);
 
         const products = responses.flatMap(response => response.data);
         setHomeProducts(products);
 
-        // Fetch images for products
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            const imageResponse = await api.get(`/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
             const imageUrls = imageFileNames.map(fileName => 
-              `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`
+              `${api.defaults.baseURL}/images/${fileName}`
             );
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
@@ -81,16 +87,16 @@ const Home = () => {
   useEffect(() => {
     const fetchNewProducts = async () => {
       try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
+        const response = await api.get('/products/recent');
         const newProducts = response.data;
         setNewProducts(newProducts);
 
         newProducts.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            const imageResponse = await api.get(`/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
             const imageUrls = imageFileNames.map(fileName =>
-              `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`
+              `${api.defaults.baseURL}/images/${fileName}`
             );
             setNewProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
@@ -109,16 +115,16 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
+        const response = await api.get('/products/category/Smartphones/subcategory/iPhone');
         const products = response.data;
         setFeaturedProducts(products);
 
         products.forEach(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            const imageResponse = await api.get(`/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
             const imageUrls = imageFileNames.map(fileName =>
-              `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`
+              `${api.defaults.baseURL}/images/${fileName}`
             );
             setFeaturedProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
@@ -133,6 +139,7 @@ const Home = () => {
     fetchFeaturedProducts();
   }, []);
 
+  // Rest of your component code remains the same...
   const swiperParams = {
     modules: [Navigation, Autoplay],
     spaceBetween: 30,
