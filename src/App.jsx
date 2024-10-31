@@ -299,6 +299,8 @@ function App() {
           <Route path="/detalle-producto/iphoneAll" element={<Navigate to="/iphoneAll" replace />} />
           <Route path="/detalle-producto/iphone15" element={<Navigate to="/iphone15" replace />} />
           <Route path="/detalle-producto/iphone15pro" element={<Navigate to="/iphone15pro" replace />} />
+          <Route path="/detalle-producto/iphone16" element={<Navigate to="/iphone16" replace />} />
+          <Route path="/detalle-producto/iphone16pro" element={<Navigate to="/iphone16pro" replace />} />
           <Route path="/detalle-producto/iphone14" element={<Navigate to="/iphone14" replace />} />
           <Route path="/detalle-producto/iphone14pro" element={<Navigate to="/iphone14pro" replace />} />
           <Route path="/detalle-producto/iphone13" element={<Navigate to="/iphone13" replace />} />
