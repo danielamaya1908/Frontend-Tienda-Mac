@@ -43,7 +43,7 @@ const Color = () => {
         setColors(colors.map(color => (color.id === formData.editingColorId ? response.data : color)));
         alert('Color actualizado con éxito');
       } else {
-        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/colors', formData);
+        const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/color', formData);
         setColors([...colors, response.data]);
         alert('Color creado con éxito');
       }
