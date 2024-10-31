@@ -46,7 +46,7 @@ const Home = () => {
     fetchHomeProducts();
   }, []);
 
-  useEffect(() => {
+  /* useEffect(() => {
     const fetchNewProducts = async () => {
       try {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
@@ -69,7 +69,7 @@ const Home = () => {
     };
 
     fetchNewProducts();
-  }, []);
+  }, []); */
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
