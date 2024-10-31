@@ -71,7 +71,7 @@ const Home = () => {
     fetchNewProducts();
   }, []); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
@@ -94,7 +94,7 @@ const Home = () => {
     };
 
     fetchFeaturedProducts();
-  }, []);
+  }, []); */
 
   const swiperParams = {
     modules: [Navigation, Autoplay],
