@@ -23,7 +23,8 @@ import Iphone13 from './components/Product/iPhone/Iphone13';
 import Iphone14 from './components/Product/iPhone/iPhone14';
 import Iphone14pro from './components/Product/iPhone/iPhone14pro';
 import Iphone15pro from './components/Product/iPhone/iPhone15pro';
-import Iphone15 from './components/Product/iPhone/iPhone15';
+import Iphone16 from './components/Product/iPhone/iPhone16.jsx';
+import Iphone16pro from './components/Product/iPhone/iPhone16pro.jsx';
 import IphoneSE from './components/Product/iPhone/iPhoneSE';
 import Iphone11 from './components/Product/iPhone/iPhone11';
 import IphoneAll from './components/Product/iPhone/iPhoneAll';
@@ -245,6 +246,8 @@ function App() {
           <Route path="/iphone14" element={<Iphone14 />} />
           <Route path="/iphone15pro" element={<Iphone15pro />} />
           <Route path="/iphone15" element={<Iphone15 />} />
+          <Route path="/iphone16pro" element={<Iphone16pro />} />
+          <Route path="/iphone16" element={<Iphone16 />} />
           <Route path="/iphoneSE" element={<IphoneSE />} />
           <Route path="/iphone11" element={<Iphone11 />} />
           <Route path="/iphoneAll" element={<IphoneAll />} />
