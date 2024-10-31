@@ -18,26 +18,7 @@ const Home = () => {
   const [newProductImages, setNewProductImages] = useState({});
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
-  // Third-party cookie warning filter function
-  const filterThirdPartyCookieWarnings = (messages) => {
-    const warningRegex = /Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies/;
-    return messages.filter(message => !warningRegex.test(message));
-  };
-
-  // Image logging function
-  const logImagesFromPublicDirectory = () => {
-    // In a React app, this would typically use `require.context` or import statements
-    const imageContext = require.context('../ImagesProducts/', false, /\.(jpg|jpeg|png)$/);
-    const imagePaths = imageContext.keys().map(imageContext);
-    
-    const filteredImagePaths = filterThirdPartyCookieWarnings(imagePaths);
-    filteredImagePaths.forEach(imagePath => console.log(imagePath));
-  };
-
   useEffect(() => {
-    // Log images when component mounts
-    logImagesFromPublicDirectory();
-
     const fetchHomeProducts = async () => {
       try {
         const responses = await Promise.all([
@@ -111,6 +92,31 @@ const Home = () => {
     };
 
     fetchHomeProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchNewProducts = async () => {
+      try {
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
+        const newProducts = response.data;
+        setNewProducts(newProducts);
+
+        newProducts.forEach(async (product) => {
+          try {
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            const imageFileNames = imageResponse.data;
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            setNewProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
+          } catch (error) {
+            console.error(`Error getting images for new product ${product.id}:`, error);
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching new products:', error);
+      }
+    };
+
+    fetchNewProducts();
   }, []);
 
   useEffect(() => {
