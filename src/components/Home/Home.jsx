@@ -19,10 +19,23 @@ const Home = () => {
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
   useEffect(() => {
+    // Función para ignorar las advertencias de cookies de terceros
+    const ignoreThirdPartyCookieWarnings = () => {
+      const warningRegex = /Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies/;
+      console.warn = (message) => {
+        if (!warningRegex.test(message)) {
+          // Mostrar cualquier otro mensaje de advertencia
+          console.warn(message);
+        }
+      };
+    };
+
+    ignoreThirdPartyCookieWarnings();
+
     const fetchHomeProducts = async () => {
       try {
         const responses = await Promise.all([
-        axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
+         axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe'),
         ]);
 
@@ -114,7 +127,7 @@ const Home = () => {
   const renderProductCard = (product, images) => (
     <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
       <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
-        <img src={images[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+        <img src={`/app/src/ImagesProducts/${product.id}_1.jpg`} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
       </div>
       <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
         <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
