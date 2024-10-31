@@ -42,7 +42,7 @@ const Iphone16 = () => {
     <div className="iphone-products">
       <Navbar />
       <div className="container py-5">
-        <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>iPhone 15</h1>
+        <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>iPhone 16</h1>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {iphoneProducts.map((product) => (
             <div className="col" key={product.id}>
