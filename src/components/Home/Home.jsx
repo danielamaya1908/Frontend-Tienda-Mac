@@ -81,7 +81,7 @@ const Home = () => {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
             // Cambia aquí la URL para usar el proxy
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/proxy/image/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/proxy/images/${fileName}`);
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);
@@ -107,7 +107,7 @@ const Home = () => {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
             // Cambia aquí la URL para usar el proxy
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/proxy/image/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/proxy/images/${fileName}`);
             setNewProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for new product ${product.id}:`, error);
@@ -133,7 +133,7 @@ const Home = () => {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
             // Cambia aquí la URL para usar el proxy
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/proxy/image/${fileName}`);
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/proxy/images/${fileName}`);
             setFeaturedProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for featured product ${product.id}:`, error);
