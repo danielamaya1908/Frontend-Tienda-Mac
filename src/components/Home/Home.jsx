@@ -18,11 +18,6 @@ const Home = () => {
   const [newProductImages, setNewProductImages] = useState({});
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
-  // Función para construir la URL de la imagen
-  const getImageUrl = (fileName) => {
-    return `/images/${fileName}`; // Agrega el prefijo del proxy aquí
-  };
-
   useEffect(() => {
     const fetchHomeProducts = async () => {
       try {
@@ -37,9 +32,17 @@ const Home = () => {
         products.forEach(async (product) => {
           try {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            console.log(`Images for product ${product.id}:`, imageResponse.data);
+            
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(getImageUrl); // Usa la función aquí
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            console.log(`Image URLs for product ${product.id}:`, imageUrls);
+            
+            setProductImages(prevState => {
+              const updatedState = { ...prevState, [product.id]: imageUrls };
+              console.log('Updated product images state:', updatedState);
+              return updatedState;
+            });
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);
           }
@@ -62,9 +65,17 @@ const Home = () => {
         newProducts.forEach(async (product) => {
           try {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            console.log(`Images for new product ${product.id}:`, imageResponse.data);
+            
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(getImageUrl); // Usa la función aquí
-            setNewProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            console.log(`Image URLs for new product ${product.id}:`, imageUrls);
+            
+            setNewProductImages(prevState => {
+              const updatedState = { ...prevState, [product.id]: imageUrls };
+              console.log('Updated new product images state:', updatedState);
+              return updatedState;
+            });
           } catch (error) {
             console.error(`Error getting images for new product ${product.id}:`, error);
           }
@@ -87,9 +98,17 @@ const Home = () => {
         products.forEach(async (product) => {
           try {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            console.log(`Images for featured product ${product.id}:`, imageResponse.data);
+            
             const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(getImageUrl); // Usa la función aquí
-            setFeaturedProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            console.log(`Image URLs for featured product ${product.id}:`, imageUrls);
+            
+            setFeaturedProductImages(prevState => {
+              const updatedState = { ...prevState, [product.id]: imageUrls };
+              console.log('Updated featured product images state:', updatedState);
+              return updatedState;
+            });
           } catch (error) {
             console.error(`Error getting images for featured product ${product.id}:`, error);
           }
