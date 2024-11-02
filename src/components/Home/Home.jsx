@@ -18,29 +18,6 @@ const Home = () => {
   const [newProductImages, setNewProductImages] = useState({});
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
-  // Función para obtener las imágenes
-  const fetchProductImages = async (products, setImages) => {
-    const imagePromises = products.map(async (product) => {
-      try {
-        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-        const imageIds = imageResponse.data; // Asumimos que recibes los IDs
-        const imageUrls = imageIds.map(id => `https://backend-tienda-mac-production.up.railway.app/images/${id}.jpg`); // Asegúrate de que la URL sea correcta
-        return { id: product.id, urls: imageUrls };
-      } catch (error) {
-        console.error(`Error getting images for product ${product.id}:`, error);
-        return { id: product.id, urls: [] }; // Retorna un array vacío si hay un error
-      }
-    });
-
-    const imagesData = await Promise.all(imagePromises);
-    const imagesMap = imagesData.reduce((acc, { id, urls }) => {
-      acc[id] = urls;
-      return acc;
-    }, {});
-
-    setImages(imagesMap);
-  };
-
   useEffect(() => {
     const fetchHomeProducts = async () => {
       try {
@@ -51,7 +28,8 @@ const Home = () => {
 
         const products = responses.flatMap(response => response.data);
         setHomeProducts(products);
-        await fetchProductImages(products, setProductImages); // Cargar imágenes para productos en la página de inicio
+
+        await fetchProductImages(products, setProductImages);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -66,7 +44,8 @@ const Home = () => {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
         const newProducts = response.data;
         setNewProducts(newProducts);
-        await fetchProductImages(newProducts, setNewProductImages); // Cargar imágenes para productos nuevos
+
+        await fetchProductImages(newProducts, setNewProductImages);
       } catch (error) {
         console.error('Error fetching new products:', error);
       }
@@ -81,7 +60,8 @@ const Home = () => {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
         const products = response.data;
         setFeaturedProducts(products);
-        await fetchProductImages(products, setFeaturedProductImages); // Cargar imágenes para productos destacados
+
+        await fetchProductImages(products, setFeaturedProductImages);
       } catch (error) {
         console.error('Error fetching featured products:', error);
       }
@@ -89,6 +69,20 @@ const Home = () => {
 
     fetchFeaturedProducts();
   }, []);
+
+  const fetchProductImages = async (products, setImageState) => {
+    const imageFetchPromises = products.map(async (product) => {
+      try {
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+        const imageUrls = imageResponse.data.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+        setImageState(prevState => ({ ...prevState, [product.id]: imageUrls }));
+      } catch (error) {
+        console.error(`Error getting images for product ${product.id}:`, error);
+      }
+    });
+
+    await Promise.all(imageFetchPromises);
+  };
 
   const swiperParams = {
     modules: [Navigation, Autoplay],
@@ -100,14 +94,14 @@ const Home = () => {
       320: { slidesPerView: 1, spaceBetween: 10 },
       480: { slidesPerView: 2, spaceBetween: 20 },
       640: { slidesPerView: 3, spaceBetween: 30 },
-      768: { slidesPerView: 4, spaceBetween: 40 },
-    },
+      768: { slidesPerView: 4, spaceBetween: 40 }
+    }
   };
 
   const renderProductCard = (product, images) => (
     <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
       <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
-        <img src={images[product.id]?.[0] || 'default_image_url.jpg'} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+        <img src={images[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
       </div>
       <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
         <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
@@ -117,16 +111,8 @@ const Home = () => {
     </div>
   );
 
-  // Estilo en línea para ocultar los puntos de paginación
-  const hidePaginationStyle = `
-    .swiper-pagination-bullets {
-      display: none !important;
-    }
-  `;
-
   return (
     <div className={styles.homeContainer}>
-      <style>{hidePaginationStyle}</style>
       <Slideshow />
       <div className="container-fluid py-5">
         <section className="mb-5">
