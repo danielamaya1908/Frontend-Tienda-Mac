@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import styles from './Home.module.css';
 import Footer from '../Footer/Footer';
 import Slideshow from './Slideshow';
@@ -148,7 +149,13 @@ const Home = () => {
   const renderProductCard = (product, images) => (
     <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
       <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
-        <img src={images[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+        <LazyLoadImage
+          src={images[product.id]?.[0]}
+          className="card-img-top img-fluid"
+          alt={product.name}
+          effect="blur" // Puedes elegir otros efectos como 'opacity'
+          style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+        />
       </div>
       <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
         <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
