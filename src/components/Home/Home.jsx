@@ -13,45 +13,50 @@ import 'swiper/css/autoplay';
 const Home = () => {
   const [homeProducts, setHomeProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
-  const [featuredProducts, setFeaturedProducts] = useState([]);
   const [productImages, setProductImages] = useState({});
-  const [newProductImages, setNewProductImages] = useState({});
-  const [featuredProductImages, setFeaturedProductImages] = useState({});
 
   useEffect(() => {
-    const fetchHomeProducts = async () => {
+    const fetchProducts = async () => {
+      const categories = [
+        'Accesorios de TV/subcategory/Controles remotos',
+        'Accesorios de carga/subcategory/Cargador MagSafe',
+        'Smartphones/subcategory/iPhone',
+      ];
+
       try {
-        const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Cable%20USB-C%20a%20Lightning')
-        ]);
+        const responses = await Promise.all(categories.map(category => 
+          axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/${category}`)
+        ));
+        
+        const allProducts = responses.flatMap(response => response.data);
+        setHomeProducts(allProducts);
 
-        const products = responses.flatMap(response => response.data);
-        setHomeProducts(products);
-
-        products.forEach(async (product) => {
+        // Llama a la API para obtener las imágenes de cada producto
+        const imagesPromises = allProducts.map(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            
-            // Imprime las URLs de las imágenes en la consola
-            console.log(`Imágenes del producto ${product.id}:`, imageUrls);
-            
-            setProductImages(prevState => ({
-              ...prevState,
-              [product.id]: imageUrls,
-            }));
+            // Asegúrate de que esta URL sea la correcta para obtener imágenes
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.itemId}/images`);
+            const imageUrls = imageResponse.data.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            return { id: product.itemId, images: imageUrls }; // Usa itemId aquí
           } catch (error) {
-            console.error(`Error al obtener imágenes del producto ${product.id}:`, error);
+            console.error(`Error getting images for product ${product.itemId}:`, error);
+            return { id: product.itemId, images: [] }; // Retorna un array vacío si hay error
           }
         });
+
+        const imagesResults = await Promise.all(imagesPromises);
+        const imagesMap = imagesResults.reduce((acc, { id, images }) => {
+          acc[id] = images;
+          return acc;
+        }, {});
+
+        setProductImages(imagesMap);
       } catch (error) {
-        console.error('Error al obtener productos:', error);
+        console.error('Error fetching products:', error);
       }
     };
 
-    fetchHomeProducts();
+    fetchProducts();
   }, []);
 
   useEffect(() => {
@@ -61,76 +66,62 @@ const Home = () => {
         const newProducts = response.data;
         setNewProducts(newProducts);
 
-        newProducts.forEach(async (product) => {
+        // Obtener imágenes para nuevos productos
+        const imagesPromises = newProducts.map(async (product) => {
           try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            
-            // Imprime las URLs de las imágenes en la consola
-            console.log(`Imágenes del nuevo producto ${product.id}:`, imageUrls);
-            
-            setNewProductImages(prevState => ({
-              ...prevState,
-              [product.id]: imageUrls,
-            }));
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.itemId}/images`);
+            const imageUrls = imageResponse.data.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            return { id: product.itemId, images: imageUrls }; // Usa itemId aquí
           } catch (error) {
-            console.error(`Error al obtener imágenes del nuevo producto ${product.id}:`, error);
+            console.error(`Error getting images for new product ${product.itemId}:`, error);
+            return { id: product.itemId, images: [] }; // Retorna un array vacío si hay error
           }
         });
+
+        const imagesResults = await Promise.all(imagesPromises);
+        const imagesMap = imagesResults.reduce((acc, { id, images }) => {
+          acc[id] = images;
+          return acc;
+        }, {});
+
+        setProductImages(prevState => ({ ...prevState, ...imagesMap }));
       } catch (error) {
-        console.error('Error al obtener nuevos productos:', error);
+        console.error('Error fetching new products:', error);
       }
     };
 
     fetchNewProducts();
   }, []);
 
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
-        const products = response.data;
-        setFeaturedProducts(products);
+  const swiperParams = {
+    modules: [Navigation, Autoplay],
+    spaceBetween: 30,
+    slidesPerView: 4,
+    navigation: true,
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    breakpoints: {
+      320: { slidesPerView: 1, spaceBetween: 10 },
+      480: { slidesPerView: 2, spaceBetween: 20 },
+      640: { slidesPerView: 3, spaceBetween: 30 },
+      768: { slidesPerView: 4, spaceBetween: 40 },
+    },
+  };
 
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            
-            // Imprime las URLs de las imágenes en la consola
-            console.log(`Imágenes del producto destacado ${product.id}:`, imageUrls);
-            
-            setFeaturedProductImages(prevState => ({
-              ...prevState,
-              [product.id]: imageUrls,
-            }));
-          } catch (error) {
-            console.error(`Error al obtener imágenes del producto destacado ${product.id}:`, error);
-          }
-        });
-      } catch (error) {
-        console.error('Error al obtener productos destacados:', error);
-      }
-    };
-
-    fetchFeaturedProducts();
-  }, []);
-
-  const renderProductCard = (product, images) => (
-    <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
-      <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
-        {/* Renderiza la imagen para el usuario */}
-        <img src={images[product.id]?.[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+  const renderProductCard = (product) => {
+    const images = productImages[product.itemId] || []; // Cambiado a itemId
+    return (
+      <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
+        <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
+          <img src={images[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+        </div>
+        <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
+          <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
+          <p className="card-text mb-3" style={{ fontSize: '1rem' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
+          <a href={`/detalle-producto/${product.itemId}`} className="btn btn-primary">Comprar</a>
+        </div>
       </div>
-      <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
-        <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
-        <p className="card-text mb-3" style={{ fontSize: '1rem' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
-        <a href={`/detalle-producto/${product.id}`} className="btn btn-primary">Comprar</a>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className={styles.homeContainer}>
@@ -138,10 +129,10 @@ const Home = () => {
       <div className="container-fluid py-5">
         <section className="mb-5">
           <h2 className="text-center mb-4">Productos Más Recientes</h2>
-          <Swiper modules={[Navigation, Autoplay]} spaceBetween={30} slidesPerView={4} navigation autoplay={{ delay: 3000, disableOnInteraction: false }}>
+          <Swiper {...swiperParams}>
             {newProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, newProductImages)}
+              <SwiperSlide key={product.itemId}>
+                {renderProductCard(product)}
               </SwiperSlide>
             ))}
           </Swiper>
@@ -149,21 +140,11 @@ const Home = () => {
 
         <section className="mb-5">
           <SubNavbar />
-          <Swiper modules={[Navigation, Autoplay]} spaceBetween={30} slidesPerView={4} navigation autoplay={{ delay: 3000, disableOnInteraction: false }}>
-            {featuredProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, featuredProductImages)}
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </section>
-
-        <section className="mb-5">
           <h2 className="text-center mb-4">Accesorios</h2>
-          <Swiper modules={[Navigation, Autoplay]} spaceBetween={30} slidesPerView={4} navigation autoplay={{ delay: 3000, disableOnInteraction: false }}>
+          <Swiper {...swiperParams}>
             {homeProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, productImages)}
+              <SwiperSlide key={product.itemId}>
+                {renderProductCard(product)}
               </SwiperSlide>
             ))}
           </Swiper>
