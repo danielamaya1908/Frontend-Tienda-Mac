@@ -13,50 +13,51 @@ import 'swiper/css/autoplay';
 const Home = () => {
   const [homeProducts, setHomeProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
   const [productImages, setProductImages] = useState({});
+  const [newProductImages, setNewProductImages] = useState({});
+  const [featuredProductImages, setFeaturedProductImages] = useState({});
+
+  // Función para obtener las imágenes
+  const fetchProductImages = async (products, setImages) => {
+    const imagePromises = products.map(async (product) => {
+      try {
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+        const imageIds = imageResponse.data; // Asumimos que recibes los IDs
+        const imageUrls = imageIds.map(id => `https://backend-tienda-mac-production.up.railway.app/images/${id}.jpg`); // Asegúrate de que la URL sea correcta
+        return { id: product.id, urls: imageUrls };
+      } catch (error) {
+        console.error(`Error getting images for product ${product.id}:`, error);
+        return { id: product.id, urls: [] }; // Retorna un array vacío si hay un error
+      }
+    });
+
+    const imagesData = await Promise.all(imagePromises);
+    const imagesMap = imagesData.reduce((acc, { id, urls }) => {
+      acc[id] = urls;
+      return acc;
+    }, {});
+
+    setImages(imagesMap);
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const categories = [
-        'Accesorios de TV/subcategory/Controles remotos',
-        'Accesorios de carga/subcategory/Cargador MagSafe',
-        'Smartphones/subcategory/iPhone',
-      ];
-
+    const fetchHomeProducts = async () => {
       try {
-        const responses = await Promise.all(categories.map(category => 
-          axios.get(`https://backend-tienda-mac-production.up.railway.app/products/category/${category}`)
-        ));
-        
-        const allProducts = responses.flatMap(response => response.data);
-        setHomeProducts(allProducts);
+        const responses = await Promise.all([
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe'),
+        ]);
 
-        // Llama a la API para obtener las imágenes de cada producto
-        const imagesPromises = allProducts.map(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.itemId}/images`);
-            const imageIds = imageResponse.data; // Los IDs de las imágenes
-            const imageUrls = imageIds.map(id => `https://backend-tienda-mac-production.up.railway.app/images/${id}`); // Construir URLs
-            return { id: product.itemId, images: imageUrls }; // Usa itemId aquí
-          } catch (error) {
-            console.error(`Error getting images for product ${product.itemId}:`, error);
-            return { id: product.itemId, images: [] }; // Retorna un array vacío si hay error
-          }
-        });
-
-        const imagesResults = await Promise.all(imagesPromises);
-        const imagesMap = imagesResults.reduce((acc, { id, images }) => {
-          acc[id] = images;
-          return acc;
-        }, {});
-
-        setProductImages(imagesMap);
+        const products = responses.flatMap(response => response.data);
+        setHomeProducts(products);
+        await fetchProductImages(products, setProductImages); // Cargar imágenes para productos en la página de inicio
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
 
-    fetchProducts();
+    fetchHomeProducts();
   }, []);
 
   useEffect(() => {
@@ -65,33 +66,28 @@ const Home = () => {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
         const newProducts = response.data;
         setNewProducts(newProducts);
-
-        // Obtener imágenes para nuevos productos
-        const imagesPromises = newProducts.map(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.itemId}/images`);
-            const imageIds = imageResponse.data; // Los IDs de las imágenes
-            const imageUrls = imageIds.map(id => `https://backend-tienda-mac-production.up.railway.app/images/${id}`); // Construir URLs
-            return { id: product.itemId, images: imageUrls }; // Usa itemId aquí
-          } catch (error) {
-            console.error(`Error getting images for new product ${product.itemId}:`, error);
-            return { id: product.itemId, images: [] }; // Retorna un array vacío si hay error
-          }
-        });
-
-        const imagesResults = await Promise.all(imagesPromises);
-        const imagesMap = imagesResults.reduce((acc, { id, images }) => {
-          acc[id] = images;
-          return acc;
-        }, {});
-
-        setProductImages(prevState => ({ ...prevState, ...imagesMap }));
+        await fetchProductImages(newProducts, setNewProductImages); // Cargar imágenes para productos nuevos
       } catch (error) {
         console.error('Error fetching new products:', error);
       }
     };
 
     fetchNewProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
+        const products = response.data;
+        setFeaturedProducts(products);
+        await fetchProductImages(products, setFeaturedProductImages); // Cargar imágenes para productos destacados
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+      }
+    };
+
+    fetchFeaturedProducts();
   }, []);
 
   const swiperParams = {
@@ -108,36 +104,37 @@ const Home = () => {
     },
   };
 
-  const renderProductCard = (product) => {
-    const images = productImages[product.itemId] || []; // Cambiado a itemId
-    return (
-      <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
-        <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
-          {images.length > 0 ? (
-            <img src={images[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-          ) : (
-            <span className="text-muted">Sin imagen disponible</span>
-          )}
-        </div>
-        <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
-          <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
-          <p className="card-text mb-3" style={{ fontSize: '1rem' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
-          <a href={`/detalle-producto/${product.itemId}`} className="btn btn-primary">Comprar</a>
-        </div>
+  const renderProductCard = (product, images) => (
+    <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
+      <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
+        <img src={images[product.id]?.[0] || 'default_image_url.jpg'} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
       </div>
-    );
-  };
+      <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
+        <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
+        <p className="card-text mb-3" style={{ fontSize: '1rem' }}>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}</p>
+        <a href={`/detalle-producto/${product.id}`} className="btn btn-primary">Comprar</a>
+      </div>
+    </div>
+  );
+
+  // Estilo en línea para ocultar los puntos de paginación
+  const hidePaginationStyle = `
+    .swiper-pagination-bullets {
+      display: none !important;
+    }
+  `;
 
   return (
     <div className={styles.homeContainer}>
+      <style>{hidePaginationStyle}</style>
       <Slideshow />
       <div className="container-fluid py-5">
         <section className="mb-5">
           <h2 className="text-center mb-4">Productos Más Recientes</h2>
           <Swiper {...swiperParams}>
             {newProducts.map((product) => (
-              <SwiperSlide key={product.itemId}>
-                {renderProductCard(product)}
+              <SwiperSlide key={product.id}>
+                {renderProductCard(product, newProductImages)}
               </SwiperSlide>
             ))}
           </Swiper>
@@ -145,11 +142,21 @@ const Home = () => {
 
         <section className="mb-5">
           <SubNavbar />
+          <Swiper {...swiperParams}>
+            {featuredProducts.map((product) => (
+              <SwiperSlide key={product.id}>
+                {renderProductCard(product, featuredProductImages)}
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </section>
+
+        <section className="mb-5">
           <h2 className="text-center mb-4">Accesorios</h2>
           <Swiper {...swiperParams}>
             {homeProducts.map((product) => (
-              <SwiperSlide key={product.itemId}>
-                {renderProductCard(product)}
+              <SwiperSlide key={product.id}>
+                {renderProductCard(product, productImages)}
               </SwiperSlide>
             ))}
           </Swiper>
