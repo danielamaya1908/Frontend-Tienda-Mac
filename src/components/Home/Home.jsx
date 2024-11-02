@@ -74,8 +74,8 @@ const Home = () => {
     const imageFetchPromises = products.map(async (product) => {
       try {
         const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-        const imageUrls = imageResponse.data.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-        setImageState(prevState => ({ ...prevState, [product.id]: imageUrls }));
+        const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`); // Cambia el tipo de imagen según sea necesario
+        setImageState(prevState => ({ ...prevState, [product.id]: base64Images }));
       } catch (error) {
         console.error(`Error getting images for product ${product.id}:`, error);
       }
