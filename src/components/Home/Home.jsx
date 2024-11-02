@@ -34,9 +34,9 @@ const Home = () => {
         // Llama a la API para obtener las imágenes de cada producto
         const imagesPromises = allProducts.map(async (product) => {
           try {
-            // Asegúrate de que esta URL sea la correcta para obtener imágenes
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.itemId}/images`);
-            const imageUrls = imageResponse.data.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            const imageIds = imageResponse.data; // Los IDs de las imágenes
+            const imageUrls = imageIds.map(id => `https://backend-tienda-mac-production.up.railway.app/images/${id}`); // Construir URLs
             return { id: product.itemId, images: imageUrls }; // Usa itemId aquí
           } catch (error) {
             console.error(`Error getting images for product ${product.itemId}:`, error);
@@ -70,7 +70,8 @@ const Home = () => {
         const imagesPromises = newProducts.map(async (product) => {
           try {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.itemId}/images`);
-            const imageUrls = imageResponse.data.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            const imageIds = imageResponse.data; // Los IDs de las imágenes
+            const imageUrls = imageIds.map(id => `https://backend-tienda-mac-production.up.railway.app/images/${id}`); // Construir URLs
             return { id: product.itemId, images: imageUrls }; // Usa itemId aquí
           } catch (error) {
             console.error(`Error getting images for new product ${product.itemId}:`, error);
@@ -112,7 +113,11 @@ const Home = () => {
     return (
       <div className="card h-100 border-0 shadow-sm" style={{ maxWidth: '300px', margin: '0 auto', backgroundColor: 'white' }}>
         <div className="d-flex align-items-center justify-content-center" style={{ height: '200px', overflow: 'hidden' }}>
-          <img src={images[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+          {images.length > 0 ? (
+            <img src={images[0]} className="card-img-top img-fluid" alt={product.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+          ) : (
+            <span className="text-muted">Sin imagen disponible</span>
+          )}
         </div>
         <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
           <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
