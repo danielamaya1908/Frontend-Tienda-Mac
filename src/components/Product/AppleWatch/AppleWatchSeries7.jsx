@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from '../../NavBar/NavBar'; // Asegúrate de que la ruta sea correcta
+import Navbar from '../../NavBar/NavBar';
 import Footer from '../../Footer/Footer';
-import { Link } from 'react-router-dom'; // Importa Link desde react-router-dom
+import { Link } from 'react-router-dom';
 
 const AppleWatchSeries7 = () => {
   const [appleWatchProducts, setAppleWatchProducts] = useState([]);
@@ -14,17 +14,8 @@ const AppleWatchSeries7 = () => {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartwatches%20y%20accesorios/subcategory/Smartwatches/name/Apple%20Watch%20Series%207');
         const products = response.data;
         setAppleWatchProducts(products);
-
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
+        
+        await fetchProductImages(products);
       } catch (error) {
         console.error('Error fetching Apple Watch products:', error);
       }
@@ -32,6 +23,23 @@ const AppleWatchSeries7 = () => {
 
     fetchAppleWatchProducts();
   }, []);
+
+  const fetchProductImages = async (products) => {
+    const imageFetchPromises = products.map(async (product) => {
+      try {
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+        const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`);
+        setProductImages(prevState => ({
+          ...prevState,
+          [product.id]: base64Images
+        }));
+      } catch (error) {
+        console.error(`Error getting images for product ${product.id}:`, error);
+      }
+    });
+
+    await Promise.all(imageFetchPromises);
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
