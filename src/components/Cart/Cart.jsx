@@ -46,30 +46,22 @@ const Cart = () => {
     navigate(redirectAfterLogin);
   };
 
-  useEffect(() => {
-    const fetchProductImages = async () => {
+  const fetchProductImages = async (products, setImageState) => {
+    const imageFetchPromises = products.map(async (product) => {
       try {
-        const imageRequests = cartItems.map(async (item) => {
-          try {
-            const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${item.id}/images`);
-            const imageFileNames = response.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            return { [item.id]: imageUrls };
-          } catch (error) {
-            console.error(`Error getting images for product ${item.id}:`, error);
-            return { [item.id]: [] };
-          }
-        });
-
-        const images = await Promise.all(imageRequests);
-        const imagesMap = images.reduce((acc, imageObj) => ({ ...acc, ...imageObj }), {});
-        setProductImages(imagesMap);
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+        const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`);
+        setImageState(prevState => ({ ...prevState, [product.id]: base64Images }));
       } catch (error) {
-        console.error('Error fetching product images:', error);
+        console.error(`Error getting images for product ${product.id}:`, error);
       }
-    };
+    });
 
-    fetchProductImages();
+    await Promise.all(imageFetchPromises);
+  };
+
+  useEffect(() => {
+    fetchProductImages(cartItems, setProductImages);
   }, [cartItems]);
 
   useEffect(() => {
@@ -144,18 +136,15 @@ const Cart = () => {
                     <Col xs={12} md={3} className="mb-3 mb-md-0">
                       {productImages[item.id] && productImages[item.id][0] ? (
                         <Image
-                          src={productImages[item.id][0]} 
+                          src={productImages[item.id][0]}
                           alt={item.name} 
                           className={styles.cartItemImage} 
                           fluid 
                         />
                       ) : (
-                        <Image
-                          src="ruta/a/imagen/default.jpg" 
-                          alt={item.name}
-                          className={styles.cartItemImage}
-                          fluid
-                        />
+                        <div className="text-center p-3">
+                          <span className="text-muted">Cargando imagen...</span>
+                        </div>
                       )}
                     </Col>
                     <Col xs={12} md={4}>
