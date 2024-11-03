@@ -26,6 +26,7 @@ const Home = () => {
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20reloj/subcategory/Protector%20de%20pantalla%20para%20Apple%20Watch',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20Grabación%20y%20soporte%20de%20teléfono/subcategory/Soporte%20magnético%20girable%20para%20grabación',
+    // Puedes agregar más URLs aquí
   ];
 
   const fetchImagesBatch = async (products, setImageState, batchSize = 5) => {
@@ -40,11 +41,12 @@ const Home = () => {
           const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
           if (imageResponse.data && imageResponse.data.length > 0) {
             const base64Images = imageResponse.data.map(image => {
+              // Verificar si la imagen tiene datos válidos
               if (image && image.data) {
                 return `data:image/jpeg;base64,${image.data}`;
               }
               return null;
-            }).filter(img => img !== null);
+            }).filter(img => img !== null); // Filtrar imágenes nulas
             
             if (base64Images.length > 0) {
               setImageState(prevState => ({ ...prevState, [product.id]: base64Images }));
@@ -63,11 +65,13 @@ const Home = () => {
     const fetchAllData = async () => {
       setIsLoading(true);
       try {
+        // Fetch de productos de accesorios
         const accessoryResponses = await Promise.all(
           accessoryUrls.map(url => axios.get(url))
         );
         const allAccessories = accessoryResponses.flatMap(response => response.data);
         
+        // Fetch de nuevos productos y productos destacados
         const [newProductsResponse, featuredResponse] = await Promise.all([
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone')
@@ -80,6 +84,7 @@ const Home = () => {
         setNewProducts(newProds);
         setFeaturedProducts(featured);
 
+        // Cargar imágenes en lotes
         await Promise.all([
           fetchImagesBatch(allAccessories, setProductImages),
           fetchImagesBatch(newProds, setNewProductImages),
@@ -98,15 +103,15 @@ const Home = () => {
 
   const swiperParams = {
     modules: [Navigation, Autoplay],
-    spaceBetween: 30,
+    spaceBetween: 20,
     slidesPerView: 4,
     navigation: true,
     autoplay: { delay: 3000, disableOnInteraction: false },
     breakpoints: {
       320: { slidesPerView: 1, spaceBetween: 10 },
-      480: { slidesPerView: 2, spaceBetween: 20 },
-      640: { slidesPerView: 3, spaceBetween: 30 },
-      768: { slidesPerView: 4, spaceBetween: 40 }
+      480: { slidesPerView: 2, spaceBetween: 15 },
+      640: { slidesPerView: 3, spaceBetween: 20 },
+      768: { slidesPerView: 4, spaceBetween: 20 }
     }
   };
 
@@ -116,12 +121,15 @@ const Home = () => {
 
     return (
       <div className="card h-100 border-0 shadow-sm" style={{ 
-        maxWidth: '300px', 
+        maxWidth: '250px',
         margin: '0 auto', 
         backgroundColor: 'white' 
       }}>
         <div className="d-flex align-items-center justify-content-center" style={{ 
-          height: '200px', 
+          height: '180px',
+          width: '180px',
+          margin: '0 auto',
+          padding: '10px',
           overflow: 'hidden' 
         }}>
           {hasValidImage ? (
@@ -131,9 +139,10 @@ const Home = () => {
               effect="blur"
               className="card-img-top img-fluid"
               style={{ 
-                maxWidth: '100%',
-                maxHeight: '100%',
-                objectFit: 'contain'
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                transition: 'transform 0.3s ease'
               }}
               placeholder={
                 <div className="placeholder-glow w-100 h-100 bg-light d-flex align-items-center justify-content-center">
@@ -155,8 +164,8 @@ const Home = () => {
           )}
         </div>
         <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
-          <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1.1rem' }}>{product.name}</h6>
-          <p className="card-text mb-3" style={{ fontSize: '1rem' }}>
+          <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1rem' }}>{product.name}</h6>
+          <p className="card-text mb-3" style={{ fontSize: '0.9rem' }}>
             {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}
           </p>
           <a href={`/detalle-producto/${product.id}`} className="btn btn-primary">Comprar</a>
