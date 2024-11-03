@@ -1,34 +1,45 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 import './ProductDetail.css';
 
 const ProductDetail = ({ product }) => {
-  const [productImages, setProductImages] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [activeTab, setActiveTab] = useState('description'); // Estado para la pestaña activa
+  const [images, setImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
-    if (product) {
-      axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`)
-        .then(response => {
-          const imageFileNames = response.data;
-          const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-          setProductImages(imageUrls);
-        })
-        .catch(error => {
+    const fetchProductImages = async () => {
+      if (product) {
+        try {
+          const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+          // Convertir las imágenes a formato base64
+          const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`);
+          setImages(base64Images);
+        } catch (error) {
           console.error('Error getting product images:', error);
-        });
-    }
+        }
+      }
+    };
+
+    fetchProductImages();
   }, [product]);
 
-  const handleImageClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
+  const nextImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
-  const closeModal = () => {
-    setSelectedImage(null);
+  const prevImage = () => {
+    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
   };
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => nextImage(),
+    onSwipedRight: () => prevImage(),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
 
   const { description, technicalSpecs, warranty, boxContents } = useMemo(() => {
     if (!product || !product.description) return { description: '', technicalSpecs: '', warranty: '', boxContents: '' };
@@ -54,18 +65,40 @@ const ProductDetail = ({ product }) => {
     <div className="product-detail-container">
       <div className="row">
         <div className="col-md-6">
-          <div className="image-container">
-            {productImages.slice(0, 10).map((imageUrl, index) => (
-              <div key={index} className="image-wrapper">
-                <img
-                  src={imageUrl}
-                  alt={`Product ${index + 1}`}
-                  className="product-image"
-                  onClick={() => handleImageClick(imageUrl)}
-                />
+          {images.length > 0 ? (
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+              id="productCarousel"
+              className="carousel slide"
+              data-bs-ride="carousel"
+              {...handlers}
+            >
+              <div className="carousel-inner">
+                {images.map((image, index) => (
+                  <div className={`carousel-item ${index === currentImageIndex ? 'active' : ''}`} key={index}>
+                    <img
+                      src={image}
+                      className="d-block w-100 img-carousel"
+                      alt={`${product.name} - Imagen ${index + 1}`}
+                      style={{ objectFit: 'contain', height: '400px' }}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+              <button className="carousel-control-prev" type="button" onClick={prevImage}>
+                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span className="visually-hidden">Anterior</span>
+              </button>
+              <button className="carousel-control-next" type="button" onClick={nextImage}>
+                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                <span className="visually-hidden">Siguiente</span>
+              </button>
+            </motion.div>
+          ) : (
+            <p className="product-text">No hay imágenes disponibles para este producto.</p>
+          )}
         </div>
         <div className="col-md-6">
           <div className="details-container">
@@ -150,14 +183,6 @@ const ProductDetail = ({ product }) => {
           </div>
         </div>
       </div>
-
-      {/* Modal para imagen ampliada */}
-      {selectedImage && (
-        <div className="modal" onClick={closeModal}>
-          <span className="close" onClick={closeModal}>&times;</span>
-          <img className="modal-content" src={selectedImage} alt="Enlarged" />
-        </div>
-      )}
     </div>
   );
 };

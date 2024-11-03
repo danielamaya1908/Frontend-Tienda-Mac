@@ -13,8 +13,6 @@ const AppleWatchSE = () => {
       try {
         const responses = await Promise.all([
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartwatches%20y%20accesorios/subcategory/Smartwatches/name/Apple%20Watch%20SE%202.ª%20generación'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/product/632'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/product/633'),
         ]);
         const products = responses.flatMap(response => response.data);
         setAppleWatchProducts(products);
