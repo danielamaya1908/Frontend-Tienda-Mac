@@ -14,20 +14,24 @@ const iMac = () => {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/iMac');
         const products = response.data;
         setMacProducts(products);
-
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
+        await fetchProductImages(products); // Llama a la función para obtener las imágenes
       } catch (error) {
         console.error('Error fetching Mac products:', error);
       }
+    };
+
+    const fetchProductImages = async (products) => {
+      const imagePromises = products.map(async (product) => {
+        try {
+          const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+          const imageFileNames = imageResponse.data;
+          const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+          setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
+        } catch (error) {
+          console.error(`Error getting images for product ${product.id}:`, error);
+        }
+      });
+      await Promise.all(imagePromises); // Espera a que todas las promesas se resuelvan
     };
 
     fetchMacProducts();
@@ -48,7 +52,7 @@ const iMac = () => {
               <Link to={`/detalle-producto/${product.id}`} className="text-decoration-none">
                 <div className="card h-100 small-card">
                   <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: '250px', padding: '10px' }}>
-                    {productImages[product.id] && productImages[product.id][0] && (
+                    {productImages[product.id]?.[0] && ( // Usando optional chaining
                       <img
                         src={productImages[product.id][0]}
                         alt={`Product ${product.name}`}
