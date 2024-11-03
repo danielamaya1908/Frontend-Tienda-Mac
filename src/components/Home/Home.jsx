@@ -23,7 +23,7 @@ const Home = () => {
     const fetchHomeProducts = async () => {
       try {
         const responses = await Promise.all([
-                   axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Audífonos/subcategory/Audífonos%20de%20cable'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Adaptadores/subcategory/Adaptador%20VGA'),
@@ -85,12 +85,14 @@ const Home = () => {
 
     fetchHomeProducts();
   }, []);
-/* 
+
   useEffect(() => {
     const fetchNewProducts = async () => {
       try {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent');
-        const newProducts = response.data;
+        const allProducts = response.data;
+        // Limitar a 10 productos
+        const newProducts = allProducts.slice(0, 10);
         setNewProducts(newProducts);
 
         await fetchProductImages(newProducts, setNewProductImages);
@@ -106,7 +108,9 @@ const Home = () => {
     const fetchFeaturedProducts = async () => {
       try {
         const response = await axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone');
-        const products = response.data;
+        const allProducts = response.data;
+        // Limitar a 10 productos
+        const products = allProducts.slice(0, 10);
         setFeaturedProducts(products);
 
         await fetchProductImages(products, setFeaturedProductImages);
@@ -116,7 +120,7 @@ const Home = () => {
     };
 
     fetchFeaturedProducts();
-  }, []); */
+  }, []);
 
   const fetchProductImages = async (products, setImageState) => {
     const imageFetchPromises = products.map(async (product) => {
