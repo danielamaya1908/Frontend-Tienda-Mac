@@ -1,3 +1,4 @@
+// Tercer componente: Airpods3gen.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../../NavBar/NavBar';
@@ -18,17 +19,9 @@ const Airpods3gen = () => {
 
         const products = responses.flatMap(response => response.data);
         setAirpodsProducts(products);
-
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
+        
+        // Fetch images for all products
+        await fetchProductImages(products);
       } catch (error) {
         console.error('Error fetching Airpods products:', error);
       }
@@ -36,6 +29,23 @@ const Airpods3gen = () => {
 
     fetchAirpodsProducts();
   }, []);
+
+  const fetchProductImages = async (products) => {
+    const imageFetchPromises = products.map(async (product) => {
+      try {
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+        const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`);
+        setProductImages(prevState => ({
+          ...prevState,
+          [product.id]: base64Images
+        }));
+      } catch (error) {
+        console.error(`Error getting images for product ${product.id}:`, error);
+      }
+    });
+
+    await Promise.all(imageFetchPromises);
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
@@ -67,9 +77,7 @@ const Airpods3gen = () => {
                     <p className="card-text fs-7">Color: <strong>{product.colorName}</strong></p>
                     <p className="card-text fs-7">Precio: <strong>{formatPrice(product.price)}</strong></p>
                     <div className="mt-auto d-flex justify-content-between">
-                      <Link to={`/detalle-producto/${product.id}`} className="btn btn-primary btn-sm">
-                        Comprar
-                      </Link>
+                      <span className="btn btn-primary btn-sm">Comprar</span>
                     </div>
                   </div>
                 </div>
