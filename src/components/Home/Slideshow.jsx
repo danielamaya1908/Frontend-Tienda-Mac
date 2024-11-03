@@ -55,9 +55,9 @@ const Slideshow = () => {
     if (index === 0) {
       // Solo para la imagen del iPhone
       if (clickPosition < middle) {
-        navigate('/iphoneAll'); // Clic en la parte izquierda
+        navigate('/iphonepro'); // Clic en la parte izquierda
       } else {
-        navigate('/iphoneAll'); // Clic en la parte derecha
+        navigate('/iphone16'); // Clic en la parte derecha
       }
     } else {
       // Lógica existente para otras imágenes
