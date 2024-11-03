@@ -18,28 +18,16 @@ const MacbookAir = () => {
         const products = responses.flatMap(response => response.data);
         setMacProducts(products);
 
-        // Carga las imágenes de forma paralela
-        const imageRequests = products.map(product => 
-          axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`)
-            .then(imageResponse => {
-              const imageFileNames = imageResponse.data;
-              const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-              return { id: product.id, images: imageUrls };
-            })
-            .catch(error => {
-              console.error(`Error getting images for product ${product.id}:`, error);
-              return { id: product.id, images: [] }; // Devuelve un objeto vacío en caso de error
-            })
-        );
-
-        // Espera a que todas las solicitudes de imágenes se completen
-        const images = await Promise.all(imageRequests);
-        const imagesMap = images.reduce((acc, { id, images }) => {
-          acc[id] = images;
-          return acc;
-        }, {});
-
-        setProductImages(imagesMap);
+        products.forEach(async (product) => {
+          try {
+            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+            const imageFileNames = imageResponse.data;
+            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
+          } catch (error) {
+            console.error(`Error getting images for product ${product.id}:`, error);
+          }
+        });
       } catch (error) {
         console.error('Error fetching Mac products:', error);
       }

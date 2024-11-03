@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 const MacMini = () => {
   const [macProducts, setMacProducts] = useState([]);
   const [productImages, setProductImages] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const fetchMacProducts = async () => {
@@ -16,7 +15,7 @@ const MacMini = () => {
         const products = response.data;
         setMacProducts(products);
 
-        const imagePromises = products.map(async (product) => {
+        products.forEach(async (product) => {
           try {
             const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
             const imageFileNames = imageResponse.data;
@@ -24,14 +23,10 @@ const MacMini = () => {
             setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
           } catch (error) {
             console.error(`Error getting images for product ${product.id}:`, error);
-            setErrorMessage(`Error fetching images for ${product.name}. Please try again later.`);
           }
         });
-
-        await Promise.all(imagePromises);
       } catch (error) {
         console.error('Error fetching Mac products:', error);
-        setErrorMessage('Error fetching Mac Mini products. Please try again later.');
       }
     };
 
@@ -47,7 +42,6 @@ const MacMini = () => {
       <Navbar />
       <div className="container py-5">
         <h1 className="text-center mb-4 fs-4" style={{ color: 'black' }}>Mac Mini</h1>
-        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {macProducts.map((product) => (
             <div className="col" key={product.id}>
