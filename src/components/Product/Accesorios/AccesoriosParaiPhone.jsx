@@ -12,7 +12,7 @@ const AccesoriosParaiPhone = () => {
     const fetchIphoneProducts = async () => {
       try {
         const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carro/subcategory/Soporte%20de%20carro%20para%20teléfono%20móvil'),
+  axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carro/subcategory/Soporte%20de%20carro%20para%20teléfono%20móvil'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cable%20de%20carga%20magnetica'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20de%20coche%20con%204%20puertos%20USB'),
@@ -50,22 +50,33 @@ const AccesoriosParaiPhone = () => {
         ]);
         const products = responses.flatMap(response => response.data);
         setIphoneProducts(products);
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
+        
+        // Fetch images for all products
+        await fetchProductImages(products);
       } catch (error) {
         console.error('Error fetching iPhone products:', error);
       }
     };
+
     fetchIphoneProducts();
   }, []);
+
+  const fetchProductImages = async (products) => {
+    const imageFetchPromises = products.map(async (product) => {
+      try {
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+        const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`);
+        setProductImages(prevState => ({
+          ...prevState,
+          [product.id]: base64Images
+        }));
+      } catch (error) {
+        console.error(`Error getting images for product ${product.id}:`, error);
+      }
+    });
+
+    await Promise.all(imageFetchPromises);
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
@@ -79,7 +90,7 @@ const AccesoriosParaiPhone = () => {
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {iphoneProducts.map((product) => (
             <div className="col" key={product.id}>
-              <a href={`/detalle-producto/${product.id}`} className="text-decoration-none">
+              <Link to={`/detalle-producto/${product.id}`} className="text-decoration-none">
                 <div className="card h-100 small-card">
                   <div className="card-img-top d-flex justify-content-center align-items-center" style={{ height: '250px', padding: '10px' }}>
                     {productImages[product.id] && productImages[product.id][0] && (
@@ -101,7 +112,7 @@ const AccesoriosParaiPhone = () => {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
