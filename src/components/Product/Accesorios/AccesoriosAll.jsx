@@ -12,7 +12,7 @@ const AccesoriosAll = () => {
     const fetchIphoneProducts = async () => {
       try {
         const responses = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
+ axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Audífonos/subcategory/Audífonos%20de%20cable'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Adaptadores/subcategory/Adaptador%20VGA'),
@@ -61,25 +61,37 @@ const AccesoriosAll = () => {
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Llavero%20con%20puerto%20lightning%20a%20USB'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Cable%20Lightning%20a%20USB-C'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Cable%20USB-C%20a%20Lightning')
+          // ... rest of your axios.get calls remain the same
         ]);
         const products = responses.flatMap(response => response.data);
         setIphoneProducts(products);
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
+        
+        // Fetch images for all products
+        await fetchProductImages(products);
       } catch (error) {
         console.error('Error fetching iPhone products:', error);
       }
     };
+
     fetchIphoneProducts();
   }, []);
+
+  const fetchProductImages = async (products) => {
+    const imageFetchPromises = products.map(async (product) => {
+      try {
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+        const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`);
+        setProductImages(prevState => ({
+          ...prevState,
+          [product.id]: base64Images
+        }));
+      } catch (error) {
+        console.error(`Error getting images for product ${product.id}:`, error);
+      }
+    });
+
+    await Promise.all(imageFetchPromises);
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
