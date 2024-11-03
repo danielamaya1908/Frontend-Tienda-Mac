@@ -1,3 +1,4 @@
+// MacbookAir Component
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../../NavBar/NavBar';
@@ -17,17 +18,8 @@ const MacbookAir = () => {
         ]);
         const products = responses.flatMap(response => response.data);
         setMacProducts(products);
-
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
+        
+        await fetchProductImages(products);
       } catch (error) {
         console.error('Error fetching Mac products:', error);
       }
@@ -35,6 +27,23 @@ const MacbookAir = () => {
 
     fetchMacProducts();
   }, []);
+
+  const fetchProductImages = async (products) => {
+    const imageFetchPromises = products.map(async (product) => {
+      try {
+        const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
+        const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`);
+        setProductImages(prevState => ({
+          ...prevState,
+          [product.id]: base64Images
+        }));
+      } catch (error) {
+        console.error(`Error getting images for product ${product.id}:`, error);
+      }
+    });
+
+    await Promise.all(imageFetchPromises);
+  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(price);
