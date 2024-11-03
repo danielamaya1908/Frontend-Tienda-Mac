@@ -16,19 +16,31 @@ const MacbookPro = () => {
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/MacBook/name/MacBook%20Pro%20de%2014%20pulgadas'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/MacBook/name/MacBook%20Pro%20de%2016%20pulgadas')
         ]);
+        
         const products = responses.flatMap(response => response.data);
         setMacProducts(products);
 
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
+        // Obtener imágenes de los productos
+        const imagePromises = products.map(product =>
+          axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`)
+            .then(imageResponse => {
+              const imageFileNames = imageResponse.data;
+              const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+              return { id: product.id, images: imageUrls };
+            })
+            .catch(error => {
+              console.error(`Error getting images for product ${product.id}:`, error);
+              return { id: product.id, images: [] }; // Retornar un array vacío si hay error
+            })
+        );
+
+        const imagesData = await Promise.all(imagePromises);
+        const imagesMap = imagesData.reduce((acc, { id, images }) => {
+          acc[id] = images;
+          return acc;
+        }, {});
+
+        setProductImages(imagesMap);
       } catch (error) {
         console.error('Error fetching Mac products:', error);
       }

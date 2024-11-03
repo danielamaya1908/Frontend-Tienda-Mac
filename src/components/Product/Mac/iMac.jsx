@@ -15,16 +15,27 @@ const iMac = () => {
         const products = response.data;
         setMacProducts(products);
 
-        products.forEach(async (product) => {
-          try {
-            const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
-            const imageFileNames = imageResponse.data;
-            const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-            setProductImages(prevState => ({ ...prevState, [product.id]: imageUrls }));
-          } catch (error) {
-            console.error(`Error getting images for product ${product.id}:`, error);
-          }
-        });
+        // Obtener las imágenes de todos los productos utilizando Promise.all
+        const imageRequests = products.map(product => 
+          axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`)
+            .then(imageResponse => {
+              const imageFileNames = imageResponse.data;
+              const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
+              return { id: product.id, urls: imageUrls };
+            })
+            .catch(error => {
+              console.error(`Error getting images for product ${product.id}:`, error);
+              return { id: product.id, urls: [] }; // Devuelve un objeto vacío en caso de error
+            })
+        );
+
+        const imagesResults = await Promise.all(imageRequests);
+        const imagesMap = imagesResults.reduce((acc, { id, urls }) => {
+          acc[id] = urls;
+          return acc;
+        }, {});
+        
+        setProductImages(imagesMap);
       } catch (error) {
         console.error('Error fetching Mac products:', error);
       }
