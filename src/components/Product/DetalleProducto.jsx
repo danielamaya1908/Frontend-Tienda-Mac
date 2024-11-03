@@ -21,7 +21,7 @@ const DetalleProducto = () => {
   const [maxQuantity, setMaxQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchProductDetails = async () => {
       setIsLoading(true);
       setError(null);
@@ -30,9 +30,9 @@ const DetalleProducto = () => {
         setProduct(productResponse.data);
 
         const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${id}/images`);
-        const imageFileNames = imageResponse.data;
-        const imageUrls = imageFileNames.map(fileName => `https://backend-tienda-mac-production.up.railway.app/images/${fileName}`);
-        setImages(imageUrls);
+        // Convertir las imágenes a formato base64
+        const base64Images = imageResponse.data.map(image => `data:image/jpeg;base64,${image.data}`);
+        setImages(base64Images);
 
         setMaxQuantity(productResponse.data.quantity || 1);
       } catch (error) {
