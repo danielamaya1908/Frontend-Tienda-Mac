@@ -115,64 +115,77 @@ const Home = () => {
     }
   };
 
-  const renderProductCard = (product, images) => {
-    const productImages = images[product.id] || [];
-    const hasValidImage = productImages.length > 0;
+const renderProductCard = (product, images) => {
+  const productImages = images[product.id] || [];
+  const hasValidImage = productImages.length > 0;
 
-    return (
-      <div className="card h-100 border-0 shadow-sm" style={{ 
-        maxWidth: '250px',
-        margin: '0 auto', 
-        backgroundColor: 'white' 
+  return (
+    <div className="card border-0 shadow-sm" style={{ 
+      width: '220px',  // Ancho fijo para todas las cards
+      height: '340px', // Altura fija para todas las cards
+      margin: '0 auto', 
+      backgroundColor: 'white',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <div style={{ 
+        height: '200px',       // Altura fija para el contenedor de la imagen
+        padding: '15px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
       }}>
-        <div className="d-flex align-items-center justify-content-center" style={{ 
-          height: '180px',
-          width: '180px',
-          margin: '0 auto',
-          padding: '10px',
-          overflow: 'hidden' 
-        }}>
-          {hasValidImage ? (
-            <LazyLoadImage
-              src={productImages[0]}
-              alt={product.name}
-              effect="blur"
-              className="card-img-top img-fluid"
-              style={{ 
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-                transition: 'transform 0.3s ease'
-              }}
-              placeholder={
-                <div className="placeholder-glow w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                  </div>
+        {hasValidImage ? (
+          <LazyLoadImage
+            src={productImages[0]}
+            alt={product.name}
+            effect="blur"
+            style={{ 
+              maxWidth: '100%',
+              maxHeight: '170px',    // Altura máxima para la imagen
+              objectFit: 'contain',
+              transition: 'transform 0.2s ease'
+            }}
+            placeholder={
+              <div className="placeholder-glow w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Cargando...</span>
                 </div>
-              }
-              error={
-                <div className="d-flex align-items-center justify-content-center h-100 w-100 bg-light">
-                  <span className="text-muted">Imagen no disponible</span>
-                </div>
-              }
-            />
-          ) : (
-            <div className="d-flex align-items-center justify-content-center h-100 w-100 bg-light">
-              <span className="text-muted">Imagen no disponible</span>
-            </div>
-          )}
-        </div>
-        <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
-          <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1rem' }}>{product.name}</h6>
-          <p className="card-text mb-3" style={{ fontSize: '0.9rem' }}>
+              </div>
+            }
+            error={
+              <div className="d-flex align-items-center justify-content-center h-100 w-100 bg-light">
+                <span className="text-muted">Imagen no disponible</span>
+              </div>
+            }
+          />
+        ) : (
+          <div className="d-flex align-items-center justify-content-center h-100 w-100 bg-light">
+            <span className="text-muted">Imagen no disponible</span>
+          </div>
+        )}
+      </div>
+      <div className="card-body d-flex flex-column justify-content-between p-3">
+        <h6 className="card-title text-truncate mb-2" style={{ 
+          fontSize: '0.9rem',
+          lineHeight: '1.2',
+          height: '2.4em',    // Altura fija para el título (2 líneas)
+          overflow: 'hidden'
+        }}>{product.name}</h6>
+        <div>
+          <p className="card-text mb-2" style={{ fontSize: '0.9rem' }}>
             {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}
           </p>
-          <a href={`/detalle-producto/${product.id}`} className="btn btn-primary">Comprar</a>
+          <a href={`/detalle-producto/${product.id}`} 
+             className="btn btn-primary w-100">
+            Comprar
+          </a>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   if (isLoading) {
     return (
