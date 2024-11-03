@@ -101,6 +101,92 @@ const Home = () => {
     fetchAllData();
   }, []);
 
+  const renderProductCard = (product, images) => {
+    const productImages = images[product.id] || [];
+    const hasValidImage = productImages.length > 0;
+
+    return (
+      <div className="card h-100 border-0 shadow-sm" style={{ 
+        maxWidth: '250px',
+        margin: '0 auto', 
+        backgroundColor: 'white',
+      }}>
+        <div style={{ 
+          position: 'relative',
+          paddingTop: '100%', // Esto crea un contenedor cuadrado
+          width: '100%',
+          backgroundColor: '#f8f9fa',
+          overflow: 'hidden'
+        }}>
+          {hasValidImage ? (
+            <div style={{
+              position: 'absolute',
+              top: '0',
+              left: '0',
+              right: '0',
+              bottom: '0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem'
+            }}>
+              <LazyLoadImage
+                src={productImages[0]}
+                alt={product.name}
+                effect="blur"
+                wrapperClassName="w-100 h-100"
+                style={{ 
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  transition: 'transform 0.3s ease'
+                }}
+                beforeLoad={() => {
+                  // Verificar dimensiones de la imagen antes de cargarla
+                  const img = new Image();
+                  img.src = productImages[0];
+                  return new Promise((resolve) => {
+                    img.onload = () => {
+                      if (img.width > 800 || img.height > 800) {
+                        console.warn(`Imagen grande detectada para ${product.name}: ${img.width}x${img.height}`);
+                      }
+                      resolve();
+                    };
+                  });
+                }}
+                placeholder={
+                  <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Cargando...</span>
+                    </div>
+                  </div>
+                }
+                error={
+                  <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                    <span className="text-muted">Imagen no disponible</span>
+                  </div>
+                }
+              />
+            </div>
+          ) : (
+            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+              <span className="text-muted">Imagen no disponible</span>
+            </div>
+          )}
+        </div>
+        <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
+          <h6 className="card-title text-truncate mb-2" style={{ fontSize: '0.9rem' }}>{product.name}</h6>
+          <p className="card-text mb-3" style={{ fontSize: '0.9rem' }}>
+            {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}
+          </p>
+          <a href={`/detalle-producto/${product.id}`} className="btn btn-primary btn-sm">Comprar</a>
+        </div>
+      </div>
+    );
+  };
+
   const swiperParams = {
     modules: [Navigation, Autoplay],
     spaceBetween: 20,
@@ -113,65 +199,6 @@ const Home = () => {
       640: { slidesPerView: 3, spaceBetween: 20 },
       768: { slidesPerView: 4, spaceBetween: 20 }
     }
-  };
-
-  const renderProductCard = (product, images) => {
-    const productImages = images[product.id] || [];
-    const hasValidImage = productImages.length > 0;
-
-    return (
-      <div className="card h-100 border-0 shadow-sm" style={{ 
-        maxWidth: '250px',
-        margin: '0 auto', 
-        backgroundColor: 'white' 
-      }}>
-        <div className="d-flex align-items-center justify-content-center" style={{ 
-          height: '180px',
-          width: '180px',
-          margin: '0 auto',
-          padding: '10px',
-          overflow: 'hidden' 
-        }}>
-          {hasValidImage ? (
-            <LazyLoadImage
-              src={productImages[0]}
-              alt={product.name}
-              effect="blur"
-              className="card-img-top img-fluid"
-              style={{ 
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-                transition: 'transform 0.3s ease'
-              }}
-              placeholder={
-                <div className="placeholder-glow w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                  </div>
-                </div>
-              }
-              error={
-                <div className="d-flex align-items-center justify-content-center h-100 w-100 bg-light">
-                  <span className="text-muted">Imagen no disponible</span>
-                </div>
-              }
-            />
-          ) : (
-            <div className="d-flex align-items-center justify-content-center h-100 w-100 bg-light">
-              <span className="text-muted">Imagen no disponible</span>
-            </div>
-          )}
-        </div>
-        <div className="card-body text-center flex-grow-1 d-flex flex-column justify-content-between p-3">
-          <h6 className="card-title text-truncate mb-2" style={{ fontSize: '1rem' }}>{product.name}</h6>
-          <p className="card-text mb-3" style={{ fontSize: '0.9rem' }}>
-            {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}
-          </p>
-          <a href={`/detalle-producto/${product.id}`} className="btn btn-primary">Comprar</a>
-        </div>
-      </div>
-    );
   };
 
   if (isLoading) {
@@ -189,7 +216,7 @@ const Home = () => {
       <Slideshow />
       <div className="container-fluid py-5">
         <section className="mb-5">
-          <h2 className="text-center mb-4">Productos Más Recientes</h2>
+          <h2 className="text-center mb-4 h4">Productos Más Recientes</h2>
           <Swiper {...swiperParams}>
             {newProducts.map((product) => (
               <SwiperSlide key={product.id}>
@@ -211,7 +238,7 @@ const Home = () => {
         </section>
 
         <section className="mb-5">
-          <h2 className="text-center mb-4">Accesorios</h2>
+          <h2 className="text-center mb-4 h4">Accesorios</h2>
           <Swiper {...swiperParams}>
             {homeProducts.map((product) => (
               <SwiperSlide key={product.id}>
