@@ -18,6 +18,9 @@ const SubNavbar = () => {
           <li className="nav-item">
             <a className="nav-link" href="bose">Bose</a>
           </li>
+           <li className="nav-item">
+            <a className="nav-link" href="zagg">ZAGG</a>
+          </li>
         </ul>
       </div>
     </nav>

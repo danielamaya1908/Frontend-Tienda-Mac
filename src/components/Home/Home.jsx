@@ -25,6 +25,13 @@ const Home = () => {
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga%20y%20transferencia%20de%20datos/subcategory/Cable%20USB-C%20a%20Lightning'
   ];
 
+  const newProductUrls = [
+    'https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016%20Pro',
+    'https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016%20Pro%20Max',
+    'https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016',
+    'https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016%20Plus'
+  ];
+
   const fetchImagesForProduct = async (product, setImageState) => {
     try {
       const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`);
@@ -52,24 +59,33 @@ const Home = () => {
     const fetchAllData = async () => {
       try {
         // Fetch all product data in parallel
-        const [accessoryResponses, newProductsResponse, featuredResponse] = await Promise.all([
+        const [accessoryResponses, newProductResponses, featuredResponse] = await Promise.all([
           Promise.all(accessoryUrls.map(url => axios.get(url))),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/recent'),
+          Promise.all(newProductUrls.map(url => axios.get(url))),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone')
         ]);
 
-        const allAccessories = accessoryResponses.flatMap(response => response.data);
-        const newProds = newProductsResponse.data.slice(0, 10);
-        const featured = featuredResponse.data.slice(0, 10);
+        // Combine and limit accessories to 20 products
+        const allAccessories = accessoryResponses
+          .flatMap(response => response.data)
+          .slice(0, 20);
+
+        // Combine and limit new products to 20 products
+        const allNewProducts = newProductResponses
+          .flatMap(response => response.data)
+          .slice(0, 20);
+
+        // Limit featured products to 20
+        const featured = featuredResponse.data.slice(0, 20);
 
         // Set products immediately
         setHomeProducts(allAccessories);
-        setNewProducts(newProds);
+        setNewProducts(allNewProducts);
         setFeaturedProducts(featured);
 
         // Start fetching images in the background
         fetchImages(allAccessories, setProductImages);
-        fetchImages(newProds, setNewProductImages);
+        fetchImages(allNewProducts, setNewProductImages);
         fetchImages(featured, setFeaturedProductImages);
 
       } catch (error) {
