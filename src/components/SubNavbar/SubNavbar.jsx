@@ -19,7 +19,7 @@ const SubNavbar = () => {
             <a className="nav-link" href="bose">Bose</a>
           </li>
            <li className="nav-item">
-            <a className="nav-link" href="zagg">ZAGG</a>
+            <a className="nav-link" href="zagg">Zagg</a>
           </li>
         </ul>
       </div>

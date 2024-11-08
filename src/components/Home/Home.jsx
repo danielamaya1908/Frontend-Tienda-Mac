@@ -55,22 +55,18 @@ const Home = () => {
     });
   };
 
-  // Función para intercalar productos de diferentes modelos
   const interleaveProducts = (productsArrays) => {
-    const maxProductsPerModel = 10; // Máximo 10 productos por modelo
+    const maxProductsPerModel = 10;
     const result = [];
     let index = 0;
     
-    // Primero, asegurarse de que cada array tenga máximo 10 productos
     const limitedArrays = productsArrays.map(array => array.slice(0, maxProductsPerModel));
     
-    // Encontrar el array más largo después de aplicar el límite
     const maxLength = Math.min(
       Math.max(...limitedArrays.map(arr => arr.length)),
       maxProductsPerModel
     );
 
-    // Intercalar productos
     while (result.length < 40 && index < maxLength) {
       for (let arrayIndex = 0; arrayIndex < limitedArrays.length; arrayIndex++) {
         if (limitedArrays[arrayIndex][index]) {
@@ -86,32 +82,26 @@ const Home = () => {
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        // Fetch all product data in parallel
         const [accessoryResponses, newProductResponses, featuredResponse] = await Promise.all([
           Promise.all(accessoryUrls.map(url => axios.get(url))),
           Promise.all(newProductUrls.map(url => axios.get(url))),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone')
         ]);
 
-        // Combinar e intercalar productos de iPhone
         const iPhoneProducts = interleaveProducts(
           newProductResponses.map(response => response.data)
         );
 
-        // Combinar y limitar accesorios a 40 productos
         const allAccessories = accessoryResponses
           .flatMap(response => response.data)
           .slice(0, 40);
 
-        // Limitar productos destacados a 40
         const featured = featuredResponse.data.slice(0, 40);
 
-        // Set products immediately
         setHomeProducts(allAccessories);
         setNewProducts(iPhoneProducts);
         setFeaturedProducts(featured);
 
-        // Start fetching images in the background
         fetchImages(allAccessories, setProductImages);
         fetchImages(iPhoneProducts, setNewProductImages);
         fetchImages(featured, setFeaturedProductImages);
@@ -214,6 +204,8 @@ const Home = () => {
     );
   };
 
+  const supportWhatsappUrl = "https://api.whatsapp.com/send?phone=573173026445&text=Hola,%20quisiera%20obtener%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20soporte%20t%C3%A9cnico.%20Tengo%20un%20equipo%20que%20necesita%20revisi%C3%B3n%20y%20me%20gustar%C3%ADa%20conocer%20los%20detalles%20del%20proceso,%20costos,%20y%20tiempos%20de%20reparaci%C3%B3n.%20Agradezco%20su%20respuesta.";
+
   return (
     <div className={styles.homeContainer}>
       <Slideshow />
@@ -249,6 +241,37 @@ const Home = () => {
               </SwiperSlide>
             ))}
           </Swiper>
+        </section>
+
+        {/* Sección de soporte técnico */}
+        <section className="mb-5">
+          <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+            <a 
+              href={supportWhatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'block',
+                textDecoration: 'none'
+              }}
+            >
+              <img
+                src="/src/img/soporte-tecnico.jpg"
+                alt="Soporte Técnico"
+                style={{
+                  width: '100%',
+                  maxHeight: '300px',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                  transition: 'transform 0.3s ease',
+                  cursor: 'pointer',
+                }}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              />
+            </a>
+          </div>
         </section>
       </div>
       <Footer />
