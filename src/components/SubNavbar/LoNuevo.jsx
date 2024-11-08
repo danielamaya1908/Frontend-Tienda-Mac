@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Navbar from '../../NavBar/NavBar';
-import Footer from '../../Footer/Footer';
+import Navbar from '../NavBar/NavBar';
+import Footer from '../Footer/Footer';
 import { Link } from 'react-router-dom';
 
 const LoNuevo = () => {
