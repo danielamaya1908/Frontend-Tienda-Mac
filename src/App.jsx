@@ -47,7 +47,7 @@ import SoporteTecnicoDetalle from './components/SoporteTecnico/SoporteTecnicoDet
 import MacbookPro from './components/Product/Mac/MacbookPro';
 import MacbookAir from './components/Product/Mac/MacbookAir';
 import Imac from './components/Product/Mac/iMac';
-import Zagg from './components/Product/zagg.jsx';
+import Zagg from './components/Product/zagg';
 import MacUsed from './components/Product/Mac/MacUsed';
 import Airpods from './components/Product/AirPods/Airpods';
 import AirpodsPro from './components/Product/AirPods/AirpodsPro';
