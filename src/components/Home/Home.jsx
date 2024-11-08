@@ -55,6 +55,34 @@ const Home = () => {
     });
   };
 
+  // Función para intercalar productos de diferentes modelos
+  const interleaveProducts = (productsArrays) => {
+    const maxProductsPerModel = 10; // Máximo 10 productos por modelo
+    const result = [];
+    let index = 0;
+    
+    // Primero, asegurarse de que cada array tenga máximo 10 productos
+    const limitedArrays = productsArrays.map(array => array.slice(0, maxProductsPerModel));
+    
+    // Encontrar el array más largo después de aplicar el límite
+    const maxLength = Math.min(
+      Math.max(...limitedArrays.map(arr => arr.length)),
+      maxProductsPerModel
+    );
+
+    // Intercalar productos
+    while (result.length < 40 && index < maxLength) {
+      for (let arrayIndex = 0; arrayIndex < limitedArrays.length; arrayIndex++) {
+        if (limitedArrays[arrayIndex][index]) {
+          result.push(limitedArrays[arrayIndex][index]);
+        }
+      }
+      index++;
+    }
+
+    return result;
+  };
+
   useEffect(() => {
     const fetchAllData = async () => {
       try {
@@ -65,27 +93,27 @@ const Home = () => {
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone')
         ]);
 
-        // Combine and limit accessories to 20 products
+        // Combinar e intercalar productos de iPhone
+        const iPhoneProducts = interleaveProducts(
+          newProductResponses.map(response => response.data)
+        );
+
+        // Combinar y limitar accesorios a 40 productos
         const allAccessories = accessoryResponses
           .flatMap(response => response.data)
-          .slice(0, 20);
+          .slice(0, 40);
 
-        // Combine and limit new products to 20 products
-        const allNewProducts = newProductResponses
-          .flatMap(response => response.data)
-          .slice(0, 20);
-
-        // Limit featured products to 20
-        const featured = featuredResponse.data.slice(0, 20);
+        // Limitar productos destacados a 40
+        const featured = featuredResponse.data.slice(0, 40);
 
         // Set products immediately
         setHomeProducts(allAccessories);
-        setNewProducts(allNewProducts);
+        setNewProducts(iPhoneProducts);
         setFeaturedProducts(featured);
 
         // Start fetching images in the background
         fetchImages(allAccessories, setProductImages);
-        fetchImages(allNewProducts, setNewProductImages);
+        fetchImages(iPhoneProducts, setNewProductImages);
         fetchImages(featured, setFeaturedProductImages);
 
       } catch (error) {

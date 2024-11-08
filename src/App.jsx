@@ -47,6 +47,7 @@ import SoporteTecnicoDetalle from './components/SoporteTecnico/SoporteTecnicoDet
 import MacbookPro from './components/Product/Mac/MacbookPro';
 import MacbookAir from './components/Product/Mac/MacbookAir';
 import Imac from './components/Product/Mac/iMac';
+import Zagg from './components/Product/zagg.jsx';
 import MacUsed from './components/Product/Mac/MacUsed';
 import Airpods from './components/Product/AirPods/Airpods';
 import AirpodsPro from './components/Product/AirPods/AirpodsPro';
@@ -247,6 +248,7 @@ function App() {
           <Route path="/iphone14" element={<Iphone14 />} />
           <Route path="/iphone15pro" element={<Iphone15pro />} />
           <Route path="/iphone15" element={<Iphone15 />} />
+           <Route path="/zagg" element={<Zagg />} />
           <Route path="/iphone16pro" element={<Iphone16pro />} />
           <Route path="/iphone16" element={<Iphone16 />} />
           <Route path="/iphoneSE" element={<IphoneSE />} />
@@ -298,6 +300,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
 
           <Route path="/detalle-producto/iphoneAll" element={<Navigate to="/iphoneAll" replace />} />
+          <Route path="/detalle-producto/zagg" element={<Navigate to="/zagg" replace />} />
           <Route path="/detalle-producto/iphone15" element={<Navigate to="/iphone15" replace />} />
           <Route path="/detalle-producto/iphone15pro" element={<Navigate to="/iphone15pro" replace />} />
           <Route path="/detalle-producto/iphone16" element={<Navigate to="/iphone16" replace />} />
