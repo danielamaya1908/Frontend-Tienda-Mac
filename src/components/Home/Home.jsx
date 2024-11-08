@@ -7,6 +7,7 @@ import Slideshow from './Slideshow';
 import SubNavbar from '../SubNavbar/SubNavbar';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
+import soporteTecnico from '../../img/slidesShow/soporteTecnico.jpg';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
@@ -256,7 +257,7 @@ const Home = () => {
               }}
             >
               <img
-                src="/img/slidesShow/Soporte_Tecnico.jpg"
+                src={soporteTecnico}
                 alt="Soporte Técnico"
                 style={{
                   width: '100%',
