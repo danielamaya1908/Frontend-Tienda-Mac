@@ -131,7 +131,7 @@ const Home = () => {
         }}>
           {hasValidImage ? (
             <div style={{
-              border: '1px solid #e0e0e0',
+              border: '1px solid #000000',
               borderRadius: '4px',
               padding: '10px',
               display: 'flex',
@@ -180,13 +180,16 @@ const Home = () => {
               overflow: 'hidden'
             }}>{product.name}</h6>
             {product.capacityName && (
-              <p className="card-text mb-2" style={{ fontSize: '0.8rem', color: '#666' }}>
+              <p className="card-text mb-2" style={{ fontSize: '0.8rem', color: '#000000' }}>
                 <strong>Capacidad:</strong> {product.capacityName}
               </p>
             )}
           </div>
           <div>
-            <p className="card-text mb-2" style={{ fontSize: '0.9rem' }}>
+            <p className="card-text mb-2" style={{ 
+              fontSize: '0.9rem',
+              fontWeight: 'bold'
+            }}>
               {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}
             </p>
             <a href={`/detalle-producto/${product.id}`} 
