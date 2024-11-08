@@ -7,7 +7,7 @@ import Slideshow from './Slideshow';
 import SubNavbar from '../SubNavbar/SubNavbar';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
-import soporteTecnico from '../../img/slidesShow/soporteTecnico.jpg';
+import soporteTecnico from '../../img/slidesShow/Servicio_Tecnico.jpg';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
