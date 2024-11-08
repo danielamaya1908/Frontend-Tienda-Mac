@@ -88,7 +88,7 @@ const Home = () => {
     'https://backend-tienda-mac-production.up.railway.app/products/category/Parlantes/subcategory/Parlante%20Portátil',
     /* 'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20audio/subcategory/Auriculares%20intraaurales%20de%20cable', */
 /*     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20audio/subcategory/Bocinas%20portátil', */
-    'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20audio/subcategory/Audífonos%20diademas',
+    /* 'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20audio/subcategory/Audífonos%20diademas', */
     'https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/MacBook',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Mac%20studio',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Mac%20mini',
