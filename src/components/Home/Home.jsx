@@ -115,7 +115,7 @@ const Home = () => {
     return (
       <div className="card border-0 shadow-sm" style={{ 
         width: '220px',
-        height: '340px',
+        height: '380px',
         margin: '0 auto', 
         backgroundColor: 'white',
         display: 'flex',
@@ -172,12 +172,19 @@ const Home = () => {
           )}
         </div>
         <div className="card-body d-flex flex-column justify-content-between p-3">
-          <h6 className="card-title text-truncate mb-2" style={{ 
-            fontSize: '0.9rem',
-            lineHeight: '1.2',
-            height: '2.4em',
-            overflow: 'hidden'
-          }}>{product.name}</h6>
+          <div>
+            <h6 className="card-title text-truncate mb-2" style={{ 
+              fontSize: '0.9rem',
+              lineHeight: '1.2',
+              height: '2.4em',
+              overflow: 'hidden'
+            }}>{product.name}</h6>
+            {product.capacityName && (
+              <p className="card-text mb-2" style={{ fontSize: '0.8rem', color: '#666' }}>
+                <strong>Capacidad:</strong> {product.capacityName}
+              </p>
+            )}
+          </div>
           <div>
             <p className="card-text mb-2" style={{ fontSize: '0.9rem' }}>
               {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}
