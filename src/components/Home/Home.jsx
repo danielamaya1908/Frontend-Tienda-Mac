@@ -69,7 +69,8 @@ const Home = () => {
   };
 
   const interleaveProducts = (productsArrays) => {
-    const maxProductsPerModel = Math.ceil(40 / productsArrays.length);
+    const maxTotalProducts = 20; // Changed from 40 to 20
+    const maxProductsPerModel = Math.ceil(maxTotalProducts / productsArrays.length);
     const result = [];
     let index = 0;
     
@@ -80,16 +81,16 @@ const Home = () => {
       maxProductsPerModel
     );
 
-    while (result.length < 40 && index < maxLength) {
+    while (result.length < maxTotalProducts && index < maxLength) {
       for (let arrayIndex = 0; arrayIndex < limitedArrays.length; arrayIndex++) {
-        if (limitedArrays[arrayIndex][index]) {
+        if (limitedArrays[arrayIndex][index] && result.length < maxTotalProducts) {
           result.push(limitedArrays[arrayIndex][index]);
         }
       }
       index++;
     }
 
-    return result.slice(0, 40);
+    return result.slice(0, maxTotalProducts);
   };
 
   useEffect(() => {
