@@ -256,7 +256,7 @@ const Home = () => {
               }}
             >
               <img
-                src="/src/img/soporte-tecnico.jpg"
+                src="../../img/slidesShow/Soporte_Tecnico.jpg"
                 alt="Soporte Técnico"
                 style={{
                   width: '100%',
