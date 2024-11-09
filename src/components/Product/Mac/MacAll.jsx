@@ -15,7 +15,9 @@ const MacAll = () => {
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/MacBook'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Mac%20studio'),
           axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Mac%20mini'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/iMac')
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/iMac'),
+                    axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/MacBook/name/MacBook%20Air%20de%2013%20pulgadas'),
+          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/MacBook/name/MacBook%20Air%20de%2015%20pulgadas')
         ]);
         const products = responses.flatMap(response => response.data);
         setMacProducts(products);
