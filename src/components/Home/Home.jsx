@@ -277,7 +277,7 @@ const Home = () => {
       <Slideshow />
       <div className="container-fluid py-5">
         <section className="mb-5">
-          <h2 className="text-center mb-4">Productos Más Recientes</h2>
+          <h2 className="text-center mb-4">iPhone 16 & iPhone 16 Pro</h2>
           <Swiper {...swiperParams}>
             {newProducts.map((product) => (
               <SwiperSlide key={product.id}>
