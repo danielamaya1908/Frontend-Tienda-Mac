@@ -128,10 +128,6 @@ const Home = () => {
     }
   };
 
-  const fetchImages = async (products, setImageState) => {
-    await Promise.all(products.map(product => fetchImagesForProduct(product, setImageState)));
-  };
-
   const interleaveProducts = (productsArrays) => {
     const maxTotalProducts = 10;
     const maxProductsPerModel = Math.ceil(maxTotalProducts / productsArrays.length);
@@ -182,10 +178,11 @@ const Home = () => {
         setNewProducts(iPhoneProducts);
         setFeaturedProducts(featured);
 
+        // Fetch images for each product individually
         await Promise.all([
-          fetchImages(allAccessories, setProductImages),
-          fetchImages(iPhoneProducts, setNewProductImages),
-          fetchImages(featured, setFeaturedProductImages)
+          Promise.all(allAccessories.map(product => fetchImagesForProduct(product, setProductImages))),
+          Promise.all(iPhoneProducts.map(product => fetchImagesForProduct(product, setNewProductImages))),
+          Promise.all(featured.map(product => fetchImagesForProduct(product, setFeaturedProductImages)))
         ]);
       } catch (error) {
         console.error('Error fetching data:', error);
