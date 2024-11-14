@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/opacity.css';
 import styles from './Home.module.css';
 import Footer from '../Footer/Footer';
 import Slideshow from './Slideshow';
@@ -21,7 +22,7 @@ const Home = () => {
   const [featuredProductImages, setFeaturedProductImages] = useState({});
 
   const accessoryUrls = [
-      'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos',
+    'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20TV/subcategory/Controles%20remotos',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20carga/subcategory/Cargador%20MagSafe',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20reloj/subcategory/Protector%20de%20pantalla%20para%20Apple%20Watch',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20Grabación%20y%20soporte%20de%20teléfono/subcategory/Soporte%20magnético%20girable%20para%20grabación',
@@ -55,9 +56,8 @@ const Home = () => {
   };
 
   const fetchImages = async (products, setImageState) => {
-    products.forEach(product => {
-      fetchImagesForProduct(product, setImageState);
-    });
+    const promises = products.map(product => fetchImagesForProduct(product, setImageState));
+    await Promise.all(promises);
   };
 
   const interleaveProducts = (productsArrays) => {
@@ -110,10 +110,11 @@ const Home = () => {
         setNewProducts(iPhoneProducts);
         setFeaturedProducts(featured);
 
-        fetchImages(allAccessories, setProductImages);
-        fetchImages(iPhoneProducts, setNewProductImages);
-        fetchImages(featured, setFeaturedProductImages);
-
+        await Promise.all([
+          fetchImages(allAccessories, setProductImages),
+          fetchImages(iPhoneProducts, setNewProductImages),
+          fetchImages(featured, setFeaturedProductImages)
+        ]);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -136,7 +137,7 @@ const Home = () => {
     }
   };
 
-  const renderProductCard = (product, images) => {
+  const renderProductCard = React.memo(({ product, images }) => {
     const productImages = images[product.id] || [];
     const hasValidImage = productImages.length > 0;
 
@@ -210,6 +211,14 @@ const Home = () => {
         </div>
       </div>
     );
+  });
+
+  const renderProductCards = (products, images) => {
+    return products.map((product) => (
+      <SwiperSlide key={product.id}>
+        {renderProductCard({ product, images })}
+      </SwiperSlide>
+    ));
   };
 
   const supportWhatsappUrl = "https://api.whatsapp.com/send?phone=573173026445&text=Hola,%20quisiera%20obtener%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20soporte%20t%C3%A9cnico.%20Tengo%20un%20equipo%20que%20necesita%20revisi%C3%B3n%20y%20me%20gustar%C3%ADa%20conocer%20los%20detalles%20del%20proceso,%20costos,%20y%20tiempos%20de%20reparaci%C3%B3n.%20Agradezco%20su%20respuesta.";
@@ -221,33 +230,21 @@ const Home = () => {
         <section className="mb-5">
           <h2 className="text-center mb-4">iPhone 16 & iPhone 16 Pro</h2>
           <Swiper {...swiperParams}>
-            {newProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, newProductImages)}
-              </SwiperSlide>
-            ))}
+            {renderProductCards(newProducts, newProductImages)}
           </Swiper>
         </section>
 
         <section className="mb-5">
           <SubNavbar />
           <Swiper {...swiperParams}>
-            {featuredProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, featuredProductImages)}
-              </SwiperSlide>
-            ))}
+            {renderProductCards(featuredProducts, featuredProductImages)}
           </Swiper>
         </section>
 
         <section className="mb-5">
           <h2 className="text-center mb-4">Accesorios</h2>
           <Swiper {...swiperParams}>
-            {homeProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, productImages)}
-              </SwiperSlide>
-            ))}
+            {renderProductCards(homeProducts, productImages)}
           </Swiper>
         </section>
 
