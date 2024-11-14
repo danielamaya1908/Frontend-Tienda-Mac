@@ -57,7 +57,7 @@ const Home = () => {
   };
 
   const interleaveProducts = (productsArrays) => {
-    const maxTotalProducts = 20;
+    const maxTotalProducts = 10;
     const maxProductsPerModel = Math.ceil(maxTotalProducts / productsArrays.length);
     const result = [];
     let index = 0;
