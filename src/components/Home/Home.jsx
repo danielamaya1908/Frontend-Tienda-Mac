@@ -5,6 +5,7 @@ import styles from './Home.module.css';
 import Footer from '../Footer/Footer';
 import Slideshow from './Slideshow';
 import SubNavbar from '../SubNavbar/SubNavbar';
+import IphoneAndProSection from './IphoneAndProSection';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import soporteTecnico from '../../img/slidesShow/Servicio_Tecnico.jpg';
@@ -277,14 +278,7 @@ const Home = () => {
       <Slideshow />
       <div className="container-fluid py-5">
         <section className="mb-5">
-          <h2 className="text-center mb-4">iPhone 16 & iPhone 16 Pro</h2>
-          <Swiper {...swiperParams}>
-            {newProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, newProductImages)}
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          <IphoneAndProSection />
         </section>
 
         <section className="mb-5">
