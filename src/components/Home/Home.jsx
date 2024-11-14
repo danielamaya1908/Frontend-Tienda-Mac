@@ -188,7 +188,7 @@ const Home = () => {
               fontSize: '0.9rem',
               lineHeight: '1.2',
               height: '2.4em',
-              overflow: 'hidden'
+              overflow: 'hidden'//ñññ
             }}>{product.name}</h6>
             {product.capacityName && (
               <p className="card-text mb-2" style={{ fontSize: '0.8rem', color: '#000000' }}>
