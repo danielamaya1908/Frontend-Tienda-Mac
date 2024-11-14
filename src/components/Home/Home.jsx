@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/opacity.css';
@@ -27,15 +27,15 @@ const Home = () => {
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20reloj/subcategory/Protector%20de%20pantalla%20para%20Apple%20Watch',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20Grabación%20y%20soporte%20de%20teléfono/subcategory/Soporte%20magnético%20girable%20para%20grabación',
     'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20reloj/subcategory/Protector%20de%20pantalla%20para%20Apple%20Watch',
-    'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20Grabación%20y%20soporte%20de%20teléfono/subcategory/Soporte%20magnético%20girable%20para%20grabación',
+    'https://backend-tienda-mac-production.up.railway.app/products/category/Accesorios%20de%20Grabación%20y%20soporte%20de%20teléfono/subcategory/Soporte%20magnético%20girable%20para%20grabación'
   ];
 
   const newProductUrls = [
-    'https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016%20Pro',
+    'https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016%20Pro'
   ];
 
   const featuredUrls = [
-    'https://backend-tienda-mac-production.up.railway.app/products/recent',
+    'https://backend-tienda-mac-production.up.railway.app/products/recent'
   ];
 
   const fetchImagesForProduct = async (product, setImageState) => {
@@ -45,10 +45,7 @@ const Home = () => {
         const base64Images = imageResponse.data
           .map(image => image?.data ? `data:image/jpeg;base64,${image.data}` : null)
           .filter(Boolean);
-        
-        if (base64Images.length > 0) {
-          setImageState(prevState => ({ ...prevState, [product.id]: base64Images }));
-        }
+        setImageState(prevState => ({ ...prevState, [product.id]: base64Images }));
       }
     } catch (error) {
       console.error(`Error getting images for product ${product.id}:`, error);
@@ -56,18 +53,17 @@ const Home = () => {
   };
 
   const fetchImages = async (products, setImageState) => {
-    const promises = products.map(product => fetchImagesForProduct(product, setImageState));
-    await Promise.all(promises);
+    await Promise.all(products.map(product => fetchImagesForProduct(product, setImageState)));
   };
 
   const interleaveProducts = (productsArrays) => {
-    const maxTotalProducts = 20; // Changed from 40 to 20
+    const maxTotalProducts = 20;
     const maxProductsPerModel = Math.ceil(maxTotalProducts / productsArrays.length);
     const result = [];
     let index = 0;
-    
+
     const limitedArrays = productsArrays.map(array => array.slice(0, maxProductsPerModel));
-    
+
     const maxLength = Math.min(
       Math.max(...limitedArrays.map(arr => arr.length)),
       maxProductsPerModel
@@ -137,7 +133,7 @@ const Home = () => {
     }
   };
 
-  const renderProductCard = React.memo(({ product, images }) => {
+  const renderProductCard = (product, images) => {
     const productImages = images[product.id] || [];
     const hasValidImage = productImages.length > 0;
 
@@ -188,7 +184,7 @@ const Home = () => {
               fontSize: '0.9rem',
               lineHeight: '1.2',
               height: '2.4em',
-              overflow: 'hidden'//ñññ
+              overflow: 'hidden'
             }}>{product.name}</h6>
             {product.capacityName && (
               <p className="card-text mb-2" style={{ fontSize: '0.8rem', color: '#000000' }}>
@@ -211,14 +207,6 @@ const Home = () => {
         </div>
       </div>
     );
-  });
-
-  const renderProductCards = (products, images) => {
-    return products.map((product) => (
-      <SwiperSlide key={product.id}>
-        {renderProductCard({ product, images })}
-      </SwiperSlide>
-    ));
   };
 
   const supportWhatsappUrl = "https://api.whatsapp.com/send?phone=573173026445&text=Hola,%20quisiera%20obtener%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20soporte%20t%C3%A9cnico.%20Tengo%20un%20equipo%20que%20necesita%20revisi%C3%B3n%20y%20me%20gustar%C3%ADa%20conocer%20los%20detalles%20del%20proceso,%20costos,%20y%20tiempos%20de%20reparaci%C3%B3n.%20Agradezco%20su%20respuesta.";
@@ -230,21 +218,33 @@ const Home = () => {
         <section className="mb-5">
           <h2 className="text-center mb-4">iPhone 16 & iPhone 16 Pro</h2>
           <Swiper {...swiperParams}>
-            {renderProductCards(newProducts, newProductImages)}
+            {newProducts.map((product) => (
+              <SwiperSlide key={product.id}>
+                {renderProductCard(product, newProductImages)}
+              </SwiperSlide>
+            ))}
           </Swiper>
         </section>
 
         <section className="mb-5">
           <SubNavbar />
           <Swiper {...swiperParams}>
-            {renderProductCards(featuredProducts, featuredProductImages)}
+            {featuredProducts.map((product) => (
+              <SwiperSlide key={product.id}>
+                {renderProductCard(product, featuredProductImages)}
+              </SwiperSlide>
+            ))}
           </Swiper>
         </section>
 
         <section className="mb-5">
           <h2 className="text-center mb-4">Accesorios</h2>
           <Swiper {...swiperParams}>
-            {renderProductCards(homeProducts, productImages)}
+            {homeProducts.map((product) => (
+              <SwiperSlide key={product.id}>
+                {renderProductCard(product, productImages)}
+              </SwiperSlide>
+            ))}
           </Swiper>
         </section>
 
