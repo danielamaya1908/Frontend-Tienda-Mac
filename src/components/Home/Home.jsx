@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import axios from 'axios';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/opacity.css';
@@ -12,6 +12,82 @@ import soporteTecnico from '../../img/slidesShow/Servicio_Tecnico.jpg';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
+
+const ProductCard = memo(({ product, images }) => {
+  const productImages = images[product.id] || [];
+  const hasValidImage = productImages.length > 0;
+
+  return (
+    <div className="card border-0 shadow-sm" style={{ 
+      width: '220px',
+      height: '380px',
+      margin: '0 auto', 
+      backgroundColor: 'white',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <div style={{ 
+        height: '200px',
+        padding: '15px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          border: '1px solid #000000',
+          borderRadius: '4px',
+          padding: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'white'
+        }}>
+          <LazyLoadImage
+            src={hasValidImage ? productImages[0] : '/placeholder-image.jpg'}
+            alt={product.name}
+            effect="opacity"
+            style={{ 
+              maxWidth: '100%',
+              maxHeight: '150px',
+              objectFit: 'contain',
+              transition: 'transform 0.2s ease'
+            }}
+          />
+        </div>
+      </div>
+      <div className="card-body d-flex flex-column justify-content-between p-3">
+        <div>
+          <h6 className="card-title text-truncate mb-2" style={{ 
+            fontSize: '0.9rem',
+            lineHeight: '1.2',
+            height: '2.4em',
+            overflow: 'hidden'
+          }}>{product.name}</h6>
+          {product.capacityName && (
+            <p className="card-text mb-2" style={{ fontSize: '0.8rem', color: '#000000' }}>
+              <strong>Capacidad:</strong> {product.capacityName}
+            </p>
+          )}
+        </div>
+        <div>
+          <p className="card-text mb-2" style={{ 
+            fontSize: '0.9rem',
+            fontWeight: 'bold'
+          }}>
+            {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}
+          </p>
+          <a href={`/detalle-producto/${product.id}`} 
+             className="btn btn-primary w-100">
+            Comprar
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+});
 
 const Home = () => {
   const [homeProducts, setHomeProducts] = useState([]);
@@ -116,7 +192,8 @@ const Home = () => {
       }
     };
 
-    fetchAllData();
+    const timeout = setTimeout(fetchAllData, 1000);
+    return () => clearTimeout(timeout);
   }, []);
 
   const swiperParams = {
@@ -133,82 +210,6 @@ const Home = () => {
     }
   };
 
-  const renderProductCard = (product, images) => {
-    const productImages = images[product.id] || [];
-    const hasValidImage = productImages.length > 0;
-
-    return (
-      <div className="card border-0 shadow-sm" style={{ 
-        width: '220px',
-        height: '380px',
-        margin: '0 auto', 
-        backgroundColor: 'white',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        <div style={{ 
-          height: '200px',
-          padding: '15px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            border: '1px solid #000000',
-            borderRadius: '4px',
-            padding: '10px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'white'
-          }}>
-            <LazyLoadImage
-              src={hasValidImage ? productImages[0] : '/placeholder-image.jpg'}
-              alt={product.name}
-              effect="opacity"
-              style={{ 
-                maxWidth: '100%',
-                maxHeight: '150px',
-                objectFit: 'contain',
-                transition: 'transform 0.2s ease'
-              }}
-            />
-          </div>
-        </div>
-        <div className="card-body d-flex flex-column justify-content-between p-3">
-          <div>
-            <h6 className="card-title text-truncate mb-2" style={{ 
-              fontSize: '0.9rem',
-              lineHeight: '1.2',
-              height: '2.4em',
-              overflow: 'hidden'
-            }}>{product.name}</h6>
-            {product.capacityName && (
-              <p className="card-text mb-2" style={{ fontSize: '0.8rem', color: '#000000' }}>
-                <strong>Capacidad:</strong> {product.capacityName}
-              </p>
-            )}
-          </div>
-          <div>
-            <p className="card-text mb-2" style={{ 
-              fontSize: '0.9rem',
-              fontWeight: 'bold'
-            }}>
-              {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product.price)}
-            </p>
-            <a href={`/detalle-producto/${product.id}`} 
-               className="btn btn-primary w-100">
-              Comprar
-            </a>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const supportWhatsappUrl = "https://api.whatsapp.com/send?phone=573173026445&text=Hola,%20quisiera%20obtener%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20soporte%20t%C3%A9cnico.%20Tengo%20un%20equipo%20que%20necesita%20revisi%C3%B3n%20y%20me%20gustar%C3%ADa%20conocer%20los%20detalles%20del%20proceso,%20costos,%20y%20tiempos%20de%20reparaci%C3%B3n.%20Agradezco%20su%20respuesta.";
 
   return (
@@ -220,7 +221,7 @@ const Home = () => {
           <Swiper {...swiperParams}>
             {newProducts.map((product) => (
               <SwiperSlide key={product.id}>
-                {renderProductCard(product, newProductImages)}
+                <ProductCard product={product} images={newProductImages} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -231,7 +232,7 @@ const Home = () => {
           <Swiper {...swiperParams}>
             {featuredProducts.map((product) => (
               <SwiperSlide key={product.id}>
-                {renderProductCard(product, featuredProductImages)}
+                <ProductCard product={product} images={featuredProductImages} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -242,7 +243,7 @@ const Home = () => {
           <Swiper {...swiperParams}>
             {homeProducts.map((product) => (
               <SwiperSlide key={product.id}>
-                {renderProductCard(product, productImages)}
+                <ProductCard product={product} images={productImages} />
               </SwiperSlide>
             ))}
           </Swiper>
