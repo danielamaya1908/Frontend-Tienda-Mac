@@ -6,6 +6,7 @@ import Footer from '../Footer/Footer';
 import Slideshow from './Slideshow';
 import SubNavbar from '../SubNavbar/SubNavbar';
 import IphoneAndProSection from './IphoneAndProSection';
+import FeaturedProductsSection from './FeaturedProductsSection';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import soporteTecnico from '../../img/slidesShow/Servicio_Tecnico.jpg';
@@ -283,13 +284,7 @@ const Home = () => {
 
         <section className="mb-5">
           <SubNavbar />
-          <Swiper {...swiperParams}>
-            {featuredProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, featuredProductImages)}
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          <FeaturedProductsSection />
         </section>
 
         <section className="mb-5">
