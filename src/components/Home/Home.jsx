@@ -6,7 +6,7 @@ import SubNavbar from '../SubNavbar/SubNavbar';
 import IphoneAndProSection from './SectionsProducts/IphoneAndProSection';
 import FeaturedProductsSection from './SectionsProducts/FeaturedProductsSection';
 import AccessoriesSection from './SectionsProducts/AccessoriesSection';
-import soporteTecnico from '../../img/slidesShow/Servicio_Tecnico.jpg';
+import soporteTecnico from './Slideshows/img/Servicio_Tecnico.jpg';
 
 const Home = () => {
   const supportWhatsappUrl = "https://api.whatsapp.com/send?phone=573173026445&text=Hola,%20quisiera%20obtener%20informaci%C3%B3n%20sobre%20el%20servicio%20de%20soporte%20t%C3%A9cnico.%20Tengo%20un%20equipo%20que%20necesita%20revisi%C3%B3n%20y%20me%20gustar%C3%ADa%20conocer%20los%20detalles%20del%20proceso,%20costos,%20y%20tiempos%20de%20reparaci%C3%B3n.%20Agradezco%20su%20respuesta.";
