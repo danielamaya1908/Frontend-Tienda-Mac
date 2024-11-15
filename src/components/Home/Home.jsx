@@ -3,9 +3,9 @@ import styles from './Home.module.css';
 import Footer from '../Footer/Footer';
 import Slideshow from './Slideshow';
 import SubNavbar from '../SubNavbar/SubNavbar';
-import IphoneAndProSection from './IphoneAndProSection';
-import FeaturedProductsSection from './FeaturedProductsSection';
-import AccessoriesSection from './AccessoriesSection';
+import IphoneAndProSection from './SectionsProducts/IphoneAndProSection';
+import FeaturedProductsSection from './SectionsProducts/FeaturedProductsSection';
+import AccessoriesSection from './SectionsProducts/AccessoriesSection';
 import soporteTecnico from '../../img/slidesShow/Servicio_Tecnico.jpg';
 
 const Home = () => {
