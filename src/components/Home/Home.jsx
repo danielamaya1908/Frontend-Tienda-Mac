@@ -7,6 +7,7 @@ import Slideshow from './Slideshow';
 import SubNavbar from '../SubNavbar/SubNavbar';
 import IphoneAndProSection from './IphoneAndProSection';
 import FeaturedProductsSection from './FeaturedProductsSection';
+import AccessoriesSection from './AccessoriesSection';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import soporteTecnico from '../../img/slidesShow/Servicio_Tecnico.jpg';
@@ -288,6 +289,8 @@ const Home = () => {
         </section>
 
         <section className="mb-5">
+          <AccessoriesSection
+ />
         </section>
 
         <section className="mb-5">
