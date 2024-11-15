@@ -288,14 +288,6 @@ const Home = () => {
         </section>
 
         <section className="mb-5">
-          <h2 className="text-center mb-4">Accesorios</h2>
-          <Swiper {...swiperParams}>
-            {homeProducts.map((product) => (
-              <SwiperSlide key={product.id}>
-                {renderProductCard(product, productImages)}
-              </SwiperSlide>
-            ))}
-          </Swiper>
         </section>
 
         <section className="mb-5">
