@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import slidesShow1 from '../../../img/slidesShow/iPhone.jpg'; // Primera imagen
-import slidesShow2 from '../../../img/slidesShow/Producto_VIP_3.jpg'; // Segunda imagen
-import slidesShow3 from '../../../img/slidesShow/Producto_VIP_2.jpg'; // Tercera imagen
-import slidesShow4 from '../../../img/slidesShow/Sonido.jpg'; // Cuarta imagen
-import slidesShow5 from '../../../img/slidesShow/Accesorios.jpg'; // Quinta imagen
-import slidesShow6 from '../../../img/slidesShow/Servicio_Tecnico.jpg'; // Sexta imagen
-import slidesShow7 from '../../../img/slidesShow/Delivery.jpg'; // Séptima imagen
-import slidesShow8 from '../../../img/slidesShow/SLIDESHOW_USADO.jpg'; // Octava imagen
+import slidesShow1 from './img/slidesShow/iPhone.jpg'; // Primera imagen
+import slidesShow2 from './img/slidesShow/Producto_VIP_3.jpg'; // Segunda imagen
+import slidesShow3 from './img/slidesShow/Producto_VIP_2.jpg'; // Tercera imagen
+import slidesShow4 from './img/slidesShow/Sonido.jpg'; // Cuarta imagen
+import slidesShow5 from './img/slidesShow/Accesorios.jpg'; // Quinta imagen
+import slidesShow6 from './img/slidesShow/Servicio_Tecnico.jpg'; // Sexta imagen
+import slidesShow7 from './img/slidesShow/Delivery.jpg'; // Séptima imagen
+import slidesShow8 from './img/slidesShow/SLIDESHOW_USADO.jpg'; // Octava imagen
 
 const Slideshow = () => {
   const [images, setImages] = useState([]);
