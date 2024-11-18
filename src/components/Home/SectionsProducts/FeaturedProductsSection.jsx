@@ -7,7 +7,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
-// Crear una instancia de axios con configuración base
+// Crear instancia de axios con configuración base
 const api = axios.create({
   baseURL: 'https://backend-tienda-mac-production.up.railway.app'
 });
@@ -36,20 +36,23 @@ const FeaturedProductsSection = () => {
 
     const fetchData = async () => {
       try {
-        // Hacer todas las peticiones en paralelo
-        const productRequests = [
+        // URLs de las diferentes categorías
+        const urls = [
           '/products/recent',
           '/products/category/Parlantes/subcategory/Parlante%20Portátil',
           '/products/category/Computación/subcategory/MacBook',
           '/products/category/Computación/subcategory/Mac%20studio',
           '/products/category/Computación/subcategory/Mac%20mini',
           '/products/category/Computación/subcategory/iMac'
-        ].map(endpoint => 
-          api.get(endpoint)
-        );
+        ];
 
+        // Hacer todas las peticiones en paralelo
+        const productRequests = urls.map(url => api.get(url));
         const responses = await Promise.all(productRequests);
-        const allProducts = responses.flatMap(response => response.data);
+        
+        // Combinar todos los productos y limitar a un número razonable (por ejemplo, 12)
+        const allProducts = responses.flatMap(response => response.data)
+          .slice(0, 12); // Ajusta este número según necesites
 
         if (!isMounted) return;
         
@@ -63,7 +66,7 @@ const FeaturedProductsSection = () => {
             chunk.map(async (product) => {
               if (!productImages.has(product.id)) {
                 try {
-                  const imageResponse = await api.get(`/products/${product.id}/imagesHome`);
+                  const imageResponse = await api.get(`/products/${product.id}/images`);
                   if (imageResponse.data?.length > 0) {
                     const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
                     productImages.set(product.id, base64Image);
