@@ -1,97 +1,153 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { Container, Row, Col, Card, Button, ProgressBar, Modal, Table, Badge } from 'react-bootstrap';
-import { 
-  FaArrowLeft, FaMobileAlt, FaTools, FaUser, FaCheckCircle, 
-  FaTimesCircle, FaCamera, FaBluetooth, FaWifi, FaKeyboard, FaVolumeUp, 
-  FaHeadphones, FaPowerOff, FaPlug, FaUsb, FaTv, FaExclamationTriangle,
-  FaLaptopCode
-} from 'react-icons/fa';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  ProgressBar,
+  Modal,
+  Table,
+  Badge,
+  Alert,
+} from "react-bootstrap";
+import {
+  FaArrowLeft,
+  FaMobileAlt,
+  FaTools,
+  FaUser,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaCamera,
+  FaBluetooth,
+  FaWifi,
+  FaKeyboard,
+  FaVolumeUp,
+  FaHeadphones,
+  FaPowerOff,
+  FaPlug,
+  FaUsb,
+  FaTv,
+  FaExclamationTriangle,
+  FaLaptopCode,
+} from "react-icons/fa";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const SoporteTecnicoDetalle = () => {
   const { id } = useParams();
   const [soporte, setSoporte] = useState(null);
   const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const [selectedImage, setSelectedImage] = useState("");
   const [estadoImages, setEstadoImages] = useState({});
   const [imagenesIngreso, setImagenesIngreso] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  const estados = ['Ingreso', 'Diagnosticando', 'Pendiente', 'Reparando', 'Reparado', 'Entregado'];
+  const estados = [
+    "Ingreso",
+    "Diagnosticando",
+    "Pendiente",
+    "Reparando",
+    "Reparado",
+    "Entregado",
+  ];
+
+  const checkAuthentication = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No hay sesión activa. Por favor, inicie sesión nuevamente.");
+      navigate("/login");
+      return null;
+    }
+    return token;
+  };
+
+  const fetchSoporteTecnico = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    const token = checkAuthentication();
+    if (!token) return;
+
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
+      const response = await axios.get(
+        `https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`,
+        config
+      );
+
+      if (response.data) {
+        setSoporte(response.data);
+        if (response.data.User) {
+          setUser(response.data.User);
+        }
+
+        if (response.data.ImageSoporteTecnicos) {
+          const imagenesIngreso = response.data.ImageSoporteTecnicos.sort(
+            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+          ).slice(0, 10);
+          setImagenesIngreso(imagenesIngreso);
+        }
+
+        const latestImageResponse = await axios.get(
+          `https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/latest-image`,
+          config
+        );
+
+        if (latestImageResponse.data.imagenes) {
+          const imagenes = latestImageResponse.data.imagenes.sort(
+            (a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida)
+          );
+
+          const newEstadoImages = {
+            Diagnosticando: [],
+            Reparando: [],
+            Reparado: [],
+            Entregado: [],
+          };
+
+          const estadosConImagenes = [
+            "Diagnosticando",
+            "Reparando",
+            "Reparado",
+            "Entregado",
+          ];
+          let estadoIndex = 0;
+
+          imagenes.forEach((imagen) => {
+            if (estadoIndex < estadosConImagenes.length) {
+              newEstadoImages[estadosConImagenes[estadoIndex]].push(imagen);
+              estadoIndex++;
+            }
+          });
+
+          setEstadoImages(newEstadoImages);
+        }
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Error al cargar los detalles del soporte técnico";
+      setError(errorMessage);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchSoporteTecnico = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          console.error('Token no encontrado');
-          return;
-        }
-
-        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        if (response.status === 200) {
-          setSoporte(response.data);
-          if (response.data.User) {
-            setUser(response.data.User);
-          }
-
-          // Fetch ingreso images
-          const imagenesIngresoResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-
-          if (imagenesIngresoResponse.status === 200 && imagenesIngresoResponse.data.ImageSoporteTecnicos) {
-            const imagenesIngreso = imagenesIngresoResponse.data.ImageSoporteTecnicos
-              .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-              .slice(0, 10);
-            setImagenesIngreso(imagenesIngreso);
-          }
-
-          // Fetch images for other states
-          const latestImageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/latest-image`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-
-          if (latestImageResponse.status === 200 && latestImageResponse.data.imagenes) {
-            const imagenes = latestImageResponse.data.imagenes.sort((a, b) => 
-              new Date(a.fechaSubida) - new Date(b.fechaSubida)
-            );
-            
-            const newEstadoImages = {
-              Diagnosticando: [],
-              'Reparando': [],
-              'Reparado': [],
-              Entregado: []
-            };
-
-            const estadosConImagenes = ['Diagnosticando', 'Reparando', 'Reparado', 'Entregado'];
-            let estadoIndex = 0;
-
-            imagenes.forEach(imagen => {
-              if (estadoIndex < estadosConImagenes.length) {
-                newEstadoImages[estadosConImagenes[estadoIndex]].push(imagen);
-                estadoIndex++;
-              }
-            });
-            
-            setEstadoImages(newEstadoImages);
-          }
-        } else {
-          console.error('Error al obtener los detalles del soporte técnico:', response);
-        }
-      } catch (error) {
-        console.error('Error al obtener los detalles del soporte técnico:', error);
-      }
-    };
-
     fetchSoporteTecnico();
-  }, [id]);
+  }, [id, navigate]);
 
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
@@ -102,28 +158,50 @@ const SoporteTecnicoDetalle = () => {
 
   const getEstadoColor = (estado) => {
     switch (estado) {
-      case 'Ingreso': return '#007bff';
-      case 'Diagnosticando': return '#ffc107';
-      case 'Pendiente': return '#dc3545';
-      case 'Reparando': return '#17a2b8';
-      case 'Reparado': return '#28a745';
-      case 'Entregado': return '#28a745';
-      default: return '#6c757d';
+      case "Ingreso":
+        return "#007bff";
+      case "Diagnosticando":
+        return "#ffc107";
+      case "Pendiente":
+        return "#dc3545";
+      case "Reparando":
+        return "#17a2b8";
+      case "Reparado":
+        return "#28a745";
+      case "Entregado":
+        return "#28a745";
+      default:
+        return "#6c757d";
     }
   };
 
-  const TimelineItem = ({ estado, imagenes, currentState, index, currentStateIndex, diagnosticoDescripcion }) => {
+  const TimelineItem = ({
+    estado,
+    imagenes,
+    currentState,
+    index,
+    currentStateIndex,
+    diagnosticoDescripcion,
+  }) => {
     const getProgressBarVariant = (index, currentStateIndex) => {
       if (index < currentStateIndex) return "success";
       if (index === currentStateIndex) return "primary";
       return "secondary";
     };
-  
+
     return (
-      <Card className={`mb-3 ${currentState === estado ? 'border-primary border-5' : ''}`}>
+      <Card
+        className={`mb-3 ${
+          currentState === estado ? "border-primary border-5" : ""
+        }`}
+      >
         <Card.Body>
           <div className="d-flex flex-column mb-2">
-            <Card.Title className={currentState === estado ? 'text-primary font-weight-bold' : ''}>
+            <Card.Title
+              className={
+                currentState === estado ? "text-primary font-weight-bold" : ""
+              }
+            >
               {estado}
             </Card.Title>
             {currentState === estado && (
@@ -133,27 +211,33 @@ const SoporteTecnicoDetalle = () => {
               </Badge>
             )}
           </div>
-          <ProgressBar 
-            now={100} 
+          <ProgressBar
+            now={100}
             variant={getProgressBarVariant(index, currentStateIndex)}
-            style={{height: '10px', marginBottom: '1rem'}}
+            style={{ height: "10px", marginBottom: "1rem" }}
           />
-          {estado === 'Pendiente' ? (
+          {estado === "Pendiente" ? (
             <Card.Text>
               <FaExclamationTriangle className="text-warning me-2" />
               Esperando confirmación del cliente
             </Card.Text>
           ) : (
             <>
-              {estado === 'Diagnosticando' && (
+              {estado === "Diagnosticando" && (
                 <Card className="mb-3">
                   <Card.Body>
-                    <Card.Title><FaLaptopCode className="me-2" />Descripción del Diagnóstico</Card.Title>
-                    <Card.Text>{diagnosticoDescripcion || 'No hay descripción del diagnóstico disponible.'}</Card.Text>
+                    <Card.Title>
+                      <FaLaptopCode className="me-2" />
+                      Descripción del Diagnóstico
+                    </Card.Title>
+                    <Card.Text>
+                      {diagnosticoDescripcion ||
+                        "No hay descripción del diagnóstico disponible."}
+                    </Card.Text>
                   </Card.Body>
                 </Card>
               )}
-              {estado === 'Reparado' && (
+              {estado === "Reparado" && (
                 <Card.Text>
                   <FaCheckCircle className="text-success me-2" />
                   El equipo está listo para ser recogido por el cliente
@@ -166,8 +250,18 @@ const SoporteTecnicoDetalle = () => {
                       <Card.Img
                         src={`https://backend-tienda-mac-production.up.railway.app${imagen.url}`}
                         alt={`Estado ${estado}`}
-                        onClick={() => handleImageClick(`https://backend-tienda-mac-production.up.railway.app${imagen.url}`)}
-                        style={{ cursor: 'pointer', border: currentState === estado ? '2px solid #007bff' : 'none' }}
+                        onClick={() =>
+                          handleImageClick(
+                            `https://backend-tienda-mac-production.up.railway.app${imagen.url}`
+                          )
+                        }
+                        style={{
+                          cursor: "pointer",
+                          border:
+                            currentState === estado
+                              ? "2px solid #007bff"
+                              : "none",
+                        }}
                       />
                     </Col>
                   ))}
@@ -180,10 +274,53 @@ const SoporteTecnicoDetalle = () => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <Container className="mt-4">
+        <Card>
+          <Card.Body className="text-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </div>
+            <p className="mt-2">Cargando detalles del soporte técnico...</p>
+          </Card.Body>
+        </Card>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="mt-4">
+        <Alert variant="danger">
+          <Alert.Heading>Error</Alert.Heading>
+          <p>{error}</p>
+          <hr />
+          <div className="d-flex justify-content-end">
+            <Button onClick={() => navigate(-1)} variant="outline-danger">
+              Volver
+            </Button>
+          </div>
+        </Alert>
+      </Container>
+    );
+  }
+
   if (!soporte) {
     return (
       <Container className="mt-4">
-        <p>Cargando detalles...</p>
+        <Alert variant="warning">
+          <Alert.Heading>No se encontraron datos</Alert.Heading>
+          <p>
+            No se pudo encontrar la información del soporte técnico solicitado.
+          </p>
+          <hr />
+          <div className="d-flex justify-content-end">
+            <Button onClick={() => navigate(-1)} variant="outline-warning">
+              Volver
+            </Button>
+          </div>
+        </Alert>
       </Container>
     );
   }
@@ -192,9 +329,9 @@ const SoporteTecnicoDetalle = () => {
     Ingreso: imagenesIngreso,
     Diagnosticando: estadoImages.Diagnosticando || [],
     Pendiente: [],
-    'Reparando': estadoImages['Reparando'] || [],
-    'Reparado': estadoImages['Reparado'] || [],
-    Entregado: estadoImages.Entregado || []
+    Reparando: estadoImages["Reparando"] || [],
+    Reparado: estadoImages["Reparado"] || [],
+    Entregado: estadoImages.Entregado || [],
   };
 
   const estadoIndex = estados.indexOf(soporte.estado);
@@ -215,18 +352,25 @@ const SoporteTecnicoDetalle = () => {
         <Card.Body>
           <Card.Title className="text-center mb-4">
             <h2>
-              <Badge bg="primary" style={{fontSize: '1.5rem', padding: '10px 20px', display: 'block'}}>
+              <Badge
+                bg="primary"
+                style={{
+                  fontSize: "1.5rem",
+                  padding: "10px 20px",
+                  display: "block",
+                }}
+              >
                 <div>Estado Actual:</div>
-                <br/>
+                <br />
                 <div>{soporte.estado}</div>
               </Badge>
             </h2>
           </Card.Title>
-          <ProgressBar 
-            now={progreso} 
-            label={`${progreso.toFixed(0)}%`} 
-            className="mb-3" 
-            style={{height: '30px', fontSize: '1.2rem'}}
+          <ProgressBar
+            now={progreso}
+            label={`${progreso.toFixed(0)}%`}
+            className="mb-3"
+            style={{ height: "30px", fontSize: "1.2rem" }}
           />
           {estados.map((estado, index) => (
             <TimelineItem
@@ -247,13 +391,28 @@ const SoporteTecnicoDetalle = () => {
         <Col xs={12}>
           <Card className="mb-4">
             <Card.Body>
-              <Card.Title><FaMobileAlt className="me-2" />Detalles del Dispositivo</Card.Title>
+              <Card.Title>
+                <FaMobileAlt className="me-2" />
+                Detalles del Dispositivo
+              </Card.Title>
               <Table striped bordered hover>
                 <tbody>
-                  <tr><th>Marca</th><td>{soporte.marca}</td></tr>
-                  <tr><th>Modelo</th><td>{soporte.modelo}</td></tr>
-                  <tr><th>Serial</th><td>{soporte.serial}</td></tr>
-                  <tr><th>Estado</th><td>{soporte.estado}</td></tr>
+                  <tr>
+                    <th>Marca</th>
+                    <td>{soporte.marca}</td>
+                  </tr>
+                  <tr>
+                    <th>Modelo</th>
+                    <td>{soporte.modelo}</td>
+                  </tr>
+                  <tr>
+                    <th>Serial</th>
+                    <td>{soporte.serial}</td>
+                  </tr>
+                  <tr>
+                    <th>Estado</th>
+                    <td>{soporte.estado}</td>
+                  </tr>
                 </tbody>
               </Table>
             </Card.Body>
@@ -265,48 +424,131 @@ const SoporteTecnicoDetalle = () => {
         <Col xs={12}>
           <Card className="mb-4">
             <Card.Body>
-              <Card.Title><FaTools className="me-2" />Componentes</Card.Title>
+              <Card.Title>
+                <FaTools className="me-2" />
+                Componentes
+              </Card.Title>
               <Table striped bordered hover>
                 <tbody>
                   <tr>
-                    <th><FaCamera /> Cámara</th>
-                    <td>{soporte.camara ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaCamera /> Cámara
+                    </th>
+                    <td>
+                      {soporte.camara ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaBluetooth /> Bluetooth</th>
-                    <td>{soporte.bluetooth ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaBluetooth /> Bluetooth
+                    </th>
+                    <td>
+                      {soporte.bluetooth ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaWifi /> Wifi</th>
-                    <td>{soporte.wifi ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaWifi /> Wifi
+                    </th>
+                    <td>
+                      {soporte.wifi ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaKeyboard /> Teclado</th>
-                    <td>{soporte.teclado ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaKeyboard /> Teclado
+                    </th>
+                    <td>
+                      {soporte.teclado ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaVolumeUp /> Parlantes</th>
-                    <td>{soporte.parlantes ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaVolumeUp /> Parlantes
+                    </th>
+                    <td>
+                      {soporte.parlantes ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaHeadphones /> Auricular</th>
-                    <td>{soporte.auricular ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaHeadphones /> Auricular
+                    </th>
+                    <td>
+                      {soporte.auricular ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaPowerOff /> Botones</th>
-                    <td>{soporte.botones ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaPowerOff /> Botones
+                    </th>
+                    <td>
+                      {soporte.botones ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaPlug /> Pin de Carga</th>
-                    <td>{soporte.pinCarga ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaPlug /> Pin de Carga
+                    </th>
+                    <td>
+                      {soporte.pinCarga ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaUsb /> Puertos</th>
-                    <td>{soporte.puertos ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaUsb /> Puertos
+                    </th>
+                    <td>
+                      {soporte.puertos ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
-                    <th><FaTv /> Pantalla</th>
-                    <td>{soporte.pantalla ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <th>
+                      <FaTv /> Pantalla
+                    </th>
+                    <td>
+                      {soporte.pantalla ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                 </tbody>
               </Table>
@@ -317,9 +559,12 @@ const SoporteTecnicoDetalle = () => {
 
       <Row>
         <Col xs={12}>
-        <Card className="mb-4">
+          <Card className="mb-4">
             <Card.Body>
-              <Card.Title><FaTools className="me-2" />Fechas y Garantía</Card.Title>
+              <Card.Title>
+                <FaTools className="me-2" />
+                Fechas y Garantía
+              </Card.Title>
               <Table striped bordered hover>
                 <tbody>
                   <tr>
@@ -328,36 +573,67 @@ const SoporteTecnicoDetalle = () => {
                   </tr>
                   <tr>
                     <th>Fecha de Salida</th>
-                    <td>{soporte.fechaSalida ? new Date(soporte.fechaSalida).toLocaleDateString() : 'No disponible'}</td>
+                    <td>
+                      {soporte.fechaSalida
+                        ? new Date(soporte.fechaSalida).toLocaleDateString()
+                        : "No disponible"}
+                    </td>
                   </tr>
                   <tr>
                     <th>Garantía</th>
-                    <td>{soporte.garantia ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <td>
+                      {soporte.garantia ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                 </tbody>
               </Table>
             </Card.Body>
           </Card>
         </Col>
-        </Row>
-        <Row>
+      </Row>
+      <Row>
         <Col xs={12}>
           <Card className="mb-4">
             <Card.Body>
-              <Card.Title><FaTools className="me-2" />Estado Físico</Card.Title>
+              <Card.Title>
+                <FaTools className="me-2" />
+                Estado Físico
+              </Card.Title>
               <Table striped bordered hover>
                 <tbody>
                   <tr>
                     <th>Rayones</th>
-                    <td>{soporte.rayones ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <td>
+                      {soporte.rayones ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
                     <th>Golpes</th>
-                    <td>{soporte.golpes ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <td>
+                      {soporte.golpes ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                   <tr>
                     <th>Enciende</th>
-                    <td>{soporte.enciende ? <FaCheckCircle className="text-success" /> : <FaTimesCircle className="text-danger" />}</td>
+                    <td>
+                      {soporte.enciende ? (
+                        <FaCheckCircle className="text-success" />
+                      ) : (
+                        <FaTimesCircle className="text-danger" />
+                      )}
+                    </td>
                   </tr>
                 </tbody>
               </Table>
@@ -371,17 +647,46 @@ const SoporteTecnicoDetalle = () => {
           <Col xs={12}>
             <Card className="mb-4">
               <Card.Body>
-                <Card.Title><FaUser className="me-2" />Información del Usuario</Card.Title>
+                <Card.Title>
+                  <FaUser className="me-2" />
+                  Información del Usuario
+                </Card.Title>
                 <Table striped bordered hover>
                   <tbody>
-                    <tr><th>ID</th><td>{user.id}</td></tr>
-                    <tr><th>Nombre</th><td>{user.firstName} {user.lastName}</td></tr>
-                    <tr><th>Documento</th><td>{user.documentNumber}</td></tr>
-                    <tr><th>Teléfono</th><td>{user.phoneNumber}</td></tr>
-                    <tr><th>Dirección</th><td>{user.address}</td></tr>
-                    <tr><th>Ciudad</th><td>{user.city}</td></tr>
-                    <tr><th>País</th><td>{user.country}</td></tr>
-                    <tr><th>Email</th><td>{user.email}</td></tr>
+                    <tr>
+                      <th>ID</th>
+                      <td>{user.id}</td>
+                    </tr>
+                    <tr>
+                      <th>Nombre</th>
+                      <td>
+                        {user.firstName} {user.lastName}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Documento</th>
+                      <td>{user.documentNumber}</td>
+                    </tr>
+                    <tr>
+                      <th>Teléfono</th>
+                      <td>{user.phoneNumber}</td>
+                    </tr>
+                    <tr>
+                      <th>Dirección</th>
+                      <td>{user.address}</td>
+                    </tr>
+                    <tr>
+                      <th>Ciudad</th>
+                      <td>{user.city}</td>
+                    </tr>
+                    <tr>
+                      <th>País</th>
+                      <td>{user.country}</td>
+                    </tr>
+                    <tr>
+                      <th>Email</th>
+                      <td>{user.email}</td>
+                    </tr>
                   </tbody>
                 </Table>
               </Card.Body>
@@ -390,21 +695,20 @@ const SoporteTecnicoDetalle = () => {
         </Row>
       )}
 
-      <Modal 
-        show={showModal} 
-        onHide={handleCloseModal} 
-        size="lg"
-        centered
-      >
+      <Modal show={showModal} onHide={handleCloseModal} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Imagen del Estado</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <img 
-            src={selectedImage} 
-            alt="Imagen Grande" 
-            className="img-fluid" 
-            style={{ maxHeight: '80vh', maxWidth: '100%', objectFit: 'contain' }} 
+          <img
+            src={selectedImage}
+            alt="Imagen Grande"
+            className="img-fluid"
+            style={{
+              maxHeight: "80vh",
+              maxWidth: "100%",
+              objectFit: "contain",
+            }}
           />
         </Modal.Body>
         <Modal.Footer>
@@ -418,4 +722,3 @@ const SoporteTecnicoDetalle = () => {
 };
 
 export default SoporteTecnicoDetalle;
-
