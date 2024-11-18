@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import axios from 'axios';
@@ -7,90 +7,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
+// Crear una instancia de axios con configuración base
+const api = axios.create({
+  baseURL: 'https://backend-tienda-mac-production.up.railway.app'
+});
+
 const FeaturedProductsSection = () => {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [featuredProductImages, setFeaturedProductImages] = useState({});
+  const [products, setProducts] = useState([]);
+  const [productImages] = useState(new Map());
 
-  const featuredUrls = [
-    'https://backend-tienda-mac-production.up.railway.app/products/recent',
-    'https://backend-tienda-mac-production.up.railway.app/products/category/Parlantes/subcategory/Parlante%20Portátil',
-    'https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/MacBook',
-    'https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Mac%20studio',
-    'https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/Mac%20mini',
-    'https://backend-tienda-mac-production.up.railway.app/products/category/Computación/subcategory/iMac'
-  ];
-
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const responses = await Promise.all(
-          featuredUrls.map(url => axios.get(url))
-        );
-
-        const allProducts = interleaveProducts(
-          responses.map(response => response.data)
-        );
-
-        setFeaturedProducts(allProducts);
-        fetchImages(allProducts);
-      } catch (error) {
-        console.error('Error fetching featured products:', error);
-      }
-    };
-
-    fetchFeaturedProducts();
-  }, []);
-
-  const interleaveProducts = (productsArrays) => {
-    const maxTotalProducts = 20;
-    const maxProductsPerModel = Math.ceil(maxTotalProducts / productsArrays.length);
-    const result = [];
-    let index = 0;
-    
-    const limitedArrays = productsArrays.map(array => array.slice(0, maxProductsPerModel));
-    
-    const maxLength = Math.min(
-      Math.max(...limitedArrays.map(arr => arr.length)),
-      maxProductsPerModel
-    );
-
-    while (result.length < maxTotalProducts && index < maxLength) {
-      for (let arrayIndex = 0; arrayIndex < limitedArrays.length; arrayIndex++) {
-        if (limitedArrays[arrayIndex][index] && result.length < maxTotalProducts) {
-          result.push(limitedArrays[arrayIndex][index]);
-        }
-      }
-      index++;
-    }
-
-    return result.slice(0, maxTotalProducts);
-  };
-
-  const fetchImages = async (products) => {
-    products.forEach(async (product) => {
-      try {
-        const imageResponse = await axios.get(
-          `https://backend-tienda-mac-production.up.railway.app/products/${product.id}/images`
-        );
-        if (imageResponse.data && imageResponse.data.length > 0) {
-          const base64Images = imageResponse.data
-            .map(image => image?.data ? `data:image/jpeg;base64,${image.data}` : null)
-            .filter(Boolean);
-          
-          if (base64Images.length > 0) {
-            setFeaturedProductImages(prevState => ({
-              ...prevState,
-              [product.id]: base64Images
-            }));
-          }
-        }
-      } catch (error) {
-        console.error(`Error getting images for product ${product.id}:`, error);
-      }
-    });
-  };
-
-  const swiperParams = {
+  // Memorizar los parámetros del swiper
+  const swiperParams = useMemo(() => ({
     modules: [Navigation, Autoplay],
     spaceBetween: 20,
     slidesPerView: 4,
@@ -102,12 +29,71 @@ const FeaturedProductsSection = () => {
       640: { slidesPerView: 3, spaceBetween: 20 },
       768: { slidesPerView: 4, spaceBetween: 20 }
     }
-  };
+  }), []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      try {
+        // Hacer todas las peticiones en paralelo
+        const productRequests = [
+          '/products/recent',
+          '/products/category/Parlantes/subcategory/Parlante%20Portátil',
+          '/products/category/Computación/subcategory/MacBook',
+          '/products/category/Computación/subcategory/Mac%20studio',
+          '/products/category/Computación/subcategory/Mac%20mini',
+          '/products/category/Computación/subcategory/iMac'
+        ].map(endpoint => 
+          api.get(endpoint)
+        );
+
+        const responses = await Promise.all(productRequests);
+        const allProducts = responses.flatMap(response => response.data);
+
+        if (!isMounted) return;
+        
+        setProducts(allProducts);
+
+        // Cargar imágenes en chunks para no sobrecargar el servidor
+        const chunkSize = 4;
+        for (let i = 0; i < allProducts.length; i += chunkSize) {
+          const chunk = allProducts.slice(i, i + chunkSize);
+          await Promise.all(
+            chunk.map(async (product) => {
+              if (!productImages.has(product.id)) {
+                try {
+                  const imageResponse = await api.get(`/products/${product.id}/imagesHome`);
+                  if (imageResponse.data?.length > 0) {
+                    const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
+                    productImages.set(product.id, base64Image);
+                    // Forzar re-render solo para este producto
+                    if (isMounted) {
+                      setProducts(prev => [...prev]);
+                    }
+                  }
+                } catch (error) {
+                  console.error(`Error loading image for product ${product.id}:`, error);
+                }
+              }
+            })
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const renderProductCard = (product) => {
-    const productImages = featuredProductImages[product.id] || [];
-    const hasValidImage = productImages.length > 0;
-
+    const productImage = productImages.get(product.id);
+    
     return (
       <div className="card border-0 shadow-sm" style={{ 
         width: '220px',
@@ -137,7 +123,7 @@ const FeaturedProductsSection = () => {
             backgroundColor: 'white'
           }}>
             <LazyLoadImage
-              src={hasValidImage ? productImages[0] : '/placeholder-image.jpg'}
+              src={productImage || '/placeholder-image.jpg'}
               alt={product.name}
               effect="opacity"
               style={{ 
@@ -146,6 +132,15 @@ const FeaturedProductsSection = () => {
                 objectFit: 'contain',
                 transition: 'transform 0.2s ease'
               }}
+              placeholder={
+                <div
+                  style={{
+                    width: '100%',
+                    height: '150px',
+                    background: '#f0f0f0'
+                  }}
+                />
+              }
             />
           </div>
         </div>
@@ -182,8 +177,9 @@ const FeaturedProductsSection = () => {
 
   return (
     <section className="mb-5">
+      <h2 className="text-center mb-4">Productos Destacados</h2>
       <Swiper {...swiperParams}>
-        {featuredProducts.map((product) => (
+        {products.map((product) => (
           <SwiperSlide key={product.id}>
             {renderProductCard(product)}
           </SwiperSlide>
