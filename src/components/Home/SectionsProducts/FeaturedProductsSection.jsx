@@ -36,9 +36,8 @@ const FeaturedProductsSection = () => {
 
     const fetchData = async () => {
       try {
-        // URLs de las diferentes categorías
-        const urls = [
-          '/products/recent',
+        // Primero obtenemos los productos de categorías
+        const categoryUrls = [
           '/products/category/Parlantes/subcategory/Parlante%20Portátil',
           '/products/category/Computación/subcategory/MacBook',
           '/products/category/Computación/subcategory/Mac%20studio',
@@ -46,19 +45,35 @@ const FeaturedProductsSection = () => {
           '/products/category/Computación/subcategory/iMac'
         ];
 
-        // Hacer todas las peticiones en paralelo
-        const productRequests = urls.map(url => api.get(url));
-        const responses = await Promise.all(productRequests);
+        // Obtener productos de categorías
+        const categoryRequests = categoryUrls.map(url => api.get(url));
+        const categoryResponses = await Promise.all(categoryRequests);
         
-        // Combinar todos los productos y limitar a un número razonable (por ejemplo, 12)
-        const allProducts = responses.flatMap(response => response.data)
-          .slice(0, 12); // Ajusta este número según necesites
+        // Obtener productos recientes
+        const recentResponse = await api.get('/products/recent');
+
+        // Combinar productos de categorías de forma intercalada
+        const maxProductsPerCategory = Math.max(
+          ...categoryResponses.map(response => response.data.length)
+        );
+
+        let interleavedProducts = [];
+        for (let i = 0; i < maxProductsPerCategory; i++) {
+          for (let j = 0; j < categoryResponses.length; j++) {
+            if (categoryResponses[j].data[i]) {
+              interleavedProducts.push(categoryResponses[j].data[i]);
+            }
+          }
+        }
+
+        // Agregar productos recientes al final
+        const allProducts = [...interleavedProducts, ...recentResponse.data];
 
         if (!isMounted) return;
         
         setProducts(allProducts);
 
-        // Cargar imágenes en chunks para no sobrecargar el servidor
+        // Cargar imágenes en chunks
         const chunkSize = 4;
         for (let i = 0; i < allProducts.length; i += chunkSize) {
           const chunk = allProducts.slice(i, i + chunkSize);
@@ -70,7 +85,7 @@ const FeaturedProductsSection = () => {
                   if (imageResponse.data?.length > 0) {
                     const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
                     productImages.set(product.id, base64Image);
-                    // Forzar re-render solo para este producto
+                    // Forzar re-render
                     if (isMounted) {
                       setProducts(prev => [...prev]);
                     }
@@ -180,6 +195,7 @@ const FeaturedProductsSection = () => {
 
   return (
     <section className="mb-5">
+      <h2 className="text-center mb-4">Productos Destacados</h2>
       <Swiper {...swiperParams}>
         {products.map((product) => (
           <SwiperSlide key={product.id}>
