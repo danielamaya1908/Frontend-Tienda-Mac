@@ -38,10 +38,10 @@ const FeaturedProductsSection = () => {
       try {
         // Primero obtenemos los productos de categorías
         const categoryUrls = [
-          '/products/category/Parlantes/subcategory/Parlante%20Portátil',
           '/products/category/Computación/subcategory/MacBook',
           '/products/category/Computación/subcategory/Mac%20studio',
           '/products/category/Computación/subcategory/Mac%20mini',
+           '/products/category/Parlantes/subcategory/Parlante%20Portátil',
           '/products/category/Computación/subcategory/iMac'
         ];
 
@@ -195,7 +195,6 @@ const FeaturedProductsSection = () => {
 
   return (
     <section className="mb-5">
-      <h2 className="text-center mb-4">Productos Destacados</h2>
       <Swiper {...swiperParams}>
         {products.map((product) => (
           <SwiperSlide key={product.id}>
