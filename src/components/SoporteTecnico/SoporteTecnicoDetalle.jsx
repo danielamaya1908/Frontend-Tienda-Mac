@@ -45,7 +45,11 @@ const SoporteTecnicoDetalle = () => {
   const [imagenesIngreso, setImagenesIngreso] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
   const navigate = useNavigate();
+
+  const API_BASE_URL = "https://backend-tienda-mac-production.up.railway.app";
+  const MAX_RETRIES = 3;
 
   const estados = [
     "Ingreso",
@@ -57,17 +61,41 @@ const SoporteTecnicoDetalle = () => {
   ];
 
   const checkAuthentication = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("No hay sesión activa. Por favor, inicie sesión nuevamente.");
-      navigate("/login");
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error(
+          "No hay sesión activa. Por favor, inicie sesión nuevamente."
+        );
+      }
+      return token;
+    } catch (error) {
+      console.error("Error de autenticación:", error);
+      setError(error.message);
+      navigate("/login", { replace: true });
       return null;
     }
-    return token;
+  };
+
+  const handleApiError = (error) => {
+    console.error("API Error:", error);
+    const errorMessage =
+      error.response?.data?.message ||
+      "Error al cargar los detalles del soporte técnico";
+
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      navigate("/login", { replace: true });
+    } else if (retryCount < MAX_RETRIES) {
+      setRetryCount((prev) => prev + 1);
+      setTimeout(fetchSoporteTecnico, 1000 * (retryCount + 1));
+    } else {
+      setError(errorMessage);
+    }
   };
 
   const fetchSoporteTecnico = async () => {
-    setIsLoading(true);
+    if (isLoading && retryCount === 0) setIsLoading(true);
     setError(null);
 
     const token = checkAuthentication();
@@ -75,34 +103,33 @@ const SoporteTecnicoDetalle = () => {
 
     try {
       const config = {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+        timeout: 10000, // 10 segundos de timeout
       };
 
-      const response = await axios.get(
-        `https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}`,
-        config
-      );
+      const [soporteResponse, imagenesResponse] = await Promise.all([
+        axios.get(`${API_BASE_URL}/soporte-tecnico/${id}`, config),
+        axios.get(`${API_BASE_URL}/soporte-tecnico/${id}/latest-image`, config),
+      ]);
 
-      if (response.data) {
-        setSoporte(response.data);
-        if (response.data.User) {
-          setUser(response.data.User);
-        }
+      if (soporteResponse.data) {
+        setSoporte(soporteResponse.data);
+        setUser(soporteResponse.data.User);
 
-        if (response.data.ImageSoporteTecnicos) {
-          const imagenesIngreso = response.data.ImageSoporteTecnicos.sort(
-            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-          ).slice(0, 10);
+        if (soporteResponse.data.ImageSoporteTecnicos) {
+          const imagenesIngreso =
+            soporteResponse.data.ImageSoporteTecnicos.sort(
+              (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+            ).slice(0, 10);
           setImagenesIngreso(imagenesIngreso);
         }
 
-        const latestImageResponse = await axios.get(
-          `https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/latest-image`,
-          config
-        );
-
-        if (latestImageResponse.data.imagenes) {
-          const imagenes = latestImageResponse.data.imagenes.sort(
+        if (imagenesResponse.data.imagenes) {
+          const imagenes = imagenesResponse.data.imagenes.sort(
             (a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida)
           );
 
@@ -119,12 +146,14 @@ const SoporteTecnicoDetalle = () => {
             "Reparado",
             "Entregado",
           ];
-          let estadoIndex = 0;
 
-          imagenes.forEach((imagen) => {
-            if (estadoIndex < estadosConImagenes.length) {
-              newEstadoImages[estadosConImagenes[estadoIndex]].push(imagen);
-              estadoIndex++;
+          imagenes.forEach((imagen, index) => {
+            const estado =
+              estadosConImagenes[
+                Math.min(index, estadosConImagenes.length - 1)
+              ];
+            if (estado) {
+              newEstadoImages[estado].push(imagen);
             }
           });
 
@@ -132,14 +161,7 @@ const SoporteTecnicoDetalle = () => {
         }
       }
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message ||
-        "Error al cargar los detalles del soporte técnico";
-      setError(errorMessage);
-      if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        navigate("/login");
-      }
+      handleApiError(error);
     } finally {
       setIsLoading(false);
     }
@@ -147,14 +169,28 @@ const SoporteTecnicoDetalle = () => {
 
   useEffect(() => {
     fetchSoporteTecnico();
-  }, [id, navigate]);
+
+    // Cleanup function
+    return () => {
+      setIsLoading(false);
+      setError(null);
+    };
+  }, [id]);
 
   const handleImageClick = (imageUrl) => {
-    setSelectedImage(imageUrl);
-    setShowModal(true);
+    try {
+      setSelectedImage(imageUrl);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error al mostrar imagen:", error);
+      setError("Error al cargar la imagen. Por favor, intente nuevamente.");
+    }
   };
 
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedImage("");
+  };
 
   const getEstadoColor = (estado) => {
     switch (estado) {
@@ -248,12 +284,10 @@ const SoporteTecnicoDetalle = () => {
                   {imagenes.map((imagen, index) => (
                     <Col key={index}>
                       <Card.Img
-                        src={`https://backend-tienda-mac-production.up.railway.app${imagen.url}`}
+                        src={`${API_BASE_URL}${imagen.url}`}
                         alt={`Estado ${estado}`}
                         onClick={() =>
-                          handleImageClick(
-                            `https://backend-tienda-mac-production.up.railway.app${imagen.url}`
-                          )
+                          handleImageClick(`${API_BASE_URL}${imagen.url}`)
                         }
                         style={{
                           cursor: "pointer",
