@@ -64,14 +64,17 @@ const SoporteTecnicoDetalle = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        throw new Error(
-          "No hay sesión activa. Por favor, inicie sesión nuevamente."
-        );
+        console.warn("No se encontró token de autenticación");
+        navigate("/login", {
+          replace: true,
+          state: { from: location.pathname }, // Para redirigir de vuelta después del login
+        });
+        return null;
       }
       return token;
     } catch (error) {
-      console.error("Error de autenticación:", error);
-      setError(error.message);
+      console.error("Error al verificar autenticación:", error);
+      setError("Error de autenticación. Por favor, inicie sesión nuevamente.");
       navigate("/login", { replace: true });
       return null;
     }
