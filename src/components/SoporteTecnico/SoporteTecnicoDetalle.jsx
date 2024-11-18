@@ -111,7 +111,7 @@ const SoporteTecnicoDetalle = () => {
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
         },
-        timeout: 10000, // 10 segundos de timeout
+        timeout: 10000,
       };
 
       const [soporteResponse, imagenesResponse] = await Promise.all([
@@ -123,18 +123,32 @@ const SoporteTecnicoDetalle = () => {
         setSoporte(soporteResponse.data);
         setUser(soporteResponse.data.User);
 
+        // Modificar el manejo de las imágenes de ingreso
         if (soporteResponse.data.ImageSoporteTecnicos) {
-          const imagenesIngreso =
+          const imagenesIngresoModificadas =
             soporteResponse.data.ImageSoporteTecnicos.sort(
               (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-            ).slice(0, 10);
-          setImagenesIngreso(imagenesIngreso);
+            )
+              .slice(0, 10)
+              .map((img) => ({
+                ...img,
+                url: img.url.startsWith("http")
+                  ? img.url
+                  : `${API_BASE_URL}${img.url}`,
+              }));
+          setImagenesIngreso(imagenesIngresoModificadas);
         }
 
+        // Modificar el manejo de las imágenes de estado
         if (imagenesResponse.data.imagenes) {
-          const imagenes = imagenesResponse.data.imagenes.sort(
-            (a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida)
-          );
+          const imagenes = imagenesResponse.data.imagenes
+            .sort((a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida))
+            .map((img) => ({
+              ...img,
+              url: img.url.startsWith("http")
+                ? img.url
+                : `${API_BASE_URL}${img.url}`,
+            }));
 
           const newEstadoImages = {
             Diagnosticando: [],
@@ -287,11 +301,9 @@ const SoporteTecnicoDetalle = () => {
                   {imagenes.map((imagen, index) => (
                     <Col key={index}>
                       <Card.Img
-                        src={`${API_BASE_URL}${imagen.url}`}
+                        src={imagen.url} // Cambiar esto - ya no necesitas concatenar API_BASE_URL
                         alt={`Estado ${estado}`}
-                        onClick={() =>
-                          handleImageClick(`${API_BASE_URL}${imagen.url}`)
-                        }
+                        onClick={() => handleImageClick(imagen.url)} // Cambiar esto también
                         style={{
                           cursor: "pointer",
                           border:
