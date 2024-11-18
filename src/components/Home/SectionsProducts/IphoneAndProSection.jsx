@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import axios from 'axios';
@@ -7,52 +7,17 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 
+// Crear una instancia de axios con configuración base
+const api = axios.create({
+  baseURL: 'https://backend-tienda-mac-production.up.railway.app'
+});
+
 const IphoneAndProSection = () => {
-  const [newProducts, setNewProducts] = useState([]);
-  const [newProductImages, setNewProductImages] = useState({});
+  const [products, setProducts] = useState([]);
+  const [productImages] = useState(new Map());
 
-  useEffect(() => {
-    const fetchNewProducts = async () => {
-      try {
-        const [
-          iphone16Pro,
-          iphone16ProMax,
-          iphone16,
-          iphone16Plus
-        ] = await Promise.all([
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016%20Pro'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016%20Pro%20Max'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016'),
-          axios.get('https://backend-tienda-mac-production.up.railway.app/products/category/Smartphones/subcategory/iPhone/name/iPhone%2016%20Plus')
-        ]);
-
-        const products = [
-          ...iphone16Pro.data,
-          ...iphone16ProMax.data,
-          ...iphone16.data,
-          ...iphone16Plus.data
-        ];
-        setNewProducts(products);
-
-        // Fetch images for each product from the new route
-        await Promise.all(products.map(async (product) => {
-          const imageResponse = await axios.get(`https://backend-tienda-mac-production.up.railway.app/products/${product.id}/imagesHome`);
-          if (imageResponse.data && imageResponse.data.length > 0) {
-            const base64Images = imageResponse.data
-              .map(image => image?.data ? `data:image/jpeg;base64,${image.data}` : null)
-              .filter(Boolean);
-            setNewProductImages(prevState => ({ ...prevState, [product.id]: base64Images }));
-          }
-        }));
-      } catch (error) {
-        console.error('Error fetching new products:', error);
-      }
-    };
-
-    fetchNewProducts();
-  }, []);
-
-  const swiperParams = {
+  // Memorizar los parámetros del swiper
+  const swiperParams = useMemo(() => ({
     modules: [Navigation, Autoplay],
     spaceBetween: 20,
     slidesPerView: 4,
@@ -64,12 +29,69 @@ const IphoneAndProSection = () => {
       640: { slidesPerView: 3, spaceBetween: 20 },
       768: { slidesPerView: 4, spaceBetween: 20 }
     }
-  };
+  }), []);
 
-  const renderProductCard = (product, images) => {
-    const productImages = images[product.id] || [];
-    const hasValidImage = productImages.length > 0;
+  useEffect(() => {
+    let isMounted = true;
 
+    const fetchData = async () => {
+      try {
+        // Hacer todas las peticiones en paralelo
+        const productRequests = [
+          'iPhone%2016%20Pro',
+          'iPhone%2016%20Pro%20Max',
+          'iPhone%2016',
+          'iPhone%2016%20Plus'
+        ].map(model => 
+          api.get(`/products/category/Smartphones/subcategory/iPhone/name/${model}`)
+        );
+
+        const responses = await Promise.all(productRequests);
+        const allProducts = responses.flatMap(response => response.data);
+
+        if (!isMounted) return;
+        
+        setProducts(allProducts);
+
+        // Cargar imágenes en chunks para no sobrecargar el servidor
+        const chunkSize = 4;
+        for (let i = 0; i < allProducts.length; i += chunkSize) {
+          const chunk = allProducts.slice(i, i + chunkSize);
+          await Promise.all(
+            chunk.map(async (product) => {
+              if (!productImages.has(product.id)) {
+                try {
+                  const imageResponse = await api.get(`/products/${product.id}/imagesHome`);
+                  if (imageResponse.data?.length > 0) {
+                    const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
+                    productImages.set(product.id, base64Image);
+                    // Forzar re-render solo para este producto
+                    if (isMounted) {
+                      setProducts(prev => [...prev]);
+                    }
+                  }
+                } catch (error) {
+                  console.error(`Error loading image for product ${product.id}:`, error);
+                }
+              }
+            })
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const renderProductCard = (product) => {
+    const productImage = productImages.get(product.id);
+    
     return (
       <div className="card border-0 shadow-sm" style={{ 
         width: '220px',
@@ -99,7 +121,7 @@ const IphoneAndProSection = () => {
             backgroundColor: 'white'
           }}>
             <LazyLoadImage
-              src={hasValidImage ? productImages[0] : '/placeholder-image.jpg'}
+              src={productImage || '/placeholder-image.jpg'}
               alt={product.name}
               effect="opacity"
               style={{ 
@@ -108,6 +130,15 @@ const IphoneAndProSection = () => {
                 objectFit: 'contain',
                 transition: 'transform 0.2s ease'
               }}
+              placeholder={
+                <div
+                  style={{
+                    width: '100%',
+                    height: '150px',
+                    background: '#f0f0f0'
+                  }}
+                />
+              }
             />
           </div>
         </div>
@@ -146,9 +177,9 @@ const IphoneAndProSection = () => {
     <section className="mb-5">
       <h2 className="text-center mb-4">iPhone 16 & iPhone 16 Pro</h2>
       <Swiper {...swiperParams}>
-        {newProducts.map((product) => (
+        {products.map((product) => (
           <SwiperSlide key={product.id}>
-            {renderProductCard(product, newProductImages)}
+            {renderProductCard(product)}
           </SwiperSlide>
         ))}
       </Swiper>
