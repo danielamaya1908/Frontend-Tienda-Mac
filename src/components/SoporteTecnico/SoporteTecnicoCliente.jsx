@@ -97,19 +97,19 @@ const SoporteTecnicoCliente = () => {
   };
 
   const getStatusDescription = (status) => {
-    switch (status.toLowerCase()) {
-      case "ingreso":
+    switch (status) {
+      case "Ingreso":
         return "El próximo estado será En diagnóstico. Puede demorar de 1 a 3 días para cambiar a ese estado.";
-      case "en diagnostico":
+      case "En diagnostico":
         return "El próximo estado será En espera de aprobación cliente. Puede demorar de 1 a 3 días hábiles para su revisión y cambiar de estado.";
-      case "en espera de aprobacion cliente":
+      case "En espera de aprobacion cliente":
         return "Esperando confirmación del cliente.";
-      case "en reparacion":
+      case "En reparacion":
         return "El equipo está siendo reparado.";
-      case "listo para entregar":
-        return "El equipo está listo para ser recogido.";
-      case "entregado":
-        return "Puede pasar a recoger en tienda.";
+      case "Listo para entregar":
+        return "El equipo está listo para ser recogido por el cliente.";
+      case "Entregado":
+        return "El equipo fue entregado al cliente con éxito.";
       default:
         return "";
     }
@@ -149,14 +149,14 @@ const SoporteTecnicoCliente = () => {
         />
         <select onChange={handleFilterChange} value={selectedEstado}>
           <option value="Todos los Estados">Todos los Estados</option>
-          <option value="ingreso">Ingreso</option>
-          <option value="en espera de aprobacion cliente">
-            En espera de aprobación cliente
+          <option value="Ingreso">Ingreso</option>
+          <option value="En diagnostico">En diagnóstico</option>
+          <option value="En espera de aprobacion cliente">
+            En espera de su aprobación
           </option>
-          <option value="en diagnostico">En diagnóstico</option>
-          <option value="en reparacion">En reparación</option>
-          <option value="listo para entregar">Listo para entregar</option>
-          <option value="entregado">Entregado</option>
+          <option value="En reparacion">En reparación</option>
+          <option value="Listo para entregar">Listo para entregar</option>
+          <option value="Entregado">Entregado</option>
         </select>
       </div>
       <table>

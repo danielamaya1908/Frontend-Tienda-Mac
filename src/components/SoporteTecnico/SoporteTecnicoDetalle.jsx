@@ -53,9 +53,9 @@ const SoporteTecnicoDetalle = () => {
 
   const estados = [
     "Ingreso",
-    "En diagnóstico",
-    "En espera de aprobación cliente",
-    "En reparación",
+    "En diagnóstico", // Cambiar a "En diagnostico"
+    "En espera de aprobación cliente", // Cambiar a "En espera de aprobacion cliente"
+    "En reparación", // Cambiar a "En reparacion"
     "Listo para entregar",
     "Entregado",
   ];
@@ -212,13 +212,13 @@ const SoporteTecnicoDetalle = () => {
     switch (estado) {
       case "Ingreso":
         return "#007bff";
-      case "EnDiagnostico":
+      case "En diagnostico": // Cambiar
         return "#ffc107";
-      case "EnEsperaDeAprobacionCliente":
+      case "En espera de aprobacion cliente": // Cambiar
         return "#dc3545";
-      case "EnReparacion":
+      case "En reparacion": // Cambiar
         return "#17a2b8";
-      case "ListoParaEntregar":
+      case "Listo para entregar":
         return "#28a745";
       case "Entregado":
         return "#28a745";
@@ -268,14 +268,14 @@ const SoporteTecnicoDetalle = () => {
             variant={getProgressBarVariant(index, currentStateIndex)}
             style={{ height: "10px", marginBottom: "1rem" }}
           />
-          {estado === "EnEsperaDeAprobacionCliente" ? (
+          {estado === "En espera de aprobacion cliente" ? (
             <Card.Text>
               <FaExclamationTriangle className="text-warning me-2" />
               Esperando confirmación del cliente
             </Card.Text>
           ) : (
             <>
-              {estado === "EnDiagnostico" && (
+              {estado === "En diagnostico" && (
                 <Card className="mb-3">
                   <Card.Body>
                     <Card.Title>
@@ -290,7 +290,7 @@ const SoporteTecnicoDetalle = () => {
                 </Card>
               )}
 
-              {estado === "ListoParaEntregar" && (
+              {estado === "Listo para entregar" && (
                 <Card.Text>
                   <FaCheckCircle className="text-success me-2" />
                   El equipo está listo para ser recogido por el cliente
@@ -376,9 +376,9 @@ const SoporteTecnicoDetalle = () => {
 
   const imagenesPerEstado = {
     Ingreso: imagenesIngreso,
-    EnDiagnostico: estadoImages.EnDiagnostico || [],
-    EnEsperaDeAprobacionCliente: [],
-    EnReparacion: estadoImages.EnReparacion || [],
+    EnDiagnostico: estadoImages.EnDiagnostico || [], // Cambiar a "En diagnostico"
+    EnEsperaDeAprobacionCliente: [], // Cambiar a "En espera de aprobacion cliente"
+    EnReparacion: estadoImages.EnReparacion || [], // Cambiar a "En reparacion"
     ListoParaEntregar: estadoImages.ListoParaEntregar || [],
     Entregado: estadoImages.Entregado || [],
   };
