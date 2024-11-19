@@ -49,10 +49,10 @@ const SoporteTecnicoClienteDetalle = () => {
 
   const estados = [
     "Ingreso",
-    "EnDiagnostico",
-    "EnEsperaDeAprobacionCliente",
-    "EnReparacion",
-    "ListoParaEntregar",
+    "En diagnóstico", // Cambiar a "En diagnostico"
+    "En espera de aprobación cliente", // Cambiar a "En espera de aprobacion cliente"
+    "En reparación", // Cambiar a "En reparacion"
+    "Listo para entregar",
     "Entregado",
   ];
 
@@ -100,16 +100,16 @@ const SoporteTecnicoClienteDetalle = () => {
             );
 
             const newEstadoImages = {
-              EnDiagnostico: [],
-              EnReparacion: [],
-              ListoParaEntregar: [],
+              "En diagnóstico": [],
+              "En reparación": [],
+              "Listo para entregar": [],
               Entregado: [],
             };
-
+            // Array de estados en el mismo formato que se usa en la UI
             const estadosConImagenes = [
-              "EnDiagnostico",
-              "EnReparacion",
-              "ListoParaEntregar",
+              "En diagnóstico",
+              "En reparación",
+              "Listo para entregar",
               "Entregado",
             ];
 
@@ -152,13 +152,13 @@ const SoporteTecnicoClienteDetalle = () => {
     switch (estado) {
       case "Ingreso":
         return "#007bff";
-      case "EnDiagnostico":
+      case "En diagnostico": // Cambiar
         return "#ffc107";
-      case "EnEsperaDeAprobacionCliente":
+      case "En espera de aprobacion cliente": // Cambiar
         return "#dc3545";
-      case "EnReparacion":
+      case "En reparacion": // Cambiar
         return "#17a2b8";
-      case "ListoParaEntregar":
+      case "Listo para entregar":
         return "#28a745";
       case "Entregado":
         return "#28a745";
@@ -208,14 +208,14 @@ const SoporteTecnicoClienteDetalle = () => {
             variant={getProgressBarVariant(index, currentStateIndex)}
             style={{ height: "10px", marginBottom: "1rem" }}
           />
-          {estado === "EnEsperaDeAprobacionCliente" ? (
+          {estado === "En espera de aprobacion cliente" ? (
             <Card.Text>
               <FaExclamationTriangle className="text-warning me-2" />
               Esperando su confirmación
             </Card.Text>
           ) : (
             <>
-              {estado === "EnDiagnostico" && (
+              {estado === "En diagnostico" && (
                 <Card className="mb-3">
                   <Card.Body>
                     <Card.Title>
@@ -229,7 +229,7 @@ const SoporteTecnicoClienteDetalle = () => {
                   </Card.Body>
                 </Card>
               )}
-              {estado === "ListoParaEntregar" && (
+              {estado === "Listo Para Entregar" && (
                 <Card.Text>
                   <FaCheckCircle className="text-success me-2" />
                   Su equipo está listo para ser recogido
