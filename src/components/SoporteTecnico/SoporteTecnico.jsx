@@ -178,12 +178,12 @@ const SoporteTecnico = () => {
               >
                 <option value="Todos los Estados">Todos los Estados</option>
                 <option value="Ingreso">Ingreso</option>
-                <option value="EnEsperaDeAprobacionCliente">
+                <option value="En diagnostico">En diagnóstico</option>
+                <option value="En espera de aprobacion cliente">
                   En espera de aprobación cliente
-                </option>{" "}
-                <option value="EnDiagnostico">En diagnóstico</option>{" "}
-                <option value="EnReparacion">En reparación</option>{" "}
-                <option value="ListoParaEntregar">Listo para entregar</option>{" "}
+                </option>
+                <option value="En reparacion">En reparación</option>
+                <option value="Listo para entregar">Listo para entregar</option>
                 <option value="Entregado">Entregado</option>
               </select>
               <button onClick={handleAgregarEquipo} className="btn-agregar">
