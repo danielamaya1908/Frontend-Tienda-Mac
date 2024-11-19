@@ -123,7 +123,6 @@ const SoporteTecnicoDetalle = () => {
         setSoporte(soporteResponse.data);
         setUser(soporteResponse.data.User);
 
-        // Modificar el manejo de las imágenes de ingreso
         if (soporteResponse.data.ImageSoporteTecnicos) {
           const imagenesIngresoModificadas =
             soporteResponse.data.ImageSoporteTecnicos.sort(
@@ -139,7 +138,6 @@ const SoporteTecnicoDetalle = () => {
           setImagenesIngreso(imagenesIngresoModificadas);
         }
 
-        // Modificar el manejo de las imágenes de estado
         if (imagenesResponse.data.imagenes) {
           const imagenes = imagenesResponse.data.imagenes
             .sort((a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida))
@@ -150,13 +148,14 @@ const SoporteTecnicoDetalle = () => {
                 : `${API_BASE_URL}${img.url}`,
             }));
 
+          // Inicializar el objeto con arrays vacíos
           const newEstadoImages = {
-            EnDiagnostico: [],
-            EnReparacion: [],
-            ListoParaEntregar: [],
+            "En diagnóstico": [],
+            "En reparación": [],
+            "Listo para entregar": [],
             Entregado: [],
           };
-
+          // Array de estados en el mismo formato que se usa en la UI
           const estadosConImagenes = [
             "En diagnóstico",
             "En reparación",
@@ -164,12 +163,13 @@ const SoporteTecnicoDetalle = () => {
             "Entregado",
           ];
 
+          // Distribuir las imágenes entre los estados
           imagenes.forEach((imagen, index) => {
             const estado =
               estadosConImagenes[
                 Math.min(index, estadosConImagenes.length - 1)
               ];
-            if (estado) {
+            if (estado && newEstadoImages[estado]) {
               newEstadoImages[estado].push(imagen);
             }
           });
@@ -183,7 +183,6 @@ const SoporteTecnicoDetalle = () => {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchSoporteTecnico();
 
@@ -376,11 +375,11 @@ const SoporteTecnicoDetalle = () => {
 
   const imagenesPerEstado = {
     Ingreso: imagenesIngreso,
-    EnDiagnostico: estadoImages.EnDiagnostico || [], // Cambiar a "En diagnostico"
-    EnEsperaDeAprobacionCliente: [], // Cambiar a "En espera de aprobacion cliente"
-    EnReparacion: estadoImages.EnReparacion || [], // Cambiar a "En reparacion"
-    ListoParaEntregar: estadoImages.ListoParaEntregar || [],
-    Entregado: estadoImages.Entregado || [],
+    "En diagnóstico": estadoImages["En diagnóstico"] || [],
+    "En espera de aprobación cliente": [],
+    "En reparación": estadoImages["En reparación"] || [],
+    "Listo para entregar": estadoImages["Listo para entregar"] || [],
+    Entregado: estadoImages["Entregado"] || [],
   };
 
   const estadoIndex = estados.indexOf(soporte.estado);
