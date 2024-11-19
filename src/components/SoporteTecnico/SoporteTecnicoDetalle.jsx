@@ -53,10 +53,10 @@ const SoporteTecnicoDetalle = () => {
 
   const estados = [
     "Ingreso",
-    "Diagnosticando",
-    "Pendiente",
-    "Reparando",
-    "Reparado",
+    "En diagnóstico",
+    "En espera de aprobación cliente",
+    "En reparación",
+    "Listo para entregar",
     "Entregado",
   ];
 
@@ -151,16 +151,16 @@ const SoporteTecnicoDetalle = () => {
             }));
 
           const newEstadoImages = {
-            Diagnosticando: [],
-            Reparando: [],
-            Reparado: [],
+            EnDiagnostico: [],
+            EnReparacion: [],
+            ListoParaEntregar: [],
             Entregado: [],
           };
 
           const estadosConImagenes = [
-            "Diagnosticando",
-            "Reparando",
-            "Reparado",
+            "En diagnóstico",
+            "En reparación",
+            "Listo para entregar",
             "Entregado",
           ];
 
@@ -208,18 +208,17 @@ const SoporteTecnicoDetalle = () => {
     setShowModal(false);
     setSelectedImage("");
   };
-
   const getEstadoColor = (estado) => {
     switch (estado) {
       case "Ingreso":
         return "#007bff";
-      case "Diagnosticando":
+      case "EnDiagnostico":
         return "#ffc107";
-      case "Pendiente":
+      case "EnEsperaDeAprobacionCliente":
         return "#dc3545";
-      case "Reparando":
+      case "EnReparacion":
         return "#17a2b8";
-      case "Reparado":
+      case "ListoParaEntregar":
         return "#28a745";
       case "Entregado":
         return "#28a745";
@@ -269,14 +268,14 @@ const SoporteTecnicoDetalle = () => {
             variant={getProgressBarVariant(index, currentStateIndex)}
             style={{ height: "10px", marginBottom: "1rem" }}
           />
-          {estado === "Pendiente" ? (
+          {estado === "EnEsperaDeAprobacionCliente" ? (
             <Card.Text>
               <FaExclamationTriangle className="text-warning me-2" />
               Esperando confirmación del cliente
             </Card.Text>
           ) : (
             <>
-              {estado === "Diagnosticando" && (
+              {estado === "EnDiagnostico" && (
                 <Card className="mb-3">
                   <Card.Body>
                     <Card.Title>
@@ -290,7 +289,8 @@ const SoporteTecnicoDetalle = () => {
                   </Card.Body>
                 </Card>
               )}
-              {estado === "Reparado" && (
+
+              {estado === "ListoParaEntregar" && (
                 <Card.Text>
                   <FaCheckCircle className="text-success me-2" />
                   El equipo está listo para ser recogido por el cliente
@@ -376,10 +376,10 @@ const SoporteTecnicoDetalle = () => {
 
   const imagenesPerEstado = {
     Ingreso: imagenesIngreso,
-    Diagnosticando: estadoImages.Diagnosticando || [],
-    Pendiente: [],
-    Reparando: estadoImages["Reparando"] || [],
-    Reparado: estadoImages["Reparado"] || [],
+    EnDiagnostico: estadoImages.EnDiagnostico || [],
+    EnEsperaDeAprobacionCliente: [],
+    EnReparacion: estadoImages.EnReparacion || [],
+    ListoParaEntregar: estadoImages.ListoParaEntregar || [],
     Entregado: estadoImages.Entregado || [],
   };
 
