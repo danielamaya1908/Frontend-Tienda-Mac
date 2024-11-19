@@ -109,19 +109,19 @@ table tbody tr:nth-child(odd) {
   background-color: #007bff;
 }
 
-.estado.pendiente {
+.estado.enEsperaDeAprobacionCliente {
   background-color: #ff0707dc;
 }
 
-.estado.diagnosticando {
+.estado.enDiagnostico {
   background-color: #ffc107;
 }
 
-.estado.reparando {
+.estado.enReparacion {
   background-color: #6c757d;
 }
 
-.estado.reparado {
+.estado.listoParaEntregar {
   background-color: #17a2b8;
 }
 
