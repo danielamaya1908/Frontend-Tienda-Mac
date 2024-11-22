@@ -12,7 +12,7 @@ const api = axios.create({
   baseURL: "https://backend-tienda-mac-production.up.railway.app",
 });
 
-const AccessoriesSection = () => {
+const IphoneAndProSection = () => {
   const [products, setProducts] = useState([]);
   const [productImages] = useState(new Map());
 
@@ -210,7 +210,7 @@ const AccessoriesSection = () => {
 
   return (
     <section className="mb-5">
-      <h2 className="text-center mb-4">Accesorios</h2>
+      <h2 className="text-center mb-4">iPhone 16 & iPhone 16 Pro</h2>
       <Swiper {...swiperParams}>
         {products.map((product) => (
           <SwiperSlide key={product.id}>
@@ -222,4 +222,4 @@ const AccessoriesSection = () => {
   );
 };
 
-export default AccessoriesSection;
+export default IphoneAndProSection;
