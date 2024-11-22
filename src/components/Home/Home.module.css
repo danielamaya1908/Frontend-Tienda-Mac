@@ -195,3 +195,12 @@ body {
     font-size: 22px;
   }
 }
+.imgHover {
+  transition: transform 0.3s ease;
+  /* Define la animación */
+}
+
+.imgHover:hover {
+  transform: scale(1.02);
+  /* Cambia la escala al pasar el mouse */
+}
