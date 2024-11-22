@@ -7,15 +7,16 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
-// Crear instancia de axios con configuración base
+// Crear una instancia de axios con configuración base
 const api = axios.create({
   baseURL: "https://backend-tienda-mac-production.up.railway.app",
 });
 
 const FeaturedProductsSection = () => {
   const [products, setProducts] = useState([]);
-  const [productImages, setProductImages] = useState({});
+  const [productImages] = useState(new Map());
 
+  // Memorizar los parámetros del swiper
   const swiperParams = useMemo(
     () => ({
       modules: [Navigation, Autoplay],
@@ -38,69 +39,55 @@ const FeaturedProductsSection = () => {
 
     const fetchData = async () => {
       try {
-        const categoryUrls = [
-          "/products/category/Computación/subcategory/MacBook",
-          "/products/category/Computación/subcategory/Mac%20studio",
-          "/products/category/Computación/subcategory/Mac%20mini",
-          "/products/category/Parlantes/subcategory/Parlante%20Portátil",
-          "/products/category/Computación/subcategory/iMac",
-        ];
+        // Hacer todas las peticiones en paralelo
+        const productRequests = [
+          "Computación/subcategory/MacBook",
+          "Computación/subcategory/Mac%20studio",
+          "Computación/subcategory/Mac%20mini",
+          "products/category/Parlantes/subcategory/Parlante%20Portátil",
+        ].map((subcategory) => {
+          const [category, subcategoryName] = subcategory.split("/");
+          return api.get(
+            `/products/category/${encodeURIComponent(
+              category
+            )}/subcategory/${encodeURIComponent(subcategoryName)}`
+          );
+        });
 
-        const categoryRequests = categoryUrls.map((url) => api.get(url));
-        const categoryResponses = await Promise.all(categoryRequests);
-
-        const recentResponse = await api.get("/products/recent");
-
-        const maxProductsPerCategory = Math.max(
-          ...categoryResponses.map((response) => response.data.length)
-        );
-
-        let interleavedProducts = [];
-        for (let i = 0; i < maxProductsPerCategory; i++) {
-          for (let j = 0; j < categoryResponses.length; j++) {
-            if (categoryResponses[j].data[i]) {
-              interleavedProducts.push(categoryResponses[j].data[i]);
-            }
-          }
-        }
-
-        const allProducts = [...interleavedProducts, ...recentResponse.data];
+        const responses = await Promise.all(productRequests);
+        const allProducts = responses.flatMap((response) => response.data);
 
         if (!isMounted) return;
 
-        // Batch image loading with reduced state updates
-        const imageResults = await Promise.all(
-          allProducts.map(async (product) => {
-            try {
-              const imageResponse = await api.get(
-                `/products/${product.id}/images`
-              );
-              return imageResponse.data?.length > 0
-                ? {
-                    id: product.id,
-                    image: `data:image/jpeg;base64,${imageResponse.data[0].data}`,
+        setProducts(allProducts);
+
+        // Cargar imágenes en chunks para no sobrecargar el servidor
+        const chunkSize = 4;
+        for (let i = 0; i < allProducts.length; i += chunkSize) {
+          const chunk = allProducts.slice(i, i + chunkSize);
+          await Promise.all(
+            chunk.map(async (product) => {
+              if (!productImages.has(product.id)) {
+                try {
+                  const imageResponse = await api.get(
+                    `/products/${product.id}/images`
+                  );
+                  if (imageResponse.data?.length > 0) {
+                    const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
+                    productImages.set(product.id, base64Image);
+                    // Forzar re-render solo para este producto
+                    if (isMounted) {
+                      setProducts((prev) => [...prev]);
+                    }
                   }
-                : null;
-            } catch (error) {
-              console.error(
-                `Error loading image for product ${product.id}:`,
-                error
-              );
-              return null;
-            }
-          })
-        );
-
-        const validImages = imageResults.filter(Boolean);
-
-        if (isMounted) {
-          // Single state update for both products and images
-          setProducts(allProducts);
-          setProductImages(
-            validImages.reduce((acc, item) => {
-              acc[item.id] = item.image;
-              return acc;
-            }, {})
+                } catch (error) {
+                  console.error(
+                    `Error loading image for product ${product.id}:`,
+                    error
+                  );
+                }
+              }
+            })
           );
         }
       } catch (error) {
@@ -116,7 +103,7 @@ const FeaturedProductsSection = () => {
   }, []);
 
   const renderProductCard = (product) => {
-    const productImage = productImages[product.id];
+    const productImage = productImages.get(product.id);
 
     return (
       <div
@@ -223,6 +210,7 @@ const FeaturedProductsSection = () => {
 
   return (
     <section className="mb-5">
+      <h2 className="text-center mb-4">Accesorios</h2>
       <Swiper {...swiperParams}>
         {products.map((product) => (
           <SwiperSlide key={product.id}>
