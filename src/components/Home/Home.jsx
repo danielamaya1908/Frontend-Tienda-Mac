@@ -6,7 +6,7 @@ import SubNavbar from "../SubNavbar/SubNavbar";
 import IphoneAndProSection from "./SectionsProducts/IphoneAndProSection";
 import FeaturedProductsSection from "./SectionsProducts/FeaturedProductsSection";
 import AccessoriesSection from "./SectionsProducts/AccessoriesSection";
-import soporteTecnico from "./Slideshows/img/Servicio_Tecnico.jpg";
+import soporteTecnico from "./Slideshows/img/Servicio_Tecnico.webp";
 
 const Home = () => {
   const supportWhatsappUrl =
