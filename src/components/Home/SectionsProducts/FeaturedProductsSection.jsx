@@ -1,22 +1,7 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper/modules";
-import axios from "axios";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/autoplay";
-
-// Crear instancia de axios con configuración base
-const api = axios.create({
-  baseURL: "https://backend-tienda-mac-production.up.railway.app",
-});
-
 const FeaturedProductsSection = () => {
   const [products, setProducts] = useState([]);
-  const [productImages] = useState(new Map());
+  const [productImages, setProductImages] = useState(new Map());
 
-  // Memorizar los parámetros del swiper
   const swiperParams = useMemo(
     () => ({
       modules: [Navigation, Autoplay],
@@ -39,7 +24,6 @@ const FeaturedProductsSection = () => {
 
     const fetchData = async () => {
       try {
-        // Primero obtenemos los productos de categorías
         const categoryUrls = [
           "/products/category/Computación/subcategory/MacBook",
           "/products/category/Computación/subcategory/Mac%20studio",
@@ -48,14 +32,11 @@ const FeaturedProductsSection = () => {
           "/products/category/Computación/subcategory/iMac",
         ];
 
-        // Obtener productos de categorías
         const categoryRequests = categoryUrls.map((url) => api.get(url));
         const categoryResponses = await Promise.all(categoryRequests);
 
-        // Obtener productos recientes
         const recentResponse = await api.get("/products/recent");
 
-        // Combinar productos de categorías de forma intercalada
         const maxProductsPerCategory = Math.max(
           ...categoryResponses.map((response) => response.data.length)
         );
@@ -69,44 +50,44 @@ const FeaturedProductsSection = () => {
           }
         }
 
-        // Agregar productos recientes al final
         const allProducts = [...interleavedProducts, ...recentResponse.data];
 
         if (!isMounted) return;
 
         // Batch image loading
-        const updatedProductImages = new Map(productImages);
-        const chunkSize = 4;
-        for (let i = 0; i < allProducts.length; i += chunkSize) {
-          const chunk = allProducts.slice(i, i + chunkSize);
-          await Promise.all(
-            chunk.map(async (product) => {
-              if (!updatedProductImages.has(product.id)) {
-                try {
-                  const imageResponse = await api.get(
-                    `/products/${product.id}/images`
-                  );
-                  if (imageResponse.data?.length > 0) {
-                    const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
-                    updatedProductImages.set(product.id, base64Image);
-                  }
-                } catch (error) {
-                  console.error(
-                    `Error loading image for product ${product.id}:`,
-                    error
-                  );
-                }
-              }
-            })
-          );
-        }
+        const imagePromises = allProducts.map(async (product) => {
+          try {
+            const imageResponse = await api.get(
+              `/products/${product.id}/images`
+            );
+            if (imageResponse.data?.length > 0) {
+              return {
+                productId: product.id,
+                image: `data:image/jpeg;base64,${imageResponse.data[0].data}`,
+              };
+            }
+            return null;
+          } catch (error) {
+            console.error(
+              `Error loading image for product ${product.id}:`,
+              error
+            );
+            return null;
+          }
+        });
+
+        const imageResults = await Promise.all(imagePromises);
+
+        const newProductImages = new Map(productImages);
+        imageResults.forEach((result) => {
+          if (result) {
+            newProductImages.set(result.productId, result.image);
+          }
+        });
 
         if (isMounted) {
+          setProductImages(newProductImages);
           setProducts(allProducts);
-          productImages.clear();
-          updatedProductImages.forEach((value, key) => {
-            productImages.set(key, value);
-          });
         }
       } catch (error) {
         console.error("Error fetching products:", error);
