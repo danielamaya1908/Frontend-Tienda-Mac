@@ -7,14 +7,16 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
+// Crear una instancia de axios con configuración base
 const api = axios.create({
   baseURL: "https://backend-tienda-mac-production.up.railway.app",
 });
 
-const AccessoriesSection = () => {
+const IphoneAndProSection = () => {
   const [products, setProducts] = useState([]);
-  const [productImages, setProductImages] = useState({});
+  const [productImages] = useState(new Map());
 
+  // Memorizar los parámetros del swiper
   const swiperParams = useMemo(
     () => ({
       modules: [Navigation, Autoplay],
@@ -37,19 +39,17 @@ const AccessoriesSection = () => {
 
     const fetchData = async () => {
       try {
+        // Hacer todas las peticiones en paralelo
         const productRequests = [
-          "Accesorios de TV/Controles remotos",
-          "Accesorios de carga/Cargador MagSafe",
-          "Audífonos/Audífonos de cable",
-          "Adaptadores/Adaptador VGA",
-        ].map((subcategory) => {
-          const [category, subcategoryName] = subcategory.split("/");
-          return api.get(
-            `/products/category/${encodeURIComponent(
-              category
-            )}/subcategory/${encodeURIComponent(subcategoryName)}`
-          );
-        });
+          "iPhone%2016%20Pro",
+          "iPhone%2016%20Pro%20Max",
+          "iPhone%2016",
+          "iPhone%2016%20Plus",
+        ].map((model) =>
+          api.get(
+            `/products/category/Smartphones/subcategory/iPhone/name/${model}`
+          )
+        );
 
         const responses = await Promise.all(productRequests);
         const allProducts = responses.flatMap((response) => response.data);
@@ -58,38 +58,34 @@ const AccessoriesSection = () => {
 
         setProducts(allProducts);
 
-        // Preload images more efficiently
-        const imagePromises = allProducts.map(async (product) => {
-          try {
-            const imageResponse = await api.get(
-              `/products/${product.id}/images`
-            );
-            if (imageResponse.data?.length > 0) {
-              return {
-                productId: product.id,
-                image: `data:image/jpeg;base64,${imageResponse.data[0].data}`,
-              };
-            }
-            return null;
-          } catch (error) {
-            console.error(
-              `Error loading image for product ${product.id}:`,
-              error
-            );
-            return null;
-          }
-        });
-
-        const loadedImages = await Promise.all(imagePromises);
-        const imageMap = loadedImages.reduce((acc, item) => {
-          if (item) {
-            acc[item.productId] = item.image;
-          }
-          return acc;
-        }, {});
-
-        if (isMounted) {
-          setProductImages(imageMap);
+        // Cargar imágenes en chunks para no sobrecargar el servidor
+        const chunkSize = 4;
+        for (let i = 0; i < allProducts.length; i += chunkSize) {
+          const chunk = allProducts.slice(i, i + chunkSize);
+          await Promise.all(
+            chunk.map(async (product) => {
+              if (!productImages.has(product.id)) {
+                try {
+                  const imageResponse = await api.get(
+                    `/products/${product.id}/imagesHome`
+                  );
+                  if (imageResponse.data?.length > 0) {
+                    const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
+                    productImages.set(product.id, base64Image);
+                    // Forzar re-render solo para este producto
+                    if (isMounted) {
+                      setProducts((prev) => [...prev]);
+                    }
+                  }
+                } catch (error) {
+                  console.error(
+                    `Error loading image for product ${product.id}:`,
+                    error
+                  );
+                }
+              }
+            })
+          );
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -104,7 +100,7 @@ const AccessoriesSection = () => {
   }, []);
 
   const renderProductCard = (product) => {
-    const productImage = productImages[product.id];
+    const productImage = productImages.get(product.id);
 
     return (
       <div
@@ -223,4 +219,4 @@ const AccessoriesSection = () => {
   );
 };
 
-export default AccessoriesSection;
+export default IphoneAndProSection;
