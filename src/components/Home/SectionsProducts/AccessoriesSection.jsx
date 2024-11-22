@@ -53,7 +53,6 @@ const AccessoriesSection = () => {
           "Accesorios de carga/Cargador dual-USB-A para coche",
           "Accesorios de carga/Cargador de coche dual USB-C+ USB-A",
           "Accesorios de carga/Cargador Universal para coche",
-          "Accesorios de carga/Soporte de viaje para el cable de carga y el Apple Watch",
           "Accesorios de carga/Base de carga 2 en 1 para iPhone y Apple Watch",
           "Accesorios de carga/Cargador de carro + cable lightning a USB",
           "Accesorios de carga/Cargador Clip de puerto Lightning a USB",
