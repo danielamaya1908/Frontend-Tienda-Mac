@@ -126,7 +126,6 @@ const IphoneAndProSection = () => {
         >
           <div
             style={{
-              border: "1px solid #000000",
               borderRadius: "4px",
               padding: "10px",
               display: "flex",
