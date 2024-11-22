@@ -7,6 +7,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
+// Crear instancia de axios con configuración base
+const api = axios.create({
+  baseURL: "https://backend-tienda-mac-production.up.railway.app",
+});
+
 const FeaturedProductsSection = () => {
   const [products, setProducts] = useState([]);
   const [productImages, setProductImages] = useState(new Map());
