@@ -4,8 +4,8 @@ import Footer from "../Footer/Footer";
 import Slideshow from "./Slideshows/Slideshow";
 import SubNavbar from "../SubNavbar/SubNavbar";
 import IphoneAndProSection from "./SectionsProducts/IphoneAndProSection";
-import FeaturedProductsSection from "./SectionsProducts/FeaturedProductsSection";
-/*import AccessoriesSection from "./SectionsProducts/AccessoriesSection";*/
+/*import FeaturedProductsSection from "./SectionsProducts/FeaturedProductsSection";*/
+import AccessoriesSection from "./SectionsProducts/AccessoriesSection";
 import soporteTecnico from "./Slideshows/img/Servicio_Tecnico.jpg";
 
 const Home = () => {
@@ -22,10 +22,13 @@ const Home = () => {
 
         <section className="mb-5">
           <SubNavbar />
-          <FeaturedProductsSection />
+          {/* <FeaturedProductsSection /> */}
         </section>
 
-        <section className="mb-5">{/*  <AccessoriesSection /> */}</section>
+        <section className="mb-5">
+          {" "}
+          <AccessoriesSection />
+        </section>
 
         <section className="mb-5">
           <div
