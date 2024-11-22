@@ -14,7 +14,7 @@ const api = axios.create({
 
 const FeaturedProductsSection = () => {
   const [products, setProducts] = useState([]);
-  const [productImages, setProductImages] = useState(new Map());
+  const [productImages, setProductImages] = useState({});
 
   const swiperParams = useMemo(
     () => ({
@@ -68,40 +68,40 @@ const FeaturedProductsSection = () => {
 
         if (!isMounted) return;
 
-        // Batch image loading
-        const imagePromises = allProducts.map(async (product) => {
-          try {
-            const imageResponse = await api.get(
-              `/products/${product.id}/images`
-            );
-            if (imageResponse.data?.length > 0) {
-              return {
-                productId: product.id,
-                image: `data:image/jpeg;base64,${imageResponse.data[0].data}`,
-              };
+        // Batch image loading with reduced state updates
+        const imageResults = await Promise.all(
+          allProducts.map(async (product) => {
+            try {
+              const imageResponse = await api.get(
+                `/products/${product.id}/images`
+              );
+              return imageResponse.data?.length > 0
+                ? {
+                    id: product.id,
+                    image: `data:image/jpeg;base64,${imageResponse.data[0].data}`,
+                  }
+                : null;
+            } catch (error) {
+              console.error(
+                `Error loading image for product ${product.id}:`,
+                error
+              );
+              return null;
             }
-            return null;
-          } catch (error) {
-            console.error(
-              `Error loading image for product ${product.id}:`,
-              error
-            );
-            return null;
-          }
-        });
+          })
+        );
 
-        const imageResults = await Promise.all(imagePromises);
-
-        const newProductImages = new Map(productImages);
-        imageResults.forEach((result) => {
-          if (result) {
-            newProductImages.set(result.productId, result.image);
-          }
-        });
+        const validImages = imageResults.filter(Boolean);
 
         if (isMounted) {
-          setProductImages(newProductImages);
+          // Single state update for both products and images
           setProducts(allProducts);
+          setProductImages(
+            validImages.reduce((acc, item) => {
+              acc[item.id] = item.image;
+              return acc;
+            }, {})
+          );
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -116,7 +116,7 @@ const FeaturedProductsSection = () => {
   }, []);
 
   const renderProductCard = (product) => {
-    const productImage = productImages.get(product.id);
+    const productImage = productImages[product.id];
 
     return (
       <div
