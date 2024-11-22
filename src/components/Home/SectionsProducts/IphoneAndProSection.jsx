@@ -41,10 +41,10 @@ const IphoneAndProSection = () => {
       try {
         // Hacer todas las peticiones en paralelo
         const productRequests = [
-          "Accesorios de TV/Controles remotos",
-          "Accesorios de carga/Cargador MagSafe",
-          "Audífonos/Audífonos de cable",
-          "Adaptadores/Adaptador VGA",
+          "Smartphones/iPhone/iPhone 16",
+          "Smartphones/iPhone/iPhone 16 Plus",
+          "Smartphones/iPhone/iPhone 16 Pro",
+          "Smartphones/iPhone/iPhone 16 Pro Max",
         ].map((subcategory) => {
           const [category, subcategoryName] = subcategory.split("/");
           return api.get(
@@ -70,7 +70,7 @@ const IphoneAndProSection = () => {
               if (!productImages.has(product.id)) {
                 try {
                   const imageResponse = await api.get(
-                    `/products/${product.id}/images`
+                    `/products/${product.id}/imagesHome`
                   );
                   if (imageResponse.data?.length > 0) {
                     const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
