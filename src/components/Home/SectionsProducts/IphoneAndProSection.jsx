@@ -41,15 +41,18 @@ const IphoneAndProSection = () => {
       try {
         // Hacer todas las peticiones en paralelo
         const productRequests = [
-          "iPhone%2016%20Pro",
-          "iPhone%2016%20Pro%20Max",
-          "iPhone%2016",
-          "iPhone%2016%20Plus",
-        ].map((model) =>
-          api.get(
-            `/products/category/Smartphones/subcategory/iPhone/name/${model}`
-          )
-        );
+          "Smartphones/iPhone 2016 Pro",
+          "Accesorios de carga/Cargador MagSafe",
+          "Audífonos/Audífonos de cable",
+          "Adaptadores/Adaptador VGA",
+        ].map((subcategory) => {
+          const [category, subcategoryName] = subcategory.split("/");
+          return api.get(
+            `/products/category/${encodeURIComponent(
+              category
+            )}/subcategory/${encodeURIComponent(subcategoryName)}`
+          );
+        });
 
         const responses = await Promise.all(productRequests);
         const allProducts = responses.flatMap((response) => response.data);
@@ -67,7 +70,7 @@ const IphoneAndProSection = () => {
               if (!productImages.has(product.id)) {
                 try {
                   const imageResponse = await api.get(
-                    `/products/${product.id}/imagesHome`
+                    `/products/${product.id}/images`
                   );
                   if (imageResponse.data?.length > 0) {
                     const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
@@ -207,7 +210,7 @@ const IphoneAndProSection = () => {
 
   return (
     <section className="mb-5">
-      <h2 className="text-center mb-4">iPhone 16 & iPhone 16 Pro</h2>
+      <h2 className="text-center mb-4">Accesorios</h2>
       <Swiper {...swiperParams}>
         {products.map((product) => (
           <SwiperSlide key={product.id}>
