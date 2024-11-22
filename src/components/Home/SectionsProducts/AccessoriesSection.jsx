@@ -45,23 +45,6 @@ const AccessoriesSection = () => {
           "Accesorios de carga/Cargador MagSafe",
           "Audífonos/Audífonos de cable",
           "Adaptadores/Adaptador VGA",
-          "Accesorios de carga para apple watch y iPhone/Bateria portátil",
-          "Cables de Audio y Video/Cable HD-HDMI",
-          "Accesorios deportivos/Brazalete deportivo + Estuche de seguridad",
-          "Accesorios deportivos/Banda de mano protectora para iPhone",
-          "Accesorios deportivos/Brazalete deportivo para iPhone",
-          "Accesorios de Audio o Sonido/Audífonos para niños",
-          "Accesorios de carro/Soporte de carro para teléfono móvil",
-          "Cables de imagen/Adaptador Mini Displayport a VGA",
-          "Cables de imagen/Adaptador usb-c a Vga",
-          "Accesorios de reloj/Protector de pantalla para Apple Watch",
-          "Accesorios de Grabación y soporte de teléfono/Soporte magnético girable para grabación",
-          "Accesorios de Audio o Sonido/Cable de audio con conector lightning",
-          "Accesorios de Audio o Sonido/Distribuidor de audio",
-          "Accesorios de carga y transferencia de datos/Cable USB-C a USB-C",
-          "Accesorios de carga y transferencia de datos/Llavero con puerto lightning a USB",
-          "Accesorios de carga y transferencia de datos/Cable Lightning a USB-C",
-          "Accesorios de carga y transferencia de datos/Cable USB-C a Lightning",
         ].map((subcategory) => {
           const [category, subcategoryName] = subcategory.split("/");
           return api.get(
