@@ -41,18 +41,15 @@ const IphoneAndProSection = () => {
       try {
         // Hacer todas las peticiones en paralelo
         const productRequests = [
-          "Smartphones/iPhone/iPhone 16",
-          "Smartphones/iPhone/iPhone 16 Plus",
-          "Smartphones/iPhone/iPhone 16 Pro",
-          "Smartphones/iPhone/iPhone 16 Pro Max",
-        ].map((subcategory) => {
-          const [category, subcategoryName] = subcategory.split("/");
-          return api.get(
-            `/products/category/${encodeURIComponent(
-              category
-            )}/subcategory/${encodeURIComponent(subcategoryName)}`
-          );
-        });
+          "iPhone%2016%20Pro",
+          "iPhone%2016%20Pro%20Max",
+          "iPhone%2016",
+          "iPhone%2016%20Plus",
+        ].map((model) =>
+          api.get(
+            `/products/category/Smartphones/subcategory/iPhone/name/${model}`
+          )
+        );
 
         const responses = await Promise.all(productRequests);
         const allProducts = responses.flatMap((response) => response.data);
