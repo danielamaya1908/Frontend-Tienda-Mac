@@ -1,3 +1,12 @@
+import React, { useState, useEffect, useMemo } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+import axios from "axios";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/autoplay";
+
 const FeaturedProductsSection = () => {
   const [products, setProducts] = useState([]);
   const [productImages, setProductImages] = useState(new Map());
