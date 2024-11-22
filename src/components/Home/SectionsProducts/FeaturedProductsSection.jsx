@@ -74,26 +74,21 @@ const FeaturedProductsSection = () => {
 
         if (!isMounted) return;
 
-        setProducts(allProducts);
-
-        // Cargar imágenes en chunks
+        // Batch image loading
+        const updatedProductImages = new Map(productImages);
         const chunkSize = 4;
         for (let i = 0; i < allProducts.length; i += chunkSize) {
           const chunk = allProducts.slice(i, i + chunkSize);
           await Promise.all(
             chunk.map(async (product) => {
-              if (!productImages.has(product.id)) {
+              if (!updatedProductImages.has(product.id)) {
                 try {
                   const imageResponse = await api.get(
                     `/products/${product.id}/images`
                   );
                   if (imageResponse.data?.length > 0) {
                     const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
-                    productImages.set(product.id, base64Image);
-                    // Forzar re-render
-                    if (isMounted) {
-                      setProducts((prev) => [...prev]);
-                    }
+                    updatedProductImages.set(product.id, base64Image);
                   }
                 } catch (error) {
                   console.error(
@@ -104,6 +99,14 @@ const FeaturedProductsSection = () => {
               }
             })
           );
+        }
+
+        if (isMounted) {
+          setProducts(allProducts);
+          productImages.clear();
+          updatedProductImages.forEach((value, key) => {
+            productImages.set(key, value);
+          });
         }
       } catch (error) {
         console.error("Error fetching products:", error);
