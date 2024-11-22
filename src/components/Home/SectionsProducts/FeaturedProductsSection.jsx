@@ -210,7 +210,6 @@ const FeaturedProductsSection = () => {
 
   return (
     <section className="mb-5">
-      <h2 className="text-center mb-4">Accesorios</h2>
       <Swiper {...swiperParams}>
         {products.map((product) => (
           <SwiperSlide key={product.id}>
