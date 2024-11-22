@@ -10,7 +10,8 @@ body {
 .container {
   position: relative;
   width: 100%;
-  height: calc(100vh - 56px);
+  min-height: 100dvh;
+  /* Usar unidades dinámicas para evitar problemas en Safari */
   overflow: hidden;
 }
 
@@ -37,13 +38,15 @@ body {
 
 /* Imágenes y contenedores de imágenes */
 .customImg {
-  width: 100%;
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: cover;
+  /* Asegurar que las imágenes se ajusten correctamente */
 }
 
 .card-img-container {
   background-color: #F8F9FA;
+  width: 100%;
   height: 150px;
   display: flex;
   align-items: center;
@@ -85,11 +88,14 @@ body {
 .fadeIn {
   opacity: 1;
   transition: opacity 0.3s ease-in;
+  will-change: opacity;
+  /* Optimización para Safari */
 }
 
 .fadeOut {
   opacity: 0;
   transition: opacity 0.3s ease-out;
+  will-change: opacity;
 }
 
 /* Secciones con fondo */
@@ -143,7 +149,7 @@ body {
 
 @media (max-width: 768px) {
   .container {
-    height: auto;
+    min-height: auto;
   }
 
   .content {
@@ -172,5 +178,20 @@ body {
 
   .homeContainer h2 {
     font-size: 16px;
+  }
+}
+
+/* Ajustes específicos para iPhone 11 y 15 */
+@media screen and (min-width: 390px) and (max-width: 414px) {
+  .container {
+    min-height: calc(100vh - 56px);
+  }
+
+  .card-img-container {
+    height: 140px;
+  }
+
+  .homeContainer h2 {
+    font-size: 22px;
   }
 }
