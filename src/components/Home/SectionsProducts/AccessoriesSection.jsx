@@ -41,11 +41,10 @@ const AccessoriesSection = () => {
       try {
         // Hacer todas las peticiones en paralelo
         const productRequests = [
-          "Computación/MacBook",
-          "Computación/Mac studio",
-          "Computación/Mac mini",
-          "Parlantes/Parlante Portátil",
-          "Computación/iMac",
+          "Accesorios de TV/Controles remotos",
+          "Accesorios de carga/Cargador MagSafe",
+          "Audífonos/Audífonos de cable",
+          "Adaptadores/Adaptador VGA",
         ].map((subcategory) => {
           const [category, subcategoryName] = subcategory.split("/");
           return api.get(

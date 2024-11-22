@@ -43,8 +43,9 @@ const FeaturedProductsSection = () => {
         const productRequests = [
           "Computación/MacBook",
           "Computación/Mac studio",
-          "Computación/Macmini",
+          "Computación/Mac mini",
           "Parlantes/Parlante Portátil",
+          "Computación/iMac",
         ].map((subcategory) => {
           const [category, subcategoryName] = subcategory.split("/");
           return api.get(
