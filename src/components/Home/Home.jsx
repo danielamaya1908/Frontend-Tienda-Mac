@@ -3,7 +3,7 @@ import styles from "./Home.module.css";
 import Footer from "../Footer/Footer";
 import Slideshow from "./Slideshows/Slideshow";
 import SubNavbar from "../SubNavbar/SubNavbar";
-import IphoneAndProSection from "./SectionsProducts/IphoneAndProSection";
+/* import IphoneAndProSection from "./SectionsProducts/IphoneAndProSection"; */
 import FeaturedProductsSection from "./SectionsProducts/FeaturedProductsSection";
 import AccessoriesSection from "./SectionsProducts/AccessoriesSection";
 import soporteTecnico from "./Slideshows/img/Servicio_Tecnico.webp";
@@ -16,9 +16,7 @@ const Home = () => {
     <div className={styles.homeContainer}>
       <Slideshow />
       <div className="container-fluid py-5">
-        <section className="mb-5">
-          <IphoneAndProSection />
-        </section>
+        <section className="mb-5">{/* <IphoneAndProSection /> */}</section>
 
         <section className="mb-5">
           <SubNavbar />
