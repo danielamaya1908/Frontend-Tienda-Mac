@@ -67,7 +67,7 @@ const IphoneAndProSection = () => {
               if (!productImages.has(product.id)) {
                 try {
                   const imageResponse = await api.get(
-                    `/products/${product.id}/images`
+                    `/products/${product.id}/imagesHome`
                   );
                   if (imageResponse.data?.length > 0) {
                     const base64Image = `data:image/jpeg;base64,${imageResponse.data[0].data}`;
@@ -207,7 +207,7 @@ const IphoneAndProSection = () => {
 
   return (
     <section className="mb-5">
-      <h2 className="text-center mb-4">Accesorios</h2>
+      <h2 className="text-center mb-4">iPhone 16 & iPhone 16 Pro</h2>
       <Swiper {...swiperParams}>
         {products.map((product) => (
           <SwiperSlide key={product.id}>
