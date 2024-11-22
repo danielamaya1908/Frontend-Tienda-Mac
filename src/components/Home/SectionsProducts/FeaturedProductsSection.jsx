@@ -41,10 +41,10 @@ const FeaturedProductsSection = () => {
       try {
         // Hacer todas las peticiones en paralelo
         const productRequests = [
-          "Computación/subcategory/MacBook",
-          "Computación/subcategory/Mac%20studio",
-          "Computación/subcategory/Mac%20mini",
-          "products/category/Parlantes/subcategory/Parlante%20Portátil",
+          "Computación/MacBook",
+          "Computación/Mac studio",
+          "Computación/Macmini",
+          "Parlantes/Parlante Portátil",
         ].map((subcategory) => {
           const [category, subcategoryName] = subcategory.split("/");
           return api.get(
