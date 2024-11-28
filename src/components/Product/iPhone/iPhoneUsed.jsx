@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "../../NavBar/NavBar"; // Asegúrate de que la ruta sea correcta
+/* import Navbar from "../../NavBar/NavBar";  */ // Asegúrate de que la ruta sea correcta
 import Footer from "../../Footer/Footer";
 import "./IphoneProducts.css";
 
@@ -55,7 +55,7 @@ const IphoneUsed = () => {
 
   return (
     <div className="iphone-products">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="container py-5">
         <h1 className="text-center mb-4">iPhones Usados</h1>
         <h2 className="text-center mb-4 fs-4" style={{ color: "black" }}>
