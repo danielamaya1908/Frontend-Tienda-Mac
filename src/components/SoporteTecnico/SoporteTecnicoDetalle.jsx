@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { FaFilePdf } from "react-icons/fa";
+import logo from "./Logo.png";
 import {
   Container,
   Row,
@@ -385,6 +389,233 @@ const SoporteTecnicoDetalle = () => {
 
   const estadoIndex = estados.indexOf(soporte.estado);
   const progreso = ((estadoIndex + 1) / estados.length) * 100;
+  const generatePDF = (soporte) => {
+    const doc = new jsPDF();
+
+    // Configuración del documento
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const borderWidth = 2; // Grosor del marco negro
+
+    // Dibujar el marco completo
+    doc.setFillColor(0, 0, 0); // Color negro
+    doc.rect(0, 0, pageWidth, borderWidth, "F");
+    doc.rect(0, pageHeight - borderWidth, pageWidth, borderWidth, "F");
+    doc.rect(0, 0, borderWidth, pageHeight, "F");
+    doc.rect(pageWidth - borderWidth, 0, borderWidth, pageHeight, "F");
+
+    const margin = borderWidth + 10; // Margen interior
+    let currentY = margin; // Posición vertical inicial
+
+    // Agregar el logo (centrado y achicado)
+    const logoWidth = 80; // Ajusta el tamaño del logo
+    const logoHeight = 30; // Ajusta el tamaño del logo
+    doc.addImage(
+      logo,
+      "PNG",
+      (pageWidth - logoWidth) / 2,
+      currentY,
+      logoWidth,
+      logoHeight
+    ); // Centrado horizontalmente
+    currentY += logoHeight + 10; // Espaciado debajo del logo
+
+    // Agregar el número de soporte técnico en mayúsculas y más grande
+    const soporteNumero = `ORDEN DE SERVICIO #${soporte.id}`;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16); // Fuente más grande que la de teléfono
+    doc.setTextColor(0, 0, 0);
+    const soporteWidth = doc.getTextWidth(soporteNumero);
+    doc.text(soporteNumero, (pageWidth - soporteWidth) / 2, currentY);
+    currentY += 15; // Espaciado debajo del número de soporte
+
+    // Datos debajo del logo (centrados)
+    const datosOrden = `
+    Teléfonos: 3107043507 - 3173026445
+    Cra 9 # 6 - 130, C.C Unicentro Local 210
+    serviciotecnico@tiendamac.net
+  `;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+
+    // Ajustar la posición de cada línea de texto para centrarla
+    const lineHeight = 7; // Altura de cada línea de texto
+    const lines = datosOrden.split("\n");
+
+    lines.forEach((line, index) => {
+      const lineWidth = doc.getTextWidth(line);
+      const x = (pageWidth - lineWidth) / 2; // Calcular la posición horizontal para centrar
+      const y = currentY + lineHeight * index; // Calcular la posición vertical
+      doc.text(line, x, y);
+    });
+
+    currentY += lineHeight * lines.length + 10; // Ajustar el espacio después de los datos de contacto
+
+    // Sección: Datos Generales
+    const datosGeneralesTitleHeight = 10;
+    doc.setFillColor(0, 0, 0);
+    doc.rect(
+      borderWidth,
+      currentY,
+      pageWidth - 2 * borderWidth,
+      datosGeneralesTitleHeight,
+      "F"
+    );
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(255, 255, 255);
+    doc.text(
+      "DATOS GENERALES",
+      pageWidth / 2,
+      currentY + datosGeneralesTitleHeight / 2 + 2,
+      {
+        align: "center",
+      }
+    );
+    currentY += datosGeneralesTitleHeight + 5;
+
+    // Detalles generales
+    const datosGeneralesDetalles = `
+  ID: ${user.id || "No disponible"}
+  Nombre: ${user.firstName || "No disponible"} ${
+      user.lastName || "No disponible"
+    }
+  Documento: ${user.documentNumber || "No disponible"}
+  Teléfono: ${user.phoneNumber || "No disponible"}
+  Dirección: ${user.address || "No disponible"}
+  Ciudad: ${user.city || "No disponible"}
+  País: ${user.country || "No disponible"}
+  Email: ${user.email || "No disponible"}
+
+  Fecha de Ingreso: ${
+    soporte.createdAt
+      ? new Date(soporte.createdAt).toLocaleDateString()
+      : "No disponible"
+  }
+  Fecha de Salida: ${
+    soporte.fechaSalida
+      ? new Date(soporte.fechaSalida).toLocaleDateString()
+      : "No disponible"
+  }
+  Estado: ${soporte.estado || "No disponible"}
+`;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text(datosGeneralesDetalles, margin, currentY, {
+      maxWidth: pageWidth - 2 * margin,
+      align: "left",
+    });
+    currentY += doc.getTextDimensions(datosGeneralesDetalles).h + 10;
+
+    // Sección: Datos del Equipo
+    const equipoTitleHeight = 10;
+    doc.setFillColor(0, 0, 0);
+    doc.rect(
+      borderWidth,
+      currentY,
+      pageWidth - 2 * borderWidth,
+      equipoTitleHeight,
+      "F"
+    );
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(255, 255, 255);
+    doc.text(
+      "DATOS DEL EQUIPO",
+      pageWidth / 2,
+      currentY + equipoTitleHeight / 2 + 2,
+      {
+        align: "center",
+      }
+    );
+    currentY += equipoTitleHeight + 5;
+
+    // Detalles del equipo
+    const equipoDetalles = ` 
+    Marca: ${soporte.marca}
+    Modelo: ${soporte.modelo}
+    Serial: ${soporte.serial}
+    Estado: ${soporte.estado}
+  `;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text(equipoDetalles, margin, currentY, {
+      maxWidth: pageWidth - 2 * margin,
+      align: "left",
+    });
+    currentY += doc.getTextDimensions(equipoDetalles).h + 10;
+
+    // Componentes
+    const componentes = [
+      { nombre: "Cámara", estado: soporte.camara },
+      { nombre: "Bluetooth", estado: soporte.bluetooth },
+      { nombre: "Wifi", estado: soporte.wifi },
+      { nombre: "Teclado", estado: soporte.teclado },
+      { nombre: "Parlantes", estado: soporte.parlantes },
+      { nombre: "Auricular", estado: soporte.auricular },
+      { nombre: "Botones", estado: soporte.botones },
+      { nombre: "Pin de Carga", estado: soporte.pinCarga },
+      { nombre: "Puertos", estado: soporte.puertos },
+      { nombre: "Pantalla", estado: soporte.pantalla },
+      { nombre: "Garantía", estado: soporte.garantia },
+    ];
+
+    componentes.forEach((componente) => {
+      doc.text(
+        `${componente.nombre}: ${componente.estado ? "Sí" : "No"}`,
+        margin,
+        currentY,
+        { maxWidth: pageWidth - 2 * margin }
+      );
+      currentY += 7; // Espaciado entre componentes
+    });
+
+    currentY += 10; // Espaciado antes de la siguiente sección
+
+    // Título: Condiciones de Servicio
+    const titleBarHeight = 10;
+    doc.setFillColor(0, 0, 0);
+    doc.rect(
+      borderWidth,
+      currentY,
+      pageWidth - 2 * borderWidth,
+      titleBarHeight,
+      "F"
+    );
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(255, 255, 255);
+    doc.text(
+      "CONDICIONES DE SERVICIO",
+      pageWidth / 2,
+      currentY + titleBarHeight / 2 + 2,
+      {
+        align: "center",
+      }
+    );
+    currentY += titleBarHeight + 5;
+
+    // Texto de condiciones
+    const condicionesTexto = `
+    Duración del diagnóstico...
+    (Agregar aquí el texto completo de las condiciones de servicio)
+  `;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text(condicionesTexto, margin, currentY, {
+      maxWidth: pageWidth - 2 * margin,
+      align: "justify",
+    });
+
+    // Guardar el PDF
+    doc.save("CondicionesDeServicio.pdf");
+  };
 
   return (
     <Container className="mt-4">
@@ -396,7 +627,14 @@ const SoporteTecnicoDetalle = () => {
         <FaArrowLeft className="me-2" />
         Volver
       </Button>
-
+      <Button
+        variant="success"
+        className="mb-4"
+        onClick={() => generatePDF(soporte)}
+      >
+        <FaFilePdf className="me-2" />
+        Generar PDF
+      </Button>
       <Card className="mb-4 border-primary">
         <Card.Body>
           <Card.Title className="text-center mb-4">
