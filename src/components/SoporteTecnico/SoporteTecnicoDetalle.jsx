@@ -97,6 +97,7 @@ const SoporteTecnicoDetalle = () => {
     }
   };
 
+  // Replace this entire function
   const fetchSoporteTecnico = async () => {
     if (isLoading && retryCount === 0) setIsLoading(true);
     setError(null);
@@ -116,7 +117,9 @@ const SoporteTecnicoDetalle = () => {
 
       const [soporteResponse, imagenesResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/soporte-tecnico/${id}`, config),
-        axios.get(`${API_BASE_URL}/soporte-tecnico/${id}/latest-image`, config),
+        axios
+          .get(`${API_BASE_URL}/soporte-tecnico/${id}/latest-image`, config)
+          .catch(() => ({ data: { imagenes: [] } })),
       ]);
 
       if (soporteResponse.data) {
@@ -124,9 +127,9 @@ const SoporteTecnicoDetalle = () => {
         setUser(soporteResponse.data.User);
 
         // Modificar el manejo de las imágenes de ingreso
-        if (soporteResponse.data.ImageSoporteTecnicos) {
-          const imagenesIngresoModificadas =
-            soporteResponse.data.ImageSoporteTecnicos.sort(
+        const imagenesIngresoModificadas = soporteResponse.data
+          .ImageSoporteTecnicos
+          ? soporteResponse.data.ImageSoporteTecnicos.sort(
               (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
             )
               .slice(0, 10)
@@ -135,47 +138,45 @@ const SoporteTecnicoDetalle = () => {
                 url: img.url.startsWith("http")
                   ? img.url
                   : `${API_BASE_URL}${img.url}`,
-              }));
-          setImagenesIngreso(imagenesIngresoModificadas);
-        }
+              }))
+          : [];
+        setImagenesIngreso(imagenesIngresoModificadas);
 
         // Modificar el manejo de las imágenes de estado
-        if (imagenesResponse.data.imagenes) {
-          const imagenes = imagenesResponse.data.imagenes
-            .sort((a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida))
-            .map((img) => ({
-              ...img,
-              url: img.url.startsWith("http")
-                ? img.url
-                : `${API_BASE_URL}${img.url}`,
-            }));
+        const imagenes = imagenesResponse.data.imagenes
+          ? imagenesResponse.data.imagenes
+              .sort((a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida))
+              .map((img) => ({
+                ...img,
+                url: img.url.startsWith("http")
+                  ? img.url
+                  : `${API_BASE_URL}${img.url}`,
+              }))
+          : [];
 
-          const newEstadoImages = {
-            Diagnosticando: [],
-            Reparando: [],
-            Reparado: [],
-            Entregado: [],
-          };
+        const newEstadoImages = {
+          Diagnosticando: [],
+          Reparando: [],
+          Reparado: [],
+          Entregado: [],
+        };
 
-          const estadosConImagenes = [
-            "Diagnosticando",
-            "Reparando",
-            "Reparado",
-            "Entregado",
-          ];
+        const estadosConImagenes = [
+          "Diagnosticando",
+          "Reparando",
+          "Reparado",
+          "Entregado",
+        ];
 
-          imagenes.forEach((imagen, index) => {
-            const estado =
-              estadosConImagenes[
-                Math.min(index, estadosConImagenes.length - 1)
-              ];
-            if (estado) {
-              newEstadoImages[estado].push(imagen);
-            }
-          });
+        imagenes.forEach((imagen, index) => {
+          const estado =
+            estadosConImagenes[Math.min(index, estadosConImagenes.length - 1)];
+          if (estado) {
+            newEstadoImages[estado].push(imagen);
+          }
+        });
 
-          setEstadoImages(newEstadoImages);
-        }
+        setEstadoImages(newEstadoImages);
       }
     } catch (error) {
       handleApiError(error);
@@ -354,7 +355,7 @@ const SoporteTecnicoDetalle = () => {
     );
   }
 
-  if (!soporte) {
+  if (!soporte || Object.keys(soporte).length === 0) {
     return (
       <Container className="mt-4">
         <Alert variant="warning">
@@ -374,7 +375,7 @@ const SoporteTecnicoDetalle = () => {
   }
 
   const imagenesPerEstado = {
-    Ingreso: imagenesIngreso,
+    Ingreso: imagenesIngreso || [],
     Diagnosticando: estadoImages.Diagnosticando || [],
     Pendiente: [],
     Reparando: estadoImages["Reparando"] || [],
