@@ -478,6 +478,17 @@ const SoporteTecnicoDetalle = () => {
 
     // Detalles generales
     const datosGeneralesDetalles = `
+  ID: ${user.id || "No disponible"}
+  Nombre: ${user.firstName || "No disponible"} ${
+      user.lastName || "No disponible"
+    }
+  Documento: ${user.documentNumber || "No disponible"}
+  Teléfono: ${user.phoneNumber || "No disponible"}
+  Dirección: ${user.address || "No disponible"}
+  Ciudad: ${user.city || "No disponible"}
+  País: ${user.country || "No disponible"}
+  Email: ${user.email || "No disponible"}
+
   Fecha de Ingreso: ${
     soporte.createdAt
       ? new Date(soporte.createdAt).toLocaleDateString()
@@ -488,7 +499,7 @@ const SoporteTecnicoDetalle = () => {
       ? new Date(soporte.fechaSalida).toLocaleDateString()
       : "No disponible"
   }
-       Estado: ${soporte.estado || "No disponible"}
+  Estado: ${soporte.estado || "No disponible"}
 `;
 
     doc.setFont("helvetica", "normal");
