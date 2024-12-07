@@ -183,7 +183,6 @@ const SoporteTecnicoDetalle = () => {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchSoporteTecnico();
 
