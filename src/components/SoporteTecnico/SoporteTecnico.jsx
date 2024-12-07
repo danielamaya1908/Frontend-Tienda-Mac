@@ -63,7 +63,7 @@ const SoporteTecnico = () => {
     try {
       let diagnostico = diagnosticoDescripcion[id] || "";
 
-      if (newEstado === "EnDiagnostico") {
+      if (newEstado === "Diagnosticando") {
         diagnostico = prompt(
           "Por favor, ingrese la descripción del diagnóstico:",
           diagnostico
@@ -139,17 +139,18 @@ const SoporteTecnico = () => {
       alert("Error al subir la imagen");
     }
   };
+
   const getStatusDescription = (status) => {
     switch (status) {
       case "Ingreso":
-        return "El próximo estado será En diagnóstico. Puede demorar de 1 a 3 días para cambiar a ese estado.";
-      case "En diagnostico":
-        return "El próximo estado será En espera de aprobación cliente. Puede demorar de 1 a 3 días hábiles para su revisión y cambiar de estado.";
-      case "En espera de aprobacion cliente":
+        return "El próximo estado será Diagnosticando. Puede demorar de 1 a 3 días para cambiar a ese estado.";
+      case "Diagnosticando":
+        return "El próximo estado será Pendiente. Puede demorar de 1 a 3 días hábiles para su revisión y cambiar de estado.";
+      case "Pendiente":
         return "Esperando confirmación del cliente.";
-      case "En reparacion":
+      case "Reparando":
         return "El equipo está siendo reparado.";
-      case "Listo para entregar":
+      case "Reparado":
         return "El equipo está listo para ser recogido por el cliente.";
       case "Entregado":
         return "El equipo fue entregado al cliente con éxito.";
@@ -178,12 +179,10 @@ const SoporteTecnico = () => {
               >
                 <option value="Todos los Estados">Todos los Estados</option>
                 <option value="Ingreso">Ingreso</option>
-                <option value="En diagnostico">En diagnóstico</option>
-                <option value="En espera de aprobacion cliente">
-                  En espera de aprobación cliente
-                </option>
-                <option value="En reparacion">En reparación</option>
-                <option value="Listo para entregar">Listo para entregar</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Diagnosticando">Diagnosticando</option>
+                <option value="Reparando">Reparando</option>
+                <option value="Reparado">Reparado</option>
                 <option value="Entregado">Entregado</option>
               </select>
               <button onClick={handleAgregarEquipo} className="btn-agregar">
@@ -222,14 +221,10 @@ const SoporteTecnico = () => {
                             .replace(/\s+/g, "-")}`}
                         >
                           <option value="Ingreso">Ingreso</option>
-                          <option value="En diagnostico">En diagnóstico</option>
-                          <option value="En espera de aprobacion cliente">
-                            En espera de aprobación cliente
-                          </option>
-                          <option value="En reparacion">En reparación</option>
-                          <option value="Listo para entregar">
-                            Listo para entregar
-                          </option>
+                          <option value="Diagnosticando">Diagnosticando</option>
+                          <option value="Pendiente">Pendiente</option>
+                          <option value="Reparando">Reparando</option>
+                          <option value="Reparado">Reparado</option>
                           <option value="Entregado">Entregado</option>
                         </select>
                         <p className="status-description">
