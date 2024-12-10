@@ -895,18 +895,24 @@ const SoporteTecnicoDetalle = () => {
         <FaMobileAlt className="me-2" />
         Soporte Técnico #{soporte.id}
       </h1>
-      <Button variant="primary" className="mb-4" onClick={() => navigate(-1)}>
-        <FaArrowLeft className="me-2" />
-        Volver
-      </Button>
-      <Button
-        variant="success"
-        className="mb-4"
-        onClick={() => generatePDF(soporte)}
-      >
-        <FaFilePdf className="me-2" />
-        Generar PDF
-      </Button>
+      <div className="d-flex align-items-center">
+        <Button
+          variant="primary"
+          className="mb-4 me-3"
+          onClick={() => navigate(-1)}
+        >
+          <FaArrowLeft className="me-2" />
+          Volver
+        </Button>
+        <Button
+          variant="success"
+          className="mb-4"
+          onClick={() => generatePDF(soporte)}
+        >
+          <FaFilePdf className="me-2" />
+          Generar PDF
+        </Button>
+      </div>
       <Card className="mb-4 border-primary">
         <Card.Body>
           <Card.Title className="text-center mb-4">

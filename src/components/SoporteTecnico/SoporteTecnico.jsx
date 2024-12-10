@@ -4,7 +4,14 @@ import axios from "axios";
 import "./SoporteTecnico.css";
 import MenuDashboard from "../MenuDashboard/MenuDashboard";
 import { FaPlus, FaSyncAlt, FaUpload } from "react-icons/fa"; // Icons for add, update, and upload
-
+const STATE_DISPLAY_MAPPING = {
+  Ingreso: "En Espera",
+  Diagnosticando: "Diagnóstico",
+  Pendiente: "Pendiente de Confirmación",
+  Reparando: "En Reparación",
+  Reparado: "Listo para Recoger",
+  Entregado: "Entregado",
+};
 const SoporteTecnico = () => {
   const navigate = useNavigate();
   const [ordenesServicio, setOrdenesServicio] = useState([]);
@@ -178,12 +185,13 @@ const SoporteTecnico = () => {
                 onChange={(e) => setSelectedStatus(e.target.value)}
               >
                 <option value="Todos los Estados">Todos los Estados</option>
-                <option value="Ingreso">Ingreso</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Diagnosticando">Diagnosticando</option>
-                <option value="Reparando">Reparando</option>
-                <option value="Reparado">Reparado</option>
-                <option value="Entregado">Entregado</option>
+                {Object.entries(STATE_DISPLAY_MAPPING).map(
+                  ([backendState, displayState]) => (
+                    <option key={backendState} value={backendState}>
+                      {displayState}
+                    </option>
+                  )
+                )}
               </select>
               <button onClick={handleAgregarEquipo} className="btn-agregar">
                 Agregar Nuevo Equipo
@@ -220,12 +228,13 @@ const SoporteTecnico = () => {
                             .toLowerCase()
                             .replace(/\s+/g, "-")}`}
                         >
-                          <option value="Ingreso">Ingreso</option>
-                          <option value="Diagnosticando">Diagnosticando</option>
-                          <option value="Pendiente">Pendiente</option>
-                          <option value="Reparando">Reparando</option>
-                          <option value="Reparado">Reparado</option>
-                          <option value="Entregado">Entregado</option>
+                          {Object.entries(STATE_DISPLAY_MAPPING).map(
+                            ([backendState, displayState]) => (
+                              <option key={backendState} value={backendState}>
+                                {displayState}
+                              </option>
+                            )
+                          )}
                         </select>
                         <p className="status-description">
                           {getStatusDescription(orden.estado)}
