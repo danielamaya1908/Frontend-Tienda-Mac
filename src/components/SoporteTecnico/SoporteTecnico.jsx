@@ -5,11 +5,11 @@ import "./SoporteTecnico.css";
 import MenuDashboard from "../MenuDashboard/MenuDashboard";
 import { FaPlus, FaSyncAlt, FaUpload } from "react-icons/fa"; // Icons for add, update, and upload
 const STATE_DISPLAY_MAPPING = {
-  Ingreso: "En Espera",
-  Diagnosticando: "Diagnóstico",
-  Pendiente: "Pendiente de Confirmación",
-  Reparando: "En Reparación",
-  Reparado: "Listo para Recoger",
+  Ingreso: "Ingreso",
+  Diagnosticando: "En diagnóstico",
+  Pendiente: "En espera de aprobación cliente",
+  Reparando: "En reparación",
+  Reparado: "Listo para Entregar",
   Entregado: "Entregado",
 };
 const SoporteTecnico = () => {

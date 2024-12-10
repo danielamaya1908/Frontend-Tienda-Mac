@@ -111,7 +111,7 @@ tr:last-child td {
   background-color: #007bff;
 }
 
-.estado.en-diagnostico {
+.estado.diagnosticando {
   background-color: #ffc107;
 }
 
