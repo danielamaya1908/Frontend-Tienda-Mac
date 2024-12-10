@@ -115,15 +115,15 @@ tr:last-child td {
   background-color: #ffc107;
 }
 
-.estado.en-espera-de-aprobacion-cliente {
+.estado.pendiente {
   background-color: #ff0707dc;
 }
 
-.estado.en-reparacion {
+.estado.reparando {
   background-color: #6c757d;
 }
 
-.estado.listo-para-entregar {
+.estado.reparado {
   background-color: #17a2b8;
 }
 
