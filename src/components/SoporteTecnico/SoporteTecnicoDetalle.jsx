@@ -389,6 +389,7 @@ const SoporteTecnicoDetalle = () => {
 
   const estadoIndex = estados.indexOf(soporte.estado);
   const progreso = ((estadoIndex + 1) / estados.length) * 100;
+
   const generatePDF = (soporte) => {
     const doc = new jsPDF();
 
@@ -398,17 +399,23 @@ const SoporteTecnicoDetalle = () => {
     const borderWidth = 2; // Grosor del marco negro
 
     // Dibujar el marco completo
-    doc.setFillColor(0, 0, 0); // Color negro
-    doc.rect(0, 0, pageWidth, borderWidth, "F");
-    doc.rect(0, pageHeight - borderWidth, pageWidth, borderWidth, "F");
-    doc.rect(0, 0, borderWidth, pageHeight, "F");
-    doc.rect(pageWidth - borderWidth, 0, borderWidth, pageHeight, "F");
+    // Función para dibujar el marco negro en cada página
+    const drawBlackBorder = () => {
+      doc.setFillColor(0, 0, 0); // Color negro
+      doc.rect(0, 0, pageWidth, borderWidth, "F");
+      doc.rect(0, pageHeight - borderWidth, pageWidth, borderWidth, "F");
+      doc.rect(0, 0, borderWidth, pageHeight, "F");
+      doc.rect(pageWidth - borderWidth, 0, borderWidth, pageHeight, "F");
+    };
+
+    // Dibujar el marco en la primera página
+    drawBlackBorder();
 
     const margin = borderWidth + 10; // Margen interior
     let currentY = margin; // Posición vertical inicial
 
     // Agregar el logo (centrado y achicado)
-    const logoWidth = 80; // Ajusta el tamaño del logo
+    const logoWidth = 60; // Ajusta el tamaño del logo
     const logoHeight = 30; // Ajusta el tamaño del logo
     doc.addImage(
       logo,
@@ -418,7 +425,7 @@ const SoporteTecnicoDetalle = () => {
       logoWidth,
       logoHeight
     ); // Centrado horizontalmente
-    currentY += logoHeight + 10; // Espaciado debajo del logo
+    currentY += logoHeight + 2; // Espaciado debajo del logo
 
     // Agregar el número de soporte técnico en mayúsculas y más grande
     const soporteNumero = `ORDEN DE SERVICIO #${soporte.id}`;
@@ -427,7 +434,7 @@ const SoporteTecnicoDetalle = () => {
     doc.setTextColor(0, 0, 0);
     const soporteWidth = doc.getTextWidth(soporteNumero);
     doc.text(soporteNumero, (pageWidth - soporteWidth) / 2, currentY);
-    currentY += 15; // Espaciado debajo del número de soporte
+    currentY += 2; // Espaciado debajo del número de soporte
 
     // Datos debajo del logo (centrados)
     const datosOrden = `
@@ -451,7 +458,7 @@ const SoporteTecnicoDetalle = () => {
       doc.text(line, x, y);
     });
 
-    currentY += lineHeight * lines.length + 10; // Ajustar el espacio después de los datos de contacto
+    currentY += lineHeight * lines.length + 0; // Ajustar el espacio después de los datos de contacto
 
     // Sección: Datos Generales
     const datosGeneralesTitleHeight = 10;
@@ -474,42 +481,56 @@ const SoporteTecnicoDetalle = () => {
         align: "center",
       }
     );
-    currentY += datosGeneralesTitleHeight + 5;
+    currentY += datosGeneralesTitleHeight + 5; // Espaciado adicional después del título
 
-    // Detalles generales
-    const datosGeneralesDetalles = `
-  ID: ${user.id || "No disponible"}
-  Nombre: ${user.firstName || "No disponible"} ${
-      user.lastName || "No disponible"
-    }
-  Documento: ${user.documentNumber || "No disponible"}
-  Teléfono: ${user.phoneNumber || "No disponible"}
-  Dirección: ${user.address || "No disponible"}
-  Ciudad: ${user.city || "No disponible"}
-  País: ${user.country || "No disponible"}
-  Email: ${user.email || "No disponible"}
-
-  Fecha de Ingreso: ${
-    soporte.createdAt
-      ? new Date(soporte.createdAt).toLocaleDateString()
-      : "No disponible"
-  }
-  Fecha de Salida: ${
-    soporte.fechaSalida
-      ? new Date(soporte.fechaSalida).toLocaleDateString()
-      : "No disponible"
-  }
-  Estado: ${soporte.estado || "No disponible"}
-`;
-
+    // Configuración general
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.text(datosGeneralesDetalles, margin, currentY, {
-      maxWidth: pageWidth - 2 * margin,
-      align: "left",
+
+    // Ancho por columna
+    const columnWidth = (pageWidth - 2 * borderWidth) / 4;
+    const startX = borderWidth + 5;
+
+    // Datos divididos en filas de 4 columnas según el nuevo orden
+    const datos = [
+      [
+        `Fecha de Ingreso: ${
+          soporte.createdAt
+            ? new Date(soporte.createdAt).toLocaleDateString()
+            : "No disponible"
+        }`,
+        `Estado: ${soporte.estado || "No disponible"}`,
+      ],
+      [
+        `Fecha de Salida: ${
+          soporte.fechaSalida
+            ? new Date(soporte.fechaSalida).toLocaleDateString()
+            : "No disponible"
+        }`,
+        `Nombre: ${user.firstName || "No disponible"} ${user.lastName || ""}`,
+      ],
+      [
+        `Documento: ${user.documentNumber || "No disponible"}`,
+        `Teléfono: ${user.phoneNumber || "No disponible"}`,
+      ],
+      [
+        `Email: ${user.email || "No disponible"}`,
+        `País: ${user.country || "No disponible"}`,
+      ],
+      [
+        `Ciudad: ${user.city || "No disponible"}`,
+        `Dirección: ${user.address || "No disponible"}`,
+      ],
+    ];
+
+    // Iterar sobre las filas y columnas
+    datos.forEach((fila) => {
+      fila.forEach((texto, index) => {
+        doc.text(texto, startX + index * columnWidth, currentY);
+      });
+      currentY += 7; // Espacio entre filas
     });
-    currentY += doc.getTextDimensions(datosGeneralesDetalles).h + 10;
 
     // Sección: Datos del Equipo
     const equipoTitleHeight = 10;
@@ -532,50 +553,66 @@ const SoporteTecnicoDetalle = () => {
         align: "center",
       }
     );
-    currentY += equipoTitleHeight + 5;
+    currentY += equipoTitleHeight + 5; // Espaciado adicional después del título
 
-    // Detalles del equipo
-    const equipoDetalles = ` 
-    Marca: ${soporte.marca}
-    Modelo: ${soporte.modelo}
-    Serial: ${soporte.serial}
-    Estado: ${soporte.estado}
-  `;
+    // Configuración general para los detalles del equipo
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
-    doc.text(equipoDetalles, margin, currentY, {
-      maxWidth: pageWidth - 2 * margin,
-      align: "left",
-    });
-    currentY += doc.getTextDimensions(equipoDetalles).h + 10;
 
-    // Componentes
-    const componentes = [
-      { nombre: "Cámara", estado: soporte.camara },
-      { nombre: "Bluetooth", estado: soporte.bluetooth },
-      { nombre: "Wifi", estado: soporte.wifi },
-      { nombre: "Teclado", estado: soporte.teclado },
-      { nombre: "Parlantes", estado: soporte.parlantes },
-      { nombre: "Auricular", estado: soporte.auricular },
-      { nombre: "Botones", estado: soporte.botones },
-      { nombre: "Pin de Carga", estado: soporte.pinCarga },
-      { nombre: "Puertos", estado: soporte.puertos },
-      { nombre: "Pantalla", estado: soporte.pantalla },
-      { nombre: "Garantía", estado: soporte.garantia },
+    // Ancho por columna
+
+    // Detalles del equipo divididos en filas de 4 columnas
+    const equipoDatos = [
+      [
+        `Marca: ${soporte.marca || "No disponible"}`,
+        `Modelo: ${soporte.modelo || "No disponible"}`,
+      ],
+      [
+        `Serial: ${soporte.serial || "No disponible"}`,
+        `Enciende: ${soporte.enciende ? "Sí" : "No"}`,
+      ],
+      [
+        `Cámara: ${soporte.camara ? "Sí" : "No"}`,
+        `Bluetooth: ${soporte.bluetooth ? "Sí" : "No"}`,
+      ],
+      [
+        `Wifi: ${soporte.wifi ? "Sí" : "No"}`,
+        `Teclado: ${soporte.teclado ? "Sí" : "No"}`,
+      ],
+      [
+        `Parlantes: ${soporte.parlantes ? "Sí" : "No"}`,
+        `Auricular: ${soporte.auricular ? "Sí" : "No"}`,
+      ],
+      [
+        `Botones: ${soporte.botones ? "Sí" : "No"}`,
+        `Pin de Carga: ${soporte.pinCarga ? "Sí" : "No"}`,
+      ],
+      [
+        `Puertos: ${soporte.puertos ? "Sí" : "No"}`,
+        `Pantalla: ${soporte.pantalla ? "Sí" : "No"}`,
+      ],
+      [
+        `Garantía: ${soporte.garantia ? "Sí" : "No"}`,
+        `Rayones: ${soporte.rayones ? "Sí" : "No"}`,
+      ],
+      [`Golpes: ${soporte.golpes ? "Sí" : "No"}`],
+      [
+        `Diagnostico - Descripción: ${
+          soporte.diagnosticoDescripcion || "No disponible"
+        }`,
+      ],
     ];
 
-    componentes.forEach((componente) => {
-      doc.text(
-        `${componente.nombre}: ${componente.estado ? "Sí" : "No"}`,
-        margin,
-        currentY,
-        { maxWidth: pageWidth - 2 * margin }
-      );
-      currentY += 7; // Espaciado entre componentes
+    // Iterar sobre las filas y columnas
+    equipoDatos.forEach((fila) => {
+      fila.forEach((texto, index) => {
+        doc.text(texto, startX + index * columnWidth, currentY);
+      });
+      currentY += 7; // Espacio entre filas
     });
 
-    currentY += 10; // Espaciado antes de la siguiente sección
+    currentY += 2; // Espaciado antes de la siguiente sección
 
     // Título: Condiciones de Servicio
     const titleBarHeight = 10;
@@ -598,23 +635,258 @@ const SoporteTecnicoDetalle = () => {
         align: "center",
       }
     );
-    currentY += titleBarHeight + 5;
+    currentY += titleBarHeight + 10;
 
     // Texto de condiciones
-    const condicionesTexto = `
-    Duración del diagnóstico...
-    (Agregar aquí el texto completo de las condiciones de servicio)
-  `;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
-    doc.text(condicionesTexto, margin, currentY, {
-      maxWidth: pageWidth - 2 * margin,
-      align: "justify",
-    });
+    /*   const condicionesTexto = `
+    Duración del diagnóstico
+    La duración del diagnóstico técnico depende del tipo de servicio requerido por el cliente: 
+    1. En caso de revisión, la duración máxima será de dos (2) a cuatro (4) días hábiles; en el evento de requerirse un mayor tiempo se le comunicará al cliente.
 
-    // Guardar el PDF
-    doc.save("CondicionesDeServicio.pdf");
+    Garantía de productos
+    En caso de solicitud de garantías, se sujetará a lo dispuesto por las condiciones de garantía de la marca del producto, las informadas y entregadas al cliente al momento de la compra. La garantía no podrá hacerse exigible si se comprueba que el equipo ha sido previamente abierto, que el producto tenga síntomas de humedad, que el producto presente síntomas de abuso o mal uso tales como golpes, fracturas de pantallas, entre otros. 
+    2. En caso de garantías, la duración máxima será de 30 días hábiles; en el evento de requerirse un mayor tiempo se le comunicará al cliente.
+
+    Valor del diagnóstico
+    1. En caso de no aprobar reparación, el cliente se compromete a pagar el valor del diagnóstico técnico acordado en la orden de servicio. 
+    2. Para las garantías aprobadas, el valor del diagnóstico será tenido en cuenta como valor de este.
+    3. Para las reparaciones, el valor del diagnóstico se incluirá dentro del valor total del servicio en caso de que el cliente decida tomarlo.
+
+    Garantía del servicio
+    Las reparaciones tienen una garantía máxima de tres (3) meses en cambios de piezas contados a partir de la fecha de entrega, por defectos de fábrica. El software instalado no tiene garantía.
+
+    Responsabilidades del cliente
+    Es responsabilidad del cliente informar previamente al técnico o responsable si el equipo tiene o no garantía, si se ha mojado o si ha sido abierto por terceros. Es responsabilidad del cliente la información registrada en esta orden de servicio, en caso de algún error el cliente debe informar previamente antes de firmar. En atención y cumplimiento al decreto 1413 del 3 de agosto de 2018, pasado un (1) mes a partir de la fecha prevista para la devolución o a la fecha en que el consumidor deba aceptar o rechazar expresamente el servicio, de conformidad con lo previsto en el numeral 1 anterior sin que el consumidor acuda a retirar el bien, el prestador del servicio lo requerirá para que lo retire dentro de los dos (2) meses siguientes a la remisión de la comunicación. Si el consumidor no lo retira se entenderá por ley que abandona el bien y el prestador del servicio deberá disponer del mismo conforme con la reglamentación que expida el Gobierno Nacional para el efecto. Pasado el tiempo en mención el cliente deberá cancelar un valor correspondiente a CINCO MIL PESOS M/CTE. ($5.000) por cada día de retraso, por concepto de bodegaje. En caso de que el producto / equipo sea recogido por un tercero, el cliente debe autorizar y notificar previamente por escrito.
+
+    Responsabilidades del prestador del servicio
+    TiendaMac, en calidad de proveedor de servicios no se hace responsable de la información dejada en los equipos objeto de revisión, razón por la cual se recomienda al cliente extraer previamente la información. Asimismo, TiendaMac no se hace responsable por aquellos equipos en los que luego del diagnóstico técnico se evidencie que han sido abiertos y manipulados por terceros. En estos casos, se dejará constancia del hecho en la presente orden de servicio y se le informará al cliente. TiendaMac no se responsabiliza por el estado de los equipos dejados por más de un (1) mes. TiendaMac no se responsabiliza de accesorios diferentes al equipo, como lo son: Vidrios templados, case, stickers, entre otros.
+
+    Notificaciones y Horarios de atención soporte técnico
+    Horarios: Lunes a viernes en jornada de 10:00 AM - 7:00 PM. Las notificaciones de diagnósticos, reparaciones o novedades se efectuarán por las vías proporcionadas por el cliente, tales como teléfonos de contacto, correo electrónico o whatsapp. En caso de no haber respuestas, igual será reportado como notificado. Sábados y festivos no laboramos.
+
+    En cumplimiento a la Ley 1581 de 2012 y su decreto reglamentario 1377 de 2013, le informamos que Usted tiene derecho de conocer, actualizar, rectificar y solicitar la supresión de sus datos personales en cualquier momento. La información de sus datos aquí recopilada, en caso de que Usted lo autorice, la utilizaremos para informarle sobre los servicios, promociones, ofertas, eventos ofrecidos por TiendaMac o en convenio con otras organizaciones. Nos autoriza al tratamiento y uso de sus datos.
+`;  */
+
+    // Función para escribir texto con saltos automáticos y organización
+    function addMultiLineText(
+      doc,
+      text,
+      x,
+      y,
+      lineHeight,
+      pageHeight,
+      margin,
+      isBold = false
+    ) {
+      // Cambiar a negrita si es necesario
+      if (isBold) {
+        doc.setFont("helvetica", "bold");
+      } else {
+        doc.setFont("helvetica", "normal");
+      }
+
+      const lines = doc.splitTextToSize(
+        text,
+        doc.internal.pageSize.getWidth() - 2 * margin
+      );
+
+      lines.forEach((line) => {
+        if (y + lineHeight > pageHeight - margin) {
+          doc.addPage();
+          drawBlackBorder();
+          y = margin; // Reiniciar la posición en la nueva página
+        }
+        doc.text(line, x, y);
+        y += lineHeight;
+      });
+      return y; // Devolver la posición vertical actualizada
+    }
+
+    // Establecer color de texto (negro)
+    doc.setTextColor(0, 0, 0); // Color negro
+
+    // Títulos en negrita
+    currentY = addMultiLineText(
+      doc,
+      "Duración del diagnóstico",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      true
+    );
+    currentY = addMultiLineText(
+      doc,
+      "La duración del diagnóstico técnico depende del tipo de servicio requerido por el cliente: 1. En caso de revisión, la duración máxima será de dos (2) a cuatro (4) días hábiles; en el evento de requerirse un mayor tiempo se le comunicará al cliente. 2. En caso de garantías, la duración máxima será de 30 días hábiles; en el evento de requerirse un mayor tiempo se le comunicará al cliente.",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      false
+    );
+
+    currentY = addMultiLineText(
+      doc,
+      "Garantía de productos",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      true
+    );
+    currentY = addMultiLineText(
+      doc,
+      "En caso de solicitud de garantías, se sujetará a lo dispuesto por las condiciones de garantía de la marca del producto, las informadas y entregadas al cliente al momento de la compra. La garantía no podrá hacerse exigible si se comprueba que el equipo ha sido previamente abierto, que el producto tenga síntomas de humedad, que el producto presente síntomas de abuso o mal uso tales como golpes, fracturas de pantallas, entre otros.",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      false
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Valor del diagnóstico",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      true
+    );
+    currentY = addMultiLineText(
+      doc,
+      "1. En caso de no aprobar reparación, el cliente se compromete a pagar el valor del diagnóstico técnico acordado en la orden de servicio. 2. Para las garantías aprobadas, el valor del diagnóstico será tenido en cuenta como valor de este. 3. Para las reparaciones, el valor del diagnóstico se incluirá dentro del valor total del servicio en caso de que el cliente decida tomarlo.",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      false
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Garantía del servicio",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      true
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Las reparaciones tienen una garantía máxima de tres (3) meses en cambios de piezas contados a partir de la fecha de entrega, por defectos de fábrica. El software instalado no tiene garantía.",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      false
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Responsabilidades del cliente",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      true
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Es responsabilidad del cliente informar previamente al técnico o responsable si el equipo tiene o no garantía, si se ha mojado o si ha sido abierto por terceros. Es responsabilidad del cliente la información registrada en esta orden de servicio, en caso de algún error el cliente debe informar previamente antes de firmar. En atención y cumplimiento al decreto 1413 del 3 de agosto de 2018, pasado un (1) mes a partir de la fecha prevista para la devolución o a la fecha en que el consumidor deba aceptar o rechazar expresamente el servicio, de conformidad con lo previsto en el numeral 1 anterior sin que el consumidor acuda a retirar el bien, el prestador del servicio lo requerirá para que lo retire dentro de los dos (2) meses siguientes a la remisión de la comunicación. Si el consumidor no lo retira se entenderá por ley que abandona el bien y el prestador del servicio deberá disponer del mismo conforme con la reglamentación que expida el Gobierno Nacional para el efecto. Pasado el tiempo en mención el cliente deberá cancelar un valor correspondiente a CINCO MIL PESOS M/CTE. ($5.000) por cada día de retraso, por concepto de bodegaje. En caso de que el producto / equipo sea recogido por un tercero, el cliente debe autorizar y notificar previamente por escrito.",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      false
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Responsabilidades del prestador del servicio",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      true
+    );
+    currentY = addMultiLineText(
+      doc,
+      "TiendaMac, en calidad de proveedor de servicios, no se hace responsable de la información dejada en los equipos objeto de revisión, razón por la cual se recomienda al cliente extraer previamente la información. Asimismo, Tienda Mac, no se hace responsable por aquellos equipos en los que luego del diagnóstico técnico se evidencie que han sido abiertos y manipulados por terceros. En estos casos, se dejará constancia del hecho en la presente orden de servicio y se le informará al cliente. TiendaMac no se responsabiliza por el estado de los equipos dejados por más de un (1) mes. TiendaMac no se responsabiliza de accesorios diferentes al equipo, como lo son: Vidrios templados, case, stickers, entre otros.",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      false
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Noticaciones",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      true
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Las notificaciones de diagnósticos, reparaciones o novedades se efectuarán por las vías proporcionadas por el cliente, tales como teléfonos de contacto, correo electrónico o WhatsApp. En caso de no haber respuestas, igual será reportado como notificado. En cumplimiento a la Ley 1581 de 2012 y su decreto reglamentario 1377 de 2013, le informamos que Usted tiene derecho de conocer, actualizar, rectificar y solicitar la supresión de sus datos personales en cualquier momento. La información de sus datos aquí recopilada, en caso de que Usted lo autorice, la utilizaremos para informarle sobre los servicios, promociones, ofertas, eventos ofrecidos por TiendaMac o en convenio con otras organizaciones. Nos autoriza al tratamiento y uso de sus datos.",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      false
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Horarios de atención soporte técnico",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      true
+    );
+    currentY = addMultiLineText(
+      doc,
+      "Lunes a viernes en jornada de 10:00 AM - 7:00 PM. Sábados y festivos no laboramos.",
+      margin,
+      currentY,
+      7,
+      pageHeight,
+      margin,
+      false
+    );
+
+    // Espacio para la firma de "RECIBIDO" y "ENTREGADO"
+    currentY += 15; // Añadimos un espacio después de la última sección
+
+    // Firma de "RECIBIDO" (Cliente) - Alineado a la izquierda con espacio para firma debajo
+    doc.setFont("helvetica", "bold");
+    doc.text("RECIBIDO", 20, currentY); // Alineado a la izquierda
+    doc.setFont("helvetica", "normal");
+    doc.text("____________________", 20, currentY + 10); // Espacio para la firma
+    doc.text("Cliente", 20, currentY + 20); // Etiqueta debajo
+
+    // Firma de "ENTREGADO" (Funcionario de Soporte Técnico) - Alineado a la derecha con espacio para firma debajo
+    doc.setFont("helvetica", "bold");
+    doc.text("ENTREGADO", pageWidth - 100, currentY); // Alineado a la derecha
+    doc.setFont("helvetica", "normal");
+    doc.text("____________________", pageWidth - 100, currentY + 10); // Espacio para la firma
+    doc.text("Funcionario de Soporte Técnico", pageWidth - 100, currentY + 20); // Etiqueta debajo
+
+    // Guardar o mostrar el PDF
+    doc.save("SoporteTecnico.pdf");
   };
 
   return (
