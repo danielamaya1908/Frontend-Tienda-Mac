@@ -612,7 +612,7 @@ const SoporteTecnicoDetalle = () => {
       currentY += 7; // Espacio entre filas
     });
 
-    currentY += 2; // Espaciado antes de la siguiente sección
+    currentY += 70; // Espaciado antes de la siguiente sección
 
     // Título: Condiciones de Servicio
     const titleBarHeight = 10;
