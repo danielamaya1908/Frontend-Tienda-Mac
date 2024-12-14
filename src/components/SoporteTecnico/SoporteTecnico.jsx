@@ -70,30 +70,29 @@ const SoporteTecnico = () => {
     try {
       let diagnostico = diagnosticoDescripcion[id] || "";
 
+      // Lógica idéntica para "Diagnosticando" y "Entregado"
       if (newEstado === "Diagnosticando" || newEstado === "Entregado") {
         const promptMessage =
           newEstado === "Diagnosticando"
             ? "Por favor, ingrese la descripción del diagnóstico:"
-            : "Por favor, ingrese información adicional al entregar el equipo:";
+            : "Por favor, ingrese la descripción del equipo entregado:";
         const nuevaDescripcion = prompt(promptMessage, diagnostico);
-
         if (nuevaDescripcion === null) return; // El usuario canceló el prompt
-
-        diagnostico = diagnostico
-          ? `${diagnostico}\n${nuevaDescripcion}` // Concatenar descripciones previas
-          : nuevaDescripcion;
+        diagnostico = nuevaDescripcion; // Guardar directamente la descripción ingresada
       }
 
       const data = {
         estado: newEstado,
-        diagnosticoDescripcion: diagnostico,
+        diagnosticoDescripcion: diagnostico, // Enviar diagnóstico actualizado
       };
 
+      // Actualizar el estado en la base de datos
       const response = await axios.put(
         `https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/estado`,
         data
       );
 
+      // Actualizar la lista local de órdenes
       setOrdenesServicio(
         ordenesServicio.map((orden) =>
           orden.id === id
@@ -107,6 +106,7 @@ const SoporteTecnico = () => {
         )
       );
 
+      // Actualizar el estado local de descripciones
       setDiagnosticoDescripcion((prev) => ({ ...prev, [id]: diagnostico }));
 
       // Verificar si hay imagen asociada para actualizar
