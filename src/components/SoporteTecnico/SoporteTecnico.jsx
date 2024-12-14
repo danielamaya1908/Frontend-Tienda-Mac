@@ -30,7 +30,10 @@ const SoporteTecnico = () => {
         // Initialize diagnosticoDescripcion state with values from the response
         const initialDiagnosticos = {};
         response.data.forEach((orden) => {
-          initialDiagnosticos[orden.id] = orden.diagnosticoDescripcion || "";
+          initialDiagnosticos[orden.id] = {
+            diagnostico: orden.diagnosticoDescripcion || "",
+            entrega: orden.descripcionEntrega || "",
+          };
         });
         setDiagnosticoDescripcion(initialDiagnosticos);
       } catch (error) {
@@ -68,29 +71,69 @@ const SoporteTecnico = () => {
 
   const handleEstadoChange = async (id, newEstado) => {
     try {
-      let diagnostico = diagnosticoDescripcion[id] || "";
+      const currentDescriptions = diagnosticoDescripcion[id] || {
+        diagnostico: "",
+        entrega: "",
+      };
 
-      // Add a prompt for both Diagnosticando and Entregado states
-      if (newEstado === "Diagnosticando" || newEstado === "Entregado") {
-        const promptMessage =
-          newEstado === "Diagnosticando"
-            ? "Por favor, ingrese la descripción del diagnóstico:"
-            : "Por favor, ingrese los detalles de la entrega:";
+      let description = currentDescriptions;
 
-        diagnostico = prompt(promptMessage, diagnostico);
-        if (diagnostico === null) return; // User cancelled the prompt
+      if (newEstado === "Diagnosticando") {
+        const diagnostico = prompt(
+          "Por favor, ingrese la descripción del diagnóstico:",
+          currentDescriptions.diagnostico
+        );
+        if (diagnostico === null) return;
+        description.diagnostico = diagnostico;
+      }
+
+      if (newEstado === "Entregado") {
+        const entregaDescripcion = prompt(
+          "Por favor, ingrese la descripción de la entrega:",
+          currentDescriptions.entrega
+        );
+        if (entregaDescripcion === null) return;
+        description.entrega = entregaDescripcion;
       }
 
       let data = {
         estado: newEstado,
-        diagnosticoDescripcion: diagnostico,
+        diagnosticoDescripcion: description.diagnostico,
+        descripcionEntrega: description.entrega,
       };
 
-      // Rest of the existing code remains the same...
+      const response = await axios.put(
+        `https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/estado`,
+        data
+      );
+
+      setOrdenesServicio(
+        ordenesServicio.map((orden) =>
+          orden.id === id
+            ? {
+                ...orden,
+                estado: newEstado,
+                fechaSalida: response.data.fechaSalida,
+                diagnosticoDescripcion: description.diagnostico,
+                descripcionEntrega: description.entrega,
+              }
+            : orden
+        )
+      );
+
+      setDiagnosticoDescripcion((prev) => ({
+        ...prev,
+        [id]: description,
+      }));
+
+      if (imagenes[id]) {
+        alert("Por favor, actualice la imagen para este estado.");
+      }
     } catch (error) {
       console.error("Error al actualizar el estado:", error);
     }
   };
+
   const handleImagenChange = (id, file) => {
     const reader = new FileReader();
     reader.onloadend = () => {
