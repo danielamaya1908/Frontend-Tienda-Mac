@@ -70,15 +70,21 @@ const SoporteTecnico = () => {
     try {
       let diagnostico = diagnosticoDescripcion[id] || "";
 
-      if (newEstado === "Diagnosticando") {
-        diagnostico = prompt(
-          "Por favor, ingrese la descripción del diagnóstico:",
-          diagnostico
-        );
-        if (diagnostico === null) return; // User cancelled the prompt
+      if (newEstado === "Diagnosticando" || newEstado === "Entregado") {
+        const promptMessage =
+          newEstado === "Diagnosticando"
+            ? "Por favor, ingrese la descripción del diagnóstico:"
+            : "Por favor, ingrese información adicional al entregar el equipo:";
+        const nuevaDescripcion = prompt(promptMessage, diagnostico);
+
+        if (nuevaDescripcion === null) return; // El usuario canceló el prompt
+
+        diagnostico = diagnostico
+          ? `${diagnostico}\n${nuevaDescripcion}` // Concatenar descripciones previas
+          : nuevaDescripcion;
       }
 
-      let data = {
+      const data = {
         estado: newEstado,
         diagnosticoDescripcion: diagnostico,
       };
@@ -103,7 +109,7 @@ const SoporteTecnico = () => {
 
       setDiagnosticoDescripcion((prev) => ({ ...prev, [id]: diagnostico }));
 
-      // Ask to update the image when the state changes
+      // Verificar si hay imagen asociada para actualizar
       if (imagenes[id]) {
         alert("Por favor, actualice la imagen para este estado.");
       }
