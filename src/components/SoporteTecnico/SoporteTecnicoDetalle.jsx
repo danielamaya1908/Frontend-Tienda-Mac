@@ -104,7 +104,7 @@ const SoporteTecnicoDetalle = () => {
     setIsLoading(false); // Finalizar el estado de carga
   };
 
-  // Replace this entire function
+  // Replace this entire functio
   const fetchSoporteTecnico = async () => {
     setIsLoading(true);
     setError(null);
