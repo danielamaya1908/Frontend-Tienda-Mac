@@ -215,7 +215,7 @@ const SoporteTecnicoClienteDetalle = () => {
             </Card.Text>
           ) : (
             <>
-              {estado === "En diagnostico" && (
+              {estado === "Diagnosticando" && (
                 <Card className="mb-3">
                   <Card.Body>
                     <Card.Title>
