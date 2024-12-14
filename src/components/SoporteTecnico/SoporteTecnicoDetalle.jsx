@@ -87,24 +87,21 @@ const SoporteTecnicoDetalle = () => {
   const handleApiError = (error) => {
     console.error("API Error:", error);
 
-    // Obtener el mensaje de error del backend o establecer uno genérico
+    // Establecer un mensaje de error genérico o proveniente del backend
     const errorMessage =
       error.response?.data?.message ||
       "Error al cargar los detalles del soporte técnico";
 
-    if (error.response?.status === 401) {
-      // Si el servidor indica un error de autenticación, muestra un mensaje en lugar de redirigir
-      setError("No autorizado. Por favor, inicie sesión nuevamente.");
-    } else if (retryCount < MAX_RETRIES) {
+    if (retryCount < MAX_RETRIES) {
       // Reintentar si no se alcanzó el máximo de intentos
       setRetryCount((prev) => prev + 1);
       setTimeout(fetchSoporteTecnico, 1000 * (retryCount + 1));
     } else {
-      // Si se agotan los intentos, mostrar el error
+      // Si se agotan los intentos, mostrar el mensaje de error
       setError(errorMessage);
     }
 
-    setIsLoading(false); // Finalizar la carga
+    setIsLoading(false); // Finalizar el estado de carga
   };
 
   // Replace this entire function
@@ -113,19 +110,9 @@ const SoporteTecnicoDetalle = () => {
     setError(null);
 
     try {
-      const token = localStorage.getItem("token"); // Recuperar el token directamente
-      if (!token) {
-        setError(
-          "No se encontró un token de autenticación. Por favor, inicie sesión."
-        );
-        setIsLoading(false);
-        return;
-      }
-
-      // Configuración de la solicitud con el token
+      // Configuración de la solicitud
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
         },
@@ -189,7 +176,7 @@ const SoporteTecnicoDetalle = () => {
     } catch (error) {
       handleApiError(error);
     } finally {
-      setIsLoading(false); // Finalizar la carga, independientemente del resultado
+      setIsLoading(false); // Finalizar el estado de carga, independientemente del resultado
     }
   };
 
