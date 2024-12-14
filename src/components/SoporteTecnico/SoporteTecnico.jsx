@@ -70,15 +70,17 @@ const SoporteTecnico = () => {
     try {
       let diagnostico = diagnosticoDescripcion[id] || "";
 
+      // Add description prompt for both Diagnosticando and Entregado states
       if (newEstado === "Diagnosticando" || newEstado === "Entregado") {
-        diagnostico = prompt(
+        const promptMessage =
           newEstado === "Diagnosticando"
             ? "Por favor, ingrese la descripción del diagnóstico:"
-            : "Por favor, ingrese los detalles de la entrega:",
-          diagnostico
-        );
+            : "Por favor, ingrese la descripción de la entrega:";
+
+        diagnostico = prompt(promptMessage, diagnostico);
         if (diagnostico === null) return; // User cancelled the prompt
       }
+
       let data = {
         estado: newEstado,
         diagnosticoDescripcion: diagnostico,
