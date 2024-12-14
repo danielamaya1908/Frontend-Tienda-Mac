@@ -5,7 +5,6 @@ import "./loginAdmin.css"; // Importa el archivo CSS
 function LoginAdmin({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   function handleSubmit(event) {
@@ -22,20 +21,16 @@ function LoginAdmin({ onLogin }) {
     )
       .then((response) => response.json())
       .then((data) => {
-        if (data.message === "User admin found" && data.token) {
-          // Guarda el token en localStorage
-          localStorage.setItem("token", data.token);
+        if (data.message === "User admin found") {
           onLogin();
           navigate("/7gP4mX!5vZwQj@n8rAe");
         } else {
-          setErrorMessage(
-            data.message || "Usuario no encontrado o credenciales incorrectas"
-          );
+          alert("Usuario no encontrado o credenciales incorrectas");
         }
       })
       .catch((error) => {
         console.error("Error al validar usuario:", error);
-        setErrorMessage("Error al validar usuario. Inténtalo nuevamente.");
+        alert("Error al validar usuario");
       });
   }
 
@@ -47,11 +42,6 @@ function LoginAdmin({ onLogin }) {
             <div className="card-body">
               <h2 className="card-title-admin text-center mb-4">Login Admin</h2>
               <form className="login-form" onSubmit={handleSubmit}>
-                {errorMessage && (
-                  <div className="alert alert-danger" role="alert">
-                    {errorMessage}
-                  </div>
-                )}
                 <div className="mb-3">
                   <label
                     htmlFor="email"

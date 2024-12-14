@@ -63,15 +63,22 @@ const SoporteTecnicoDetalle = () => {
     "Reparado",
     "Entregado",
   ];
+
   const checkAuthentication = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        throw new Error("No se encontró token de autenticación");
+        console.warn("No se encontró token de autenticación");
+        navigate("/login", {
+          replace: true,
+          state: { from: location.pathname }, // Para redirigir de vuelta después del login
+        });
+        return null;
       }
       return token;
     } catch (error) {
-      console.error(error.message);
+      console.error("Error al verificar autenticación:", error);
+      setError("Error de autenticación. Por favor, inicie sesión nuevamente.");
       navigate("/login", { replace: true });
       return null;
     }
@@ -79,51 +86,66 @@ const SoporteTecnicoDetalle = () => {
 
   const handleApiError = (error) => {
     console.error("API Error:", error);
+
+    // Obtener el mensaje de error del backend o establecer uno genérico
     const errorMessage =
       error.response?.data?.message ||
       "Error al cargar los detalles del soporte técnico";
 
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      navigate("/login", { replace: true });
+      // Si el servidor indica un error de autenticación, muestra un mensaje en lugar de redirigir
+      setError("No autorizado. Por favor, inicie sesión nuevamente.");
     } else if (retryCount < MAX_RETRIES) {
+      // Reintentar si no se alcanzó el máximo de intentos
       setRetryCount((prev) => prev + 1);
       setTimeout(fetchSoporteTecnico, 1000 * (retryCount + 1));
     } else {
+      // Si se agotan los intentos, mostrar el error
       setError(errorMessage);
     }
+
+    setIsLoading(false); // Finalizar la carga
   };
 
   // Replace this entire function
   const fetchSoporteTecnico = async () => {
-    if (isLoading && retryCount === 0) setIsLoading(true);
+    setIsLoading(true);
     setError(null);
 
-    const token = checkAuthentication();
-    if (!token) return;
-
     try {
+      const token = localStorage.getItem("token"); // Recuperar el token directamente
+      if (!token) {
+        setError(
+          "No se encontró un token de autenticación. Por favor, inicie sesión."
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      // Configuración de la solicitud con el token
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
         },
-        timeout: 10000,
+        timeout: 10000, // Tiempo límite de 10 segundos
       };
 
+      // Realizar las solicitudes necesarias
       const [soporteResponse, imagenesResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/soporte-tecnico/${id}`, config),
         axios
           .get(`${API_BASE_URL}/soporte-tecnico/${id}/latest-image`, config)
-          .catch(() => ({ data: { imagenes: [] } })),
+          .catch(() => ({ data: { imagenes: [] } })), // Manejo de errores para imágenes
       ]);
 
+      // Procesar las respuestas
       if (soporteResponse.data) {
         setSoporte(soporteResponse.data);
         setUser(soporteResponse.data.User);
 
-        // Modificar el manejo de las imágenes de ingreso
+        // Manejo de imágenes (similar a la lógica previa)
         const imagenesIngresoModificadas = soporteResponse.data
           .ImageSoporteTecnicos
           ? soporteResponse.data.ImageSoporteTecnicos.sort(
@@ -139,18 +161,6 @@ const SoporteTecnicoDetalle = () => {
           : [];
         setImagenesIngreso(imagenesIngresoModificadas);
 
-        // Modificar el manejo de las imágenes de estado
-        const imagenes = imagenesResponse.data.imagenes
-          ? imagenesResponse.data.imagenes
-              .sort((a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida))
-              .map((img) => ({
-                ...img,
-                url: img.url.startsWith("http")
-                  ? img.url
-                  : `${API_BASE_URL}${img.url}`,
-              }))
-          : [];
-
         const newEstadoImages = {
           Diagnosticando: [],
           Reparando: [],
@@ -158,6 +168,7 @@ const SoporteTecnicoDetalle = () => {
           Entregado: [],
         };
 
+        const imagenes = imagenesResponse.data.imagenes || [];
         const estadosConImagenes = [
           "Diagnosticando",
           "Reparando",
@@ -178,9 +189,10 @@ const SoporteTecnicoDetalle = () => {
     } catch (error) {
       handleApiError(error);
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Finalizar la carga, independientemente del resultado
     }
   };
+
   useEffect(() => {
     fetchSoporteTecnico();
 
@@ -341,7 +353,6 @@ const SoporteTecnicoDetalle = () => {
         <Alert variant="danger">
           <Alert.Heading>Error</Alert.Heading>
           <p>{error}</p>
-          <hr />
           <div className="d-flex justify-content-end">
             <Button onClick={() => navigate(-1)} variant="outline-danger">
               Volver
