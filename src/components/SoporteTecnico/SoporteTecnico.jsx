@@ -70,51 +70,52 @@ const SoporteTecnico = () => {
     try {
       let diagnostico = diagnosticoDescripcion[id] || "";
 
-      // Lógica idéntica para "Diagnosticando" y "Entregado"
+      // Pedir descripción para Diagnosticando y Entregado
       if (newEstado === "Diagnosticando" || newEstado === "Entregado") {
         const promptMessage =
           newEstado === "Diagnosticando"
             ? "Por favor, ingrese la descripción del diagnóstico:"
-            : "Por favor, ingrese la descripción del equipo entregado:";
+            : "Por favor, ingrese información adicional al entregar el equipo:";
         const nuevaDescripcion = prompt(promptMessage, diagnostico);
+
         if (nuevaDescripcion === null) return; // El usuario canceló el prompt
-        diagnostico = nuevaDescripcion; // Guardar directamente la descripción ingresada
+
+        diagnostico = nuevaDescripcion; // Actualizar descripción
       }
 
+      // Datos que se enviarán al backend
       const data = {
         estado: newEstado,
-        diagnosticoDescripcion: diagnostico, // Enviar diagnóstico actualizado
+        diagnosticoDescripcion: diagnostico,
       };
 
-      // Actualizar el estado en la base de datos
+      // Llamada al backend para actualizar el estado
       const response = await axios.put(
         `https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/${id}/estado`,
         data
       );
 
-      // Actualizar la lista local de órdenes
+      // Actualizar estado local de órdenes
       setOrdenesServicio(
         ordenesServicio.map((orden) =>
           orden.id === id
             ? {
                 ...orden,
                 estado: newEstado,
-                fechaSalida: response.data.fechaSalida,
-                diagnosticoDescripcion: diagnostico,
+                fechaSalida: response.data.fechaSalida, // Fecha actualizada
+                diagnosticoDescripcion: diagnostico, // Diagnóstico actualizado
               }
             : orden
         )
       );
 
-      // Actualizar el estado local de descripciones
+      // Actualizar estado local de la descripción
       setDiagnosticoDescripcion((prev) => ({ ...prev, [id]: diagnostico }));
 
-      // Verificar si hay imagen asociada para actualizar
-      if (imagenes[id]) {
-        alert("Por favor, actualice la imagen para este estado.");
-      }
+      alert(`El estado se cambió a ${newEstado} con éxito.`);
     } catch (error) {
       console.error("Error al actualizar el estado:", error);
+      alert("Hubo un error al intentar actualizar el estado.");
     }
   };
 
