@@ -63,22 +63,15 @@ const SoporteTecnicoDetalle = () => {
     "Reparado",
     "Entregado",
   ];
-
   const checkAuthentication = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.warn("No se encontró token de autenticación");
-        navigate("/login", {
-          replace: true,
-          state: { from: location.pathname }, // Para redirigir de vuelta después del login
-        });
-        return null;
+        throw new Error("No se encontró token de autenticación");
       }
       return token;
     } catch (error) {
-      console.error("Error al verificar autenticación:", error);
-      setError("Error de autenticación. Por favor, inicie sesión nuevamente.");
+      console.error(error.message);
       navigate("/login", { replace: true });
       return null;
     }

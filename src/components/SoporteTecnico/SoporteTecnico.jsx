@@ -30,10 +30,7 @@ const SoporteTecnico = () => {
         // Initialize diagnosticoDescripcion state with values from the response
         const initialDiagnosticos = {};
         response.data.forEach((orden) => {
-          initialDiagnosticos[orden.id] = {
-            diagnostico: orden.diagnosticoDescripcion || "",
-            entrega: orden.descripcionEntrega || "",
-          };
+          initialDiagnosticos[orden.id] = orden.diagnosticoDescripcion || "";
         });
         setDiagnosticoDescripcion(initialDiagnosticos);
       } catch (error) {
@@ -71,35 +68,19 @@ const SoporteTecnico = () => {
 
   const handleEstadoChange = async (id, newEstado) => {
     try {
-      const currentDescriptions = diagnosticoDescripcion[id] || {
-        diagnostico: "",
-        entrega: "",
-      };
-
-      let description = currentDescriptions;
+      let diagnostico = diagnosticoDescripcion[id] || "";
 
       if (newEstado === "Diagnosticando") {
-        const diagnostico = prompt(
+        diagnostico = prompt(
           "Por favor, ingrese la descripción del diagnóstico:",
-          currentDescriptions.diagnostico
+          diagnostico
         );
-        if (diagnostico === null) return;
-        description.diagnostico = diagnostico;
-      }
-
-      if (newEstado === "Entregado") {
-        const entregaDescripcion = prompt(
-          "Por favor, ingrese la descripción de la entrega:",
-          currentDescriptions.entrega
-        );
-        if (entregaDescripcion === null) return;
-        description.entrega = entregaDescripcion;
+        if (diagnostico === null) return; // User cancelled the prompt
       }
 
       let data = {
         estado: newEstado,
-        diagnosticoDescripcion: description.diagnostico,
-        descripcionEntrega: description.entrega,
+        diagnosticoDescripcion: diagnostico,
       };
 
       const response = await axios.put(
@@ -114,18 +95,15 @@ const SoporteTecnico = () => {
                 ...orden,
                 estado: newEstado,
                 fechaSalida: response.data.fechaSalida,
-                diagnosticoDescripcion: description.diagnostico,
-                descripcionEntrega: description.entrega,
+                diagnosticoDescripcion: diagnostico,
               }
             : orden
         )
       );
 
-      setDiagnosticoDescripcion((prev) => ({
-        ...prev,
-        [id]: description,
-      }));
+      setDiagnosticoDescripcion((prev) => ({ ...prev, [id]: diagnostico }));
 
+      // Ask to update the image when the state changes
       if (imagenes[id]) {
         alert("Por favor, actualice la imagen para este estado.");
       }
