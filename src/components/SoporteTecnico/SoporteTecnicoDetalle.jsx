@@ -86,53 +86,51 @@ const SoporteTecnicoDetalle = () => {
 
   const handleApiError = (error) => {
     console.error("API Error:", error);
-
-    // Establecer un mensaje de error genérico o proveniente del backend
     const errorMessage =
       error.response?.data?.message ||
       "Error al cargar los detalles del soporte técnico";
 
-    if (retryCount < MAX_RETRIES) {
-      // Reintentar si no se alcanzó el máximo de intentos
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      navigate("/login", { replace: true });
+    } else if (retryCount < MAX_RETRIES) {
       setRetryCount((prev) => prev + 1);
       setTimeout(fetchSoporteTecnico, 1000 * (retryCount + 1));
     } else {
-      // Si se agotan los intentos, mostrar el mensaje de error
       setError(errorMessage);
     }
-
-    setIsLoading(false); // Finalizar el estado de carga
   };
 
-  // Replace this entire functio
+  // Replace this entire function
   const fetchSoporteTecnico = async () => {
-    setIsLoading(true);
+    if (isLoading && retryCount === 0) setIsLoading(true);
     setError(null);
 
+    const token = checkAuthentication();
+    if (!token) return;
+
     try {
-      // Configuración de la solicitud
       const config = {
         headers: {
+          Authorization: `Bearer ${token}`,
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
         },
-        timeout: 10000, // Tiempo límite de 10 segundos
+        timeout: 10000,
       };
 
-      // Realizar las solicitudes necesarias
       const [soporteResponse, imagenesResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/soporte-tecnico/${id}`, config),
         axios
           .get(`${API_BASE_URL}/soporte-tecnico/${id}/latest-image`, config)
-          .catch(() => ({ data: { imagenes: [] } })), // Manejo de errores para imágenes
+          .catch(() => ({ data: { imagenes: [] } })),
       ]);
 
-      // Procesar las respuestas
       if (soporteResponse.data) {
         setSoporte(soporteResponse.data);
         setUser(soporteResponse.data.User);
 
-        // Manejo de imágenes (similar a la lógica previa)
+        // Modificar el manejo de las imágenes de ingreso
         const imagenesIngresoModificadas = soporteResponse.data
           .ImageSoporteTecnicos
           ? soporteResponse.data.ImageSoporteTecnicos.sort(
@@ -148,6 +146,18 @@ const SoporteTecnicoDetalle = () => {
           : [];
         setImagenesIngreso(imagenesIngresoModificadas);
 
+        // Modificar el manejo de las imágenes de estado
+        const imagenes = imagenesResponse.data.imagenes
+          ? imagenesResponse.data.imagenes
+              .sort((a, b) => new Date(a.fechaSubida) - new Date(b.fechaSubida))
+              .map((img) => ({
+                ...img,
+                url: img.url.startsWith("http")
+                  ? img.url
+                  : `${API_BASE_URL}${img.url}`,
+              }))
+          : [];
+
         const newEstadoImages = {
           Diagnosticando: [],
           Reparando: [],
@@ -155,7 +165,6 @@ const SoporteTecnicoDetalle = () => {
           Entregado: [],
         };
 
-        const imagenes = imagenesResponse.data.imagenes || [];
         const estadosConImagenes = [
           "Diagnosticando",
           "Reparando",
@@ -176,10 +185,9 @@ const SoporteTecnicoDetalle = () => {
     } catch (error) {
       handleApiError(error);
     } finally {
-      setIsLoading(false); // Finalizar el estado de carga, independientemente del resultado
+      setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchSoporteTecnico();
 
@@ -340,6 +348,7 @@ const SoporteTecnicoDetalle = () => {
         <Alert variant="danger">
           <Alert.Heading>Error</Alert.Heading>
           <p>{error}</p>
+          <hr />
           <div className="d-flex justify-content-end">
             <Button onClick={() => navigate(-1)} variant="outline-danger">
               Volver
@@ -628,6 +637,37 @@ const SoporteTecnicoDetalle = () => {
     );
     currentY += titleBarHeight + 10;
 
+    // Texto de condiciones
+    /*   const condicionesTexto = `
+    Duración del diagnóstico
+    La duración del diagnóstico técnico depende del tipo de servicio requerido por el cliente: 
+    1. En caso de revisión, la duración máxima será de dos (2) a cuatro (4) días hábiles; en el evento de requerirse un mayor tiempo se le comunicará al cliente.
+
+    Garantía de productos
+    En caso de solicitud de garantías, se sujetará a lo dispuesto por las condiciones de garantía de la marca del producto, las informadas y entregadas al cliente al momento de la compra. La garantía no podrá hacerse exigible si se comprueba que el equipo ha sido previamente abierto, que el producto tenga síntomas de humedad, que el producto presente síntomas de abuso o mal uso tales como golpes, fracturas de pantallas, entre otros. 
+    2. En caso de garantías, la duración máxima será de 30 días hábiles; en el evento de requerirse un mayor tiempo se le comunicará al cliente.
+
+    Valor del diagnóstico
+    1. En caso de no aprobar reparación, el cliente se compromete a pagar el valor del diagnóstico técnico acordado en la orden de servicio. 
+    2. Para las garantías aprobadas, el valor del diagnóstico será tenido en cuenta como valor de este.
+    3. Para las reparaciones, el valor del diagnóstico se incluirá dentro del valor total del servicio en caso de que el cliente decida tomarlo.
+
+    Garantía del servicio
+    Las reparaciones tienen una garantía máxima de tres (3) meses en cambios de piezas contados a partir de la fecha de entrega, por defectos de fábrica. El software instalado no tiene garantía.
+
+    Responsabilidades del cliente
+    Es responsabilidad del cliente informar previamente al técnico o responsable si el equipo tiene o no garantía, si se ha mojado o si ha sido abierto por terceros. Es responsabilidad del cliente la información registrada en esta orden de servicio, en caso de algún error el cliente debe informar previamente antes de firmar. En atención y cumplimiento al decreto 1413 del 3 de agosto de 2018, pasado un (1) mes a partir de la fecha prevista para la devolución o a la fecha en que el consumidor deba aceptar o rechazar expresamente el servicio, de conformidad con lo previsto en el numeral 1 anterior sin que el consumidor acuda a retirar el bien, el prestador del servicio lo requerirá para que lo retire dentro de los dos (2) meses siguientes a la remisión de la comunicación. Si el consumidor no lo retira se entenderá por ley que abandona el bien y el prestador del servicio deberá disponer del mismo conforme con la reglamentación que expida el Gobierno Nacional para el efecto. Pasado el tiempo en mención el cliente deberá cancelar un valor correspondiente a CINCO MIL PESOS M/CTE. ($5.000) por cada día de retraso, por concepto de bodegaje. En caso de que el producto / equipo sea recogido por un tercero, el cliente debe autorizar y notificar previamente por escrito.
+
+    Responsabilidades del prestador del servicio
+    TiendaMac, en calidad de proveedor de servicios no se hace responsable de la información dejada en los equipos objeto de revisión, razón por la cual se recomienda al cliente extraer previamente la información. Asimismo, TiendaMac no se hace responsable por aquellos equipos en los que luego del diagnóstico técnico se evidencie que han sido abiertos y manipulados por terceros. En estos casos, se dejará constancia del hecho en la presente orden de servicio y se le informará al cliente. TiendaMac no se responsabiliza por el estado de los equipos dejados por más de un (1) mes. TiendaMac no se responsabiliza de accesorios diferentes al equipo, como lo son: Vidrios templados, case, stickers, entre otros.
+
+    Notificaciones y Horarios de atención soporte técnico
+    Horarios: Lunes a viernes en jornada de 10:00 AM - 7:00 PM. Las notificaciones de diagnósticos, reparaciones o novedades se efectuarán por las vías proporcionadas por el cliente, tales como teléfonos de contacto, correo electrónico o whatsapp. En caso de no haber respuestas, igual será reportado como notificado. Sábados y festivos no laboramos.
+
+    En cumplimiento a la Ley 1581 de 2012 y su decreto reglamentario 1377 de 2013, le informamos que Usted tiene derecho de conocer, actualizar, rectificar y solicitar la supresión de sus datos personales en cualquier momento. La información de sus datos aquí recopilada, en caso de que Usted lo autorice, la utilizaremos para informarle sobre los servicios, promociones, ofertas, eventos ofrecidos por TiendaMac o en convenio con otras organizaciones. Nos autoriza al tratamiento y uso de sus datos.
+`;  */
+
+    // Función para escribir texto con saltos automáticos y organización
     function addMultiLineText(
       doc,
       text,
