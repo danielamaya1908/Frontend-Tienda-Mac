@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Form, Button, Col, Row, Container, Card, Alert } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import {
+  Form,
+  Button,
+  Col,
+  Row,
+  Container,
+  Card,
+  Alert,
+} from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 const FormEquipo = () => {
   const navigate = useNavigate();
 
-  const [marca, setMarca] = useState('');
-  const [modelo, setModelo] = useState('');
-  const [serial, setSerial] = useState('');
-  const [documentNumber, setDocumentNumber] = useState('');
+  const [marca, setMarca] = useState("");
+  const [modelo, setModelo] = useState("");
+  const [serial, setSerial] = useState("");
+  const [documentNumber, setDocumentNumber] = useState("");
   const [garantia, setGarantia] = useState(false);
   const [enciende, setEnciende] = useState(false);
   const [arranca, setArranca] = useState(false);
@@ -29,53 +37,59 @@ const FormEquipo = () => {
   const [imagenesEstado, setImagenesEstado] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [clienteInfo, setClienteInfo] = useState(null);
-  const [error, setError] = useState('');
-
+  const [error, setError] = useState("");
+  const [diagnosticoDescripcion, setDiagnosticoDescripcion] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Iniciando envío del formulario');
+    console.log("Iniciando envío del formulario");
 
     const formData = new FormData();
-    formData.append('marca', marca);
-    formData.append('modelo', modelo);
-    formData.append('serial', serial);
-    formData.append('DocumentNumber', documentNumber);
-    formData.append('garantia', garantia);
-    formData.append('enciende', enciende);
-    formData.append('arranca', arranca);
-    formData.append('parlantes', parlantes);
-    formData.append('teclado', teclado);
-    formData.append('camara', camara);
-    formData.append('bluetooth', bluetooth);
-    formData.append('wifi', wifi);
-    formData.append('pinCarga', pinCarga);
-    formData.append('auricular', auricular);
-    formData.append('botones', botones);
-    formData.append('pantalla', pantalla);
-    formData.append('golpes', golpes);
-    formData.append('rayones', rayones);
-    formData.append('puertos', puertos);
-    formData.append('fechaIngreso', new Date().toISOString());
+    formData.append("marca", marca);
+    formData.append("modelo", modelo);
+    formData.append("serial", serial);
+    formData.append("DocumentNumber", documentNumber);
+    formData.append("diagnosticoDescripcion", diagnosticoDescripcion);
+    formData.append("garantia", garantia);
+    formData.append("enciende", enciende);
+    formData.append("arranca", arranca);
+    formData.append("parlantes", parlantes);
+    formData.append("teclado", teclado);
+    formData.append("camara", camara);
+    formData.append("bluetooth", bluetooth);
+    formData.append("wifi", wifi);
+    formData.append("pinCarga", pinCarga);
+    formData.append("auricular", auricular);
+    formData.append("botones", botones);
+    formData.append("pantalla", pantalla);
+    formData.append("golpes", golpes);
+    formData.append("rayones", rayones);
+    formData.append("puertos", puertos);
+    formData.append("fechaIngreso", new Date().toISOString());
 
     imagenesEstado.forEach((file) => {
-      formData.append('images', file);
+      formData.append("images", file);
     });
 
     try {
-      console.log('Enviando solicitud al servidor...');
-      const response = await axios.post('https://backend-tienda-mac-production.up.railway.app/soporte-tecnico', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      console.log("Enviando solicitud al servidor...");
+      const response = await axios.post(
+        "https://backend-tienda-mac-production.up.railway.app/soporte-tecnico",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-      console.log('Respuesta del servidor:', response.data);
+      console.log("Respuesta del servidor:", response.data);
 
       // Limpiar el formulario después de enviar
-      setMarca('');
-      setModelo('');
-      setSerial('');
-      setDocumentNumber('');
+      setMarca("");
+      setModelo("");
+      setSerial("");
+      setDocumentNumber("");
+      setDiagnosticoDescripcion("");
       setGarantia(false);
       setEnciende(false);
       setArranca(false);
@@ -95,14 +109,14 @@ const FormEquipo = () => {
       setPreviews([]);
       setClienteInfo(null);
     } catch (error) {
-      console.error('Error al enviar el formulario:', error);
+      console.error("Error al enviar el formulario:", error);
     }
   };
 
   const handleImagenesChange = (e) => {
     const files = Array.from(e.target.files);
     setImagenesEstado(files);
-    const previews = files.map(file => URL.createObjectURL(file));
+    const previews = files.map((file) => URL.createObjectURL(file));
     setPreviews(previews);
   };
 
@@ -116,106 +130,134 @@ const FormEquipo = () => {
 
     if (value) {
       try {
-        const response = await axios.get(`https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/cliente/${value}`);
-        console.log('Datos del cliente:', response.data);
+        const response = await axios.get(
+          `https://backend-tienda-mac-production.up.railway.app/soporte-tecnico/cliente/${value}`
+        );
+        console.log("Datos del cliente:", response.data);
         setClienteInfo(response.data);
-        setError('');
+        setError("");
       } catch (error) {
         setClienteInfo(null);
-        setError('No se encontró un cliente con ese número de documento.');
+        setError("No se encontró un cliente con ese número de documento.");
       }
     } else {
       setClienteInfo(null);
-      setError('');
+      setError("");
     }
   };
 
   return (
     <Container className="mt-5">
       <Card className="shadow-sm">
-        <Card.Header as="h3" className="text-center">Registro de Equipo</Card.Header>
+        <Card.Header as="h3" className="text-center">
+          Registro de Equipo
+        </Card.Header>
         <Card.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group as={Row} controlId="marca" className="mb-3">
-              <Form.Label column sm={3}>Marca:</Form.Label>
+              <Form.Label column sm={3}>
+                Marca:
+              </Form.Label>
               <Col sm={9}>
-                <Form.Control 
-                  type="text" 
-                  value={marca} 
-                  onChange={(e) => setMarca(e.target.value)} 
-                  placeholder="Ingrese la marca del equipo" 
-                  required 
+                <Form.Control
+                  type="text"
+                  value={marca}
+                  onChange={(e) => setMarca(e.target.value)}
+                  placeholder="Ingrese la marca del equipo"
+                  required
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="modelo" className="mb-3">
-              <Form.Label column sm={3}>Modelo:</Form.Label>
+              <Form.Label column sm={3}>
+                Modelo:
+              </Form.Label>
               <Col sm={9}>
-                <Form.Control 
-                  type="text" 
-                  value={modelo} 
-                  onChange={(e) => setModelo(e.target.value)} 
-                  placeholder="Ingrese el modelo del equipo" 
-                  required 
+                <Form.Control
+                  type="text"
+                  value={modelo}
+                  onChange={(e) => setModelo(e.target.value)}
+                  placeholder="Ingrese el modelo del equipo"
+                  required
                 />
               </Col>
             </Form.Group>
 
             <Form.Group as={Row} controlId="serial" className="mb-3">
-              <Form.Label column sm={3}>Serial:</Form.Label>
+              <Form.Label column sm={3}>
+                Serial:
+              </Form.Label>
               <Col sm={9}>
-                <Form.Control 
-                  type="text" 
-                  value={serial} 
-                  onChange={(e) => setSerial(e.target.value)} 
-                  placeholder="Ingrese el número de serial" 
-                  required 
+                <Form.Control
+                  type="text"
+                  value={serial}
+                  onChange={(e) => setSerial(e.target.value)}
+                  placeholder="Ingrese el número de serial"
+                  required
                 />
               </Col>
             </Form.Group>
-
+            <Form.Group
+              as={Row}
+              controlId="diagnosticoDescripcion"
+              className="mb-3"
+            >
+              <Form.Label column sm={3}>
+                Descripción de Diagnóstico:
+              </Form.Label>
+              <Col sm={9}>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={diagnosticoDescripcion}
+                  onChange={(e) => setDiagnosticoDescripcion(e.target.value)}
+                  placeholder="Ingrese una descripción del diagnóstico"
+                />
+              </Col>
+            </Form.Group>
             <Form.Group as={Row} controlId="documentNumber" className="mb-3">
-              <Form.Label column sm={3}>Número de Documento:</Form.Label>
+              <Form.Label column sm={3}>
+                Número de Documento:
+              </Form.Label>
               <Col sm={9}>
-                <Form.Control 
-                  type="text" 
-                  value={documentNumber} 
-                  onChange={handleDocumentNumberChange} 
-                  placeholder="Ingrese el número de documento" 
-                  required 
+                <Form.Control
+                  type="text"
+                  value={documentNumber}
+                  onChange={handleDocumentNumberChange}
+                  placeholder="Ingrese el número de documento"
+                  required
                 />
               </Col>
             </Form.Group>
 
-            {error && (
-              <Alert variant="danger">{error}</Alert>
-            )}
+            {error && <Alert variant="danger">{error}</Alert>}
 
             {clienteInfo && (
               <Alert variant="success" className="mt-2">
-                Cliente encontrado: {clienteInfo.firstName} {clienteInfo.lastName}
+                Cliente encontrado: {clienteInfo.firstName}{" "}
+                {clienteInfo.lastName}
               </Alert>
             )}
 
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="garantia">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={garantia} 
-                    onChange={() => setGarantia(!garantia)} 
-                    label="Garantía" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={garantia}
+                    onChange={() => setGarantia(!garantia)}
+                    label="Garantía"
                   />
                 </Form.Group>
               </Col>
               <Col sm={6}>
                 <Form.Group controlId="enciende">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={enciende} 
-                    onChange={() => setEnciende(!enciende)} 
-                    label="Enciende" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={enciende}
+                    onChange={() => setEnciende(!enciende)}
+                    label="Enciende"
                   />
                 </Form.Group>
               </Col>
@@ -224,21 +266,21 @@ const FormEquipo = () => {
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="arranca">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={arranca} 
-                    onChange={() => setArranca(!arranca)} 
-                    label="Arranca" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={arranca}
+                    onChange={() => setArranca(!arranca)}
+                    label="Arranca"
                   />
                 </Form.Group>
               </Col>
               <Col sm={6}>
                 <Form.Group controlId="parlantes">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={parlantes} 
-                    onChange={() => setParlantes(!parlantes)} 
-                    label="Parlantes" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={parlantes}
+                    onChange={() => setParlantes(!parlantes)}
+                    label="Parlantes"
                   />
                 </Form.Group>
               </Col>
@@ -247,21 +289,21 @@ const FormEquipo = () => {
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="teclado">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={teclado} 
-                    onChange={() => setTeclado(!teclado)} 
-                    label="Teclado" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={teclado}
+                    onChange={() => setTeclado(!teclado)}
+                    label="Teclado"
                   />
                 </Form.Group>
               </Col>
               <Col sm={6}>
                 <Form.Group controlId="camara">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={camara} 
-                    onChange={() => setCamara(!camara)} 
-                    label="Cámara" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={camara}
+                    onChange={() => setCamara(!camara)}
+                    label="Cámara"
                   />
                 </Form.Group>
               </Col>
@@ -270,21 +312,21 @@ const FormEquipo = () => {
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="bluetooth">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={bluetooth} 
-                    onChange={() => setBluetooth(!bluetooth)} 
-                    label="Bluetooth" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={bluetooth}
+                    onChange={() => setBluetooth(!bluetooth)}
+                    label="Bluetooth"
                   />
                 </Form.Group>
               </Col>
               <Col sm={6}>
                 <Form.Group controlId="wifi">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={wifi} 
-                    onChange={() => setWifi(!wifi)} 
-                    label="Wi-Fi" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={wifi}
+                    onChange={() => setWifi(!wifi)}
+                    label="Wi-Fi"
                   />
                 </Form.Group>
               </Col>
@@ -293,21 +335,21 @@ const FormEquipo = () => {
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="pinCarga">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={pinCarga} 
-                    onChange={() => setPinCarga(!pinCarga)} 
-                    label="Pin de Carga" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={pinCarga}
+                    onChange={() => setPinCarga(!pinCarga)}
+                    label="Pin de Carga"
                   />
                 </Form.Group>
               </Col>
               <Col sm={6}>
                 <Form.Group controlId="auricular">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={auricular} 
-                    onChange={() => setAuricular(!auricular)} 
-                    label="Auricular" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={auricular}
+                    onChange={() => setAuricular(!auricular)}
+                    label="Auricular"
                   />
                 </Form.Group>
               </Col>
@@ -316,21 +358,21 @@ const FormEquipo = () => {
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="botones">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={botones} 
-                    onChange={() => setBotones(!botones)} 
-                    label="Botones" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={botones}
+                    onChange={() => setBotones(!botones)}
+                    label="Botones"
                   />
                 </Form.Group>
               </Col>
               <Col sm={6}>
                 <Form.Group controlId="pantalla">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={pantalla} 
-                    onChange={() => setPantalla(!pantalla)} 
-                    label="Pantalla" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={pantalla}
+                    onChange={() => setPantalla(!pantalla)}
+                    label="Pantalla"
                   />
                 </Form.Group>
               </Col>
@@ -339,21 +381,21 @@ const FormEquipo = () => {
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="golpes">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={golpes} 
-                    onChange={() => setGolpes(!golpes)} 
-                    label="Golpes" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={golpes}
+                    onChange={() => setGolpes(!golpes)}
+                    label="Golpes"
                   />
                 </Form.Group>
               </Col>
               <Col sm={6}>
                 <Form.Group controlId="rayones">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={rayones} 
-                    onChange={() => setRayones(!rayones)} 
-                    label="Rayones" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={rayones}
+                    onChange={() => setRayones(!rayones)}
+                    label="Rayones"
                   />
                 </Form.Group>
               </Col>
@@ -362,32 +404,34 @@ const FormEquipo = () => {
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="puertos">
-                  <Form.Check 
-                    type="checkbox" 
-                    checked={puertos} 
-                    onChange={() => setPuertos(!puertos)} 
-                    label="Puertos" 
+                  <Form.Check
+                    type="checkbox"
+                    checked={puertos}
+                    onChange={() => setPuertos(!puertos)}
+                    label="Puertos"
                   />
                 </Form.Group>
               </Col>
             </Row>
 
             <Form.Group as={Row} controlId="imagenes" className="mb-3">
-              <Form.Label column sm={3}>Imágenes del Equipo:</Form.Label>
+              <Form.Label column sm={3}>
+                Imágenes del Equipo:
+              </Form.Label>
               <Col sm={9}>
-                <Form.Control 
-                  type="file" 
-                  accept="image/*" 
-                  multiple 
-                  onChange={handleImagenesChange} 
+                <Form.Control
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImagenesChange}
                 />
                 <div className="mt-3">
                   {previews.map((preview, index) => (
-                    <img 
-                      key={index} 
-                      src={preview} 
-                      alt={`Preview ${index}`} 
-                      style={{ maxWidth: '100px', margin: '5px' }} 
+                    <img
+                      key={index}
+                      src={preview}
+                      alt={`Preview ${index}`}
+                      style={{ maxWidth: "100px", margin: "5px" }}
                     />
                   ))}
                 </div>

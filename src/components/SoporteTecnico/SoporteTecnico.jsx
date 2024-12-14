@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./SoporteTecnico.css";
 import MenuDashboard from "../MenuDashboard/MenuDashboard";
-import { FaPlus, FaSyncAlt, FaUpload } from "react-icons/fa";
-
+import { FaPlus, FaSyncAlt, FaUpload } from "react-icons/fa"; // Icons for add, update, and upload
 const STATE_DISPLAY_MAPPING = {
   Ingreso: "Ingreso",
   Diagnosticando: "En diagnóstico",
@@ -13,13 +12,12 @@ const STATE_DISPLAY_MAPPING = {
   Reparado: "Listo para Entregar",
   Entregado: "Entregado",
 };
-
 const SoporteTecnico = () => {
   const navigate = useNavigate();
   const [ordenesServicio, setOrdenesServicio] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("Todos los Estados");
-  const [imagenes, setImagenes] = useState({});
+  const [imagenes, setImagenes] = useState({}); // State to handle uploaded images
   const [diagnosticoDescripcion, setDiagnosticoDescripcion] = useState({});
 
   useEffect(() => {
@@ -29,6 +27,7 @@ const SoporteTecnico = () => {
           "https://backend-tienda-mac-production.up.railway.app/soporte-Tecnico"
         );
         setOrdenesServicio(response.data);
+        // Initialize diagnosticoDescripcion state with values from the response
         const initialDiagnosticos = {};
         response.data.forEach((orden) => {
           initialDiagnosticos[orden.id] = orden.diagnosticoDescripcion || "";
@@ -71,34 +70,12 @@ const SoporteTecnico = () => {
     try {
       let diagnostico = diagnosticoDescripcion[id] || "";
 
-      // Allow description input for Ingreso, Diagnosticando, and Entregado states
-      const statesWithDescriptionPrompt = [
-        "Ingreso",
-        "Diagnosticando",
-        "Entregado",
-      ];
-
-      if (statesWithDescriptionPrompt.includes(newEstado)) {
-        // Provide context-specific prompt
-        let promptMessage = "Por favor, ingrese una descripción:";
-        switch (newEstado) {
-          case "Ingreso":
-            promptMessage = "Describa las condiciones iniciales del equipo:";
-            break;
-          case "Diagnosticando":
-            promptMessage =
-              "Por favor, ingrese la descripción del diagnóstico:";
-            break;
-          case "Entregado":
-            promptMessage =
-              "Describa las condiciones finales al entregar el equipo:";
-            break;
-        }
-
-        diagnostico = prompt(promptMessage, diagnostico);
-
-        // If user cancels the prompt, return without changing the state
-        if (diagnostico === null) return;
+      if (newEstado === "Diagnosticando") {
+        diagnostico = prompt(
+          "Por favor, ingrese la descripción del diagnóstico:",
+          diagnostico
+        );
+        if (diagnostico === null) return; // User cancelled the prompt
       }
 
       let data = {
