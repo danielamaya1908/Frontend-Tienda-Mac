@@ -49,10 +49,10 @@ const SoporteTecnicoClienteDetalle = () => {
 
   const estados = [
     "Ingreso",
-    "En diagnóstico", // Cambiar a "En diagnostico"
-    "En espera de aprobación cliente", // Cambiar a "En espera de aprobacion cliente"
-    "En reparación", // Cambiar a "En reparacion"
-    "Listo para entregar",
+    "Diagnosticando",
+    "Pendiente",
+    "Reparando",
+    "Reparado",
     "Entregado",
   ];
 
@@ -100,16 +100,16 @@ const SoporteTecnicoClienteDetalle = () => {
             );
 
             const newEstadoImages = {
-              "En diagnóstico": [],
-              "En reparación": [],
-              "Listo para entregar": [],
+              Diagnosticando: [],
+              Reparando: [],
+              Reparado: [],
               Entregado: [],
             };
             // Array de estados en el mismo formato que se usa en la UI
             const estadosConImagenes = [
-              "En diagnóstico",
-              "En reparación",
-              "Listo para entregar",
+              "Diagnosticando",
+              "Reparando",
+              "Reparado",
               "Entregado",
             ];
 
@@ -278,10 +278,10 @@ const SoporteTecnicoClienteDetalle = () => {
 
   const imagenesPerEstado = {
     Ingreso: imagenesIngreso,
-    EnDiagnostico: estadoImages.EnDiagnostico || [],
-    EnEsperaDeAprobacionCliente: [],
-    EnReparacion: estadoImages["EnReparacion"] || [],
-    ListoParaEntregar: estadoImages["ListoParaEntregar"] || [],
+    Diagnosticando: estadoImages.Diagnosticando || [],
+    Pendiente: [],
+    Reparando: estadoImages.Reparando || [],
+    Reparado: estadoImages.Reparado || [],
     Entregado: estadoImages.Entregado || [],
   };
 
