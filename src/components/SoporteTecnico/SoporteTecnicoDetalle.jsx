@@ -266,7 +266,7 @@ const SoporteTecnicoDetalle = () => {
             {currentState === estado && (
               <Badge bg="primary" className="p-2 align-self-start mt-2">
                 <FaExclamationTriangle className="me-1" />
-                Estado Actual
+                Estado de la Orden
               </Badge>
             )}
           </div>
@@ -896,7 +896,7 @@ const SoporteTecnicoDetalle = () => {
                   display: "block",
                 }}
               >
-                <div>Estado Actual:</div>
+                <div>Estado de la Orden:</div>
                 <br />
                 <div>{soporte.estado}</div>
               </Badge>

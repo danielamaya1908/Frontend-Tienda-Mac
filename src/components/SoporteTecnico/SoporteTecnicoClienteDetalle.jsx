@@ -366,6 +366,10 @@ const SoporteTecnicoClienteDetalle = () => {
                       <td>{soporte.serial}</td>
                     </tr>
                     <tr>
+                      <th>Contraseña</th>
+                      <td>{soporte.password}</td>
+                    </tr>
+                    <tr>
                       <th>Estado</th>
                       <td>{soporte.estado}</td>
                     </tr>
