@@ -572,7 +572,7 @@ const SoporteTecnicoDetalle = () => {
       ],
       [
         `Serial: ${soporte.serial || "No disponible"}`,
-        `Enciende: ${soporte.enciende ? "Sí" : "No"}`,
+        `Clave del Dispositivo: ${soporte.codigo || "No disponible"}`,
       ],
       [
         `Cámara: ${soporte.camara ? "Sí" : "No"}`,
@@ -596,9 +596,12 @@ const SoporteTecnicoDetalle = () => {
       ],
       [
         `Garantía: ${soporte.garantia ? "Sí" : "No"}`,
+        `Enciende: ${soporte.enciende ? "Sí" : "No"}`,
+      ],
+      [
+        `Golpes: ${soporte.golpes ? "Sí" : "No"}`,
         `Rayones: ${soporte.rayones ? "Sí" : "No"}`,
       ],
-      [`Golpes: ${soporte.golpes ? "Sí" : "No"}`],
       [
         `Diagnostico - Descripción: ${
           soporte.diagnosticoDescripcion || "No disponible"
@@ -966,6 +969,10 @@ const SoporteTecnicoDetalle = () => {
                   <tr>
                     <th>Serial</th>
                     <td>{soporte.serial}</td>
+                  </tr>
+                  <tr>
+                    <th>Clave del Dispositivo</th>
+                    <td>{soporte.codigo}</td>
                   </tr>
                   <tr>
                     <th>Estado de la Orden</th>

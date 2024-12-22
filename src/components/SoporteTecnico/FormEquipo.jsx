@@ -18,6 +18,7 @@ const FormEquipo = () => {
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
   const [serial, setSerial] = useState("");
+  const [codigo, setcodigo] = useState("");
   const [documentNumber, setDocumentNumber] = useState("");
   const [garantia, setGarantia] = useState(false);
   const [enciende, setEnciende] = useState(false);
@@ -47,6 +48,7 @@ const FormEquipo = () => {
     formData.append("marca", marca);
     formData.append("modelo", modelo);
     formData.append("serial", serial);
+    formData.append("codigo", codigo);
     formData.append("DocumentNumber", documentNumber);
     formData.append("diagnosticoDescripcion", diagnosticoDescripcion);
     formData.append("garantia", garantia);
@@ -88,6 +90,7 @@ const FormEquipo = () => {
       setMarca("");
       setModelo("");
       setSerial("");
+      setcodigo("");
       setDocumentNumber("");
       setDiagnosticoDescripcion("");
       setGarantia(false);
@@ -194,6 +197,20 @@ const FormEquipo = () => {
                   value={serial}
                   onChange={(e) => setSerial(e.target.value)}
                   placeholder="Ingrese el número de serial"
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row} controlId="codigo" className="mb-3">
+              <Form.Label column sm={3}>
+                Codigo:
+              </Form.Label>
+              <Col sm={9}>
+                <Form.Control
+                  type="text"
+                  value={codigo}
+                  onChange={(e) => setcodigo(e.target.value)}
+                  placeholder="Ingrese la clave del dispositivo"
                   required
                 />
               </Col>
