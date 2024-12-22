@@ -239,7 +239,38 @@ const FormEquipo = () => {
                 {clienteInfo.lastName}
               </Alert>
             )}
-
+            <Card.Header
+              as="h4"
+              className="text-center mt-4"
+              style={{
+                backgroundColor: "#4a90e2",
+                color: "white",
+                padding: "10px",
+                borderRadius: "5px",
+              }}
+            >
+              Verificación de Funcionamiento
+            </Card.Header>
+            <Card.Body
+              style={{
+                backgroundColor: "#e9f7fd",
+                borderRadius: "5px",
+                padding: "20px",
+              }}
+            >
+              <p
+                className="text-center"
+                style={{
+                  color: "#34495e",
+                  fontSize: "16px",
+                  lineHeight: "1.5",
+                }}
+              >
+                Seleccione los componentes que están funcionando actualmente.
+                Las casillas no seleccionadas indicarán aquellos que requieren
+                revisión o no están operativos.
+              </p>
+            </Card.Body>
             <Row className="mb-3">
               <Col sm={6}>
                 <Form.Group controlId="garantia">

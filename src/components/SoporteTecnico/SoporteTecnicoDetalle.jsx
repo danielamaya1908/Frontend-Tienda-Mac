@@ -843,18 +843,40 @@ const SoporteTecnicoDetalle = () => {
     currentY += 15; // Añadimos un espacio después de la última sección
 
     // Firma de "RECIBIDO" (Cliente) - Alineado a la izquierda con espacio para firma debajo
-    doc.setFont("helvetica", "bold");
-    doc.text("RECIBIDO", 20, currentY); // Alineado a la izquierda
-    doc.setFont("helvetica", "normal");
-    doc.text("____________________", 20, currentY + 10); // Espacio para la firma
-    doc.text("Cliente", 20, currentY + 20); // Etiqueta debajo
+    // Firma de acuerdo al estado
+    if (soporte.estado === "Ingreso" || soporte.estado === "Otro") {
+      // Firma de "RECIBIDO" por Funcionario de Soporte Técnico
+      doc.setFont("helvetica", "bold");
+      doc.text("RECIBIDO", 20, currentY); // Alineado a la izquierda
+      doc.setFont("helvetica", "normal");
+      doc.text("____________________", 20, currentY + 10); // Espacio para la firma
+      doc.text("Funcionario de Soporte Técnico", 20, currentY + 20); // Etiqueta debajo
 
-    // Firma de "ENTREGADO" (Funcionario de Soporte Técnico) - Alineado a la derecha con espacio para firma debajo
-    doc.setFont("helvetica", "bold");
-    doc.text("ENTREGADO", pageWidth - 100, currentY); // Alineado a la derecha
-    doc.setFont("helvetica", "normal");
-    doc.text("____________________", pageWidth - 100, currentY + 10); // Espacio para la firma
-    doc.text("Funcionario de Soporte Técnico", pageWidth - 100, currentY + 20); // Etiqueta debajo
+      // Firma de "ENTREGADO" por el Cliente
+      doc.setFont("helvetica", "bold");
+      doc.text("ENTREGADO", pageWidth - 100, currentY); // Alineado a la derecha
+      doc.setFont("helvetica", "normal");
+      doc.text("____________________", pageWidth - 100, currentY + 10); // Espacio para la firma
+      doc.text("Cliente", pageWidth - 100, currentY + 20); // Etiqueta debajo
+    } else if (soporte.estado === "Entregado") {
+      // Firma de "RECIBIDO" por el Cliente
+      doc.setFont("helvetica", "bold");
+      doc.text("RECIBIDO", 20, currentY); // Alineado a la izquierda
+      doc.setFont("helvetica", "normal");
+      doc.text("____________________", 20, currentY + 10); // Espacio para la firma
+      doc.text("Cliente", 20, currentY + 20); // Etiqueta debajo
+
+      // Firma de "ENTREGADO" por el Funcionario de Soporte Técnico
+      doc.setFont("helvetica", "bold");
+      doc.text("ENTREGADO", pageWidth - 100, currentY); // Alineado a la derecha
+      doc.setFont("helvetica", "normal");
+      doc.text("____________________", pageWidth - 100, currentY + 10); // Espacio para la firma
+      doc.text(
+        "Funcionario de Soporte Técnico",
+        pageWidth - 100,
+        currentY + 20
+      ); // Etiqueta debajo
+    }
 
     // Guardar o mostrar el PDF
     doc.save("SoporteTecnico.pdf");
@@ -946,7 +968,7 @@ const SoporteTecnicoDetalle = () => {
                     <td>{soporte.serial}</td>
                   </tr>
                   <tr>
-                    <th>Estado</th>
+                    <th>Estado de la Orden</th>
                     <td>{soporte.estado}</td>
                   </tr>
                 </tbody>
