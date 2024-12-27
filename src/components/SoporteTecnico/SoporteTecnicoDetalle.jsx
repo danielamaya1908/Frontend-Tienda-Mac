@@ -446,7 +446,7 @@ const SoporteTecnicoDetalle = () => {
   `;
 
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
+    doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
 
     // Ajustar la posición de cada línea de texto para centrarla
@@ -473,7 +473,7 @@ const SoporteTecnicoDetalle = () => {
       "F"
     );
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
+    doc.setFontSize(12);
     doc.setTextColor(255, 255, 255);
     doc.text(
       "DATOS GENERALES",
@@ -487,7 +487,7 @@ const SoporteTecnicoDetalle = () => {
 
     // Configuración general
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
+    doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
 
     // Ancho por columna
@@ -545,7 +545,7 @@ const SoporteTecnicoDetalle = () => {
       "F"
     );
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
+    doc.setFontSize(12);
     doc.setTextColor(255, 255, 255);
     doc.text(
       "DATOS DEL EQUIPO",
@@ -559,7 +559,7 @@ const SoporteTecnicoDetalle = () => {
 
     // Configuración general para los detalles del equipo
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
+    doc.setFontSize(10);
     doc.setTextColor(0, 0, 0);
 
     // Ancho por columna
@@ -852,7 +852,7 @@ const SoporteTecnicoDetalle = () => {
       doc.setFont("helvetica", "bold");
       doc.text("RECIBIDO", 20, currentY); // Alineado a la izquierda
       doc.setFont("helvetica", "normal");
-      doc.text("____________________", 20, currentY + 20); // Espacio para la firma
+      doc.text("____________________", 20, currentY + 10); // Espacio para la firma
       doc.text("Funcionario de Soporte Técnico", 20, currentY + 20); // Etiqueta debajo
 
       // Firma de "ENTREGADO" por el Cliente
