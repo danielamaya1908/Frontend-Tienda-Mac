@@ -630,7 +630,7 @@ const SoporteTecnicoDetalle = () => {
       "F"
     );
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     doc.setTextColor(255, 255, 255);
     doc.text(
       "CONDICIONES DE SERVICIO",
@@ -873,7 +873,8 @@ const SoporteTecnicoDetalle = () => {
       doc.setFont("helvetica", "bold");
       doc.text("ENTREGADO", pageWidth - 100, currentY); // Alineado a la derecha
       doc.setFont("helvetica", "normal");
-      doc.text("____________________", pageWidth - 100, currentY + 20); // Espacio para la firma
+      // Ajustamos la línea para que sea más larga y bien alineada
+      doc.text("__________________________", pageWidth - 160, currentY + 20); // Espacio para la firma
       doc.text(
         "Funcionario de Soporte Técnico",
         pageWidth - 100,
