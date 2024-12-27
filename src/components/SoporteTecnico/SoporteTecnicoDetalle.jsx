@@ -860,25 +860,24 @@ const SoporteTecnicoDetalle = () => {
       doc.text("ENTREGADO", pageWidth - 100, currentY); // Alineado a la derecha
       doc.setFont("helvetica", "normal");
       doc.text("____________________", pageWidth - 100, currentY + 20); // Espacio para la firma
-      doc.text("Cliente", pageWidth - 100, currentY + 40); // Etiqueta debajo
+      doc.text("Cliente", pageWidth - 100, currentY + 20); // Etiqueta debajo
     } else if (soporte.estado === "Entregado") {
       // Firma de "RECIBIDO" por el Cliente
       doc.setFont("helvetica", "bold");
       doc.text("RECIBIDO A SATISFACCIÓN", 20, currentY); // Alineado a la izquierda
       doc.setFont("helvetica", "normal");
       doc.text("____________________", 20, currentY + 20); // Espacio para la firma
-      doc.text("Cliente", 20, currentY + 40); // Etiqueta debajo
+      doc.text("Cliente", 20, currentY + 20); // Etiqueta debajo
 
       // Firma de "ENTREGADO" por el Funcionario de Soporte Técnico
       doc.setFont("helvetica", "bold");
       doc.text("ENTREGADO", pageWidth - 100, currentY); // Alineado a la derecha
       doc.setFont("helvetica", "normal");
-      // Ajustamos la línea para que sea más larga y bien alineada
-      doc.text("__________________________", pageWidth - 160, currentY + 20); // Espacio para la firma
+      doc.text("____________________", pageWidth - 100, currentY + 20); // Espacio para la firma
       doc.text(
         "Funcionario de Soporte Técnico",
         pageWidth - 100,
-        currentY + 40
+        currentY + 20
       ); // Etiqueta debajo
     }
 
