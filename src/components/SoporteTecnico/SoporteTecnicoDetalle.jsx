@@ -473,7 +473,7 @@ const SoporteTecnicoDetalle = () => {
       "F"
     );
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
     doc.text(
       "DATOS GENERALES",
@@ -545,7 +545,7 @@ const SoporteTecnicoDetalle = () => {
       "F"
     );
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
     doc.text(
       "DATOS DEL EQUIPO",
@@ -620,7 +620,9 @@ const SoporteTecnicoDetalle = () => {
     currentY += 70; // Espaciado antes de la siguiente sección
 
     // Título: Condiciones de Servicio
-    const titleBarHeight = 10;
+    doc.addPage(); // Asegúrate de iniciar una nueva página
+    drawBlackBorder(); // Dibuja el borde en la nueva página
+    currentY = margin; // Reinicia la posición vertical
     doc.setFillColor(0, 0, 0);
     doc.rect(
       borderWidth,
@@ -866,7 +868,7 @@ const SoporteTecnicoDetalle = () => {
       doc.setFont("helvetica", "bold");
       doc.text("RECIBIDO A SATISFACCIÓN", 20, currentY); // Alineado a la izquierda
       doc.setFont("helvetica", "normal");
-      doc.text("____________________", 20, currentY + 10); // Espacio para la firma
+      doc.text("____________________", 30, currentY + 10); // Espacio para la firma
       doc.text("Cliente", 20, currentY + 20); // Etiqueta debajo
 
       // Firma de "ENTREGADO" por el Funcionario de Soporte Técnico
