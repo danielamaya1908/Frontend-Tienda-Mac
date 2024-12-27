@@ -203,7 +203,7 @@ const FormEquipo = () => {
             </Form.Group>
             <Form.Group as={Row} controlId="codigo" className="mb-3">
               <Form.Label column sm={3}>
-                Codigo:
+                Contraseña:
               </Form.Label>
               <Col sm={9}>
                 <Form.Control
