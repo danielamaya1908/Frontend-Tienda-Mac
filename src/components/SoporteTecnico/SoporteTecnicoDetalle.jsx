@@ -630,7 +630,7 @@ const SoporteTecnicoDetalle = () => {
       "F"
     );
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(7);
+    doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
     doc.text(
       "CONDICIONES DE SERVICIO",

@@ -12,6 +12,7 @@ import slidesShow5 from "./img/Accesorios.webp"; // Quinta imagen
 import slidesShow6 from "./img//Servicio_Tecnico.webp"; // Sexta imagen
 import slidesShow7 from "./img/Delivery.webp"; // Séptima imagen
 import slidesShow8 from "./img/SLIDESHOW_USADO.webp"; // Octava imagen
+import slidesShow9 from "./img/Eventos.webp"; // Octava imagen
 
 const Slideshow = () => {
   const [images, setImages] = useState([]);
@@ -29,6 +30,7 @@ const Slideshow = () => {
         slidesShow6,
         slidesShow7,
         slidesShow8, // Agregada la octava imagen
+        slidesShow9,
       ];
       setImages(loadedImages);
     };
