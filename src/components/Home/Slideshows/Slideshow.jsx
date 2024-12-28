@@ -102,7 +102,7 @@ const Slideshow = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 6000,
     beforeChange: (current, next) => setCurrentSlide(next), // Actualiza el índice del slide actual
     arrows: false,
     customPaging: function (i) {
