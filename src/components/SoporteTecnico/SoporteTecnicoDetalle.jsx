@@ -877,7 +877,7 @@ const SoporteTecnicoDetalle = () => {
       doc.text(
         "Funcionario de Soporte Técnico",
         pageWidth - 100,
-        currentY + 20
+        currentY + 40
       ); // Etiqueta debajo
     }
 
